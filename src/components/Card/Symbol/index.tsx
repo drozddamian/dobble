@@ -1,18 +1,27 @@
 import React from 'react'
 import styled from 'styled-components'
 
-
 interface Props {
   name: string;
   icon: string;
+  symbolScale: string;
 }
 
+interface SymbolProps {
+  symbolScale: string;
+}
+
+
 const Symbol: React.FC<Props> = (props: Props) => {
-  const { name, icon } = props
+  const { name, icon, symbolScale } = props
 
   return (
     <Wrapper>
-      <SymbolIcon src={icon} alt={name} />
+      <SymbolIcon
+        src={icon}
+        symbolScale={symbolScale}
+        alt={name}
+      />
     </Wrapper>
   )
 }
@@ -26,6 +35,9 @@ export const Wrapper = styled.div`
 
 const SymbolIcon = styled.img`
   width: 100%;
+  ${(props: SymbolProps) => `
+    transform: scale(${props.symbolScale});
+  `};
 `
 
 

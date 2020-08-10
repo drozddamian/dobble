@@ -1,3 +1,4 @@
+import Big from 'big.js'
 import PACK_OF_CARDS from '../constants/packOfCards'
 
 
@@ -27,4 +28,18 @@ export const getCards = () => {
 }
 
 
-export const getSymbolScales = () => []
+export const getSymbolScales = () => new Array(8)
+  .fill(1)
+  .map(() => Math.round(Math.random() * 1))
+  .map((number) => {
+    const decimalSizeOfScale = number < 1
+      ? Math.floor((Math.random() * 4) + 5)
+      : Math.round(Math.random() * 3)
+
+    const scaleDecimal = new Big(decimalSizeOfScale).times(0.1)
+
+    if (number < 1) {
+      return scaleDecimal.toFixed()
+    }
+    return scaleDecimal.add(1).toFixed()
+  })

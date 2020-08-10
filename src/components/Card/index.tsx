@@ -28,6 +28,7 @@ const Card: React.FC<Props> = (props: Props) => {
             key={`${name}_${index}`}
             name={name}
             icon={icon}
+            symbolScale={symbolScaleArray[index]}
           />
         ))}
       </CardContainer>
