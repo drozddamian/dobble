@@ -5,13 +5,18 @@ import {
   Route,
 } from 'react-router-dom'
 import GameTableScreen from './screens/GameTableScreen'
+import RoomListScreen from './screens/RoomListScreen'
 
 
 function App() {
   return (
     <Router>
       <Switch>
-        <Route path='/'>
+        <Route exact path='/'>
+          <RoomListScreen />
+        </Route>
+
+        <Route path='/game'>
           <GameTableScreen />
         </Route>
       </Switch>

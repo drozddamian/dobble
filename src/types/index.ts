@@ -11,3 +11,11 @@ export type CardSymbolData = {
   name: string;
   icon: string;
 }
+
+
+export type RoomData = {
+  name: string;
+  maxPlayers: 2 | 3 | 4 | 5 | 6 | 7 | 8;
+  players: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
+  isPrivateRoom: boolean;
+}
