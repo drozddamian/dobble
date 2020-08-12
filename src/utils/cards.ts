@@ -34,12 +34,12 @@ export const getSymbolScales = () => new Array(8)
   .map((number) => {
     const decimalSizeOfScale = number < 1
       ? Math.floor((Math.random() * 4) + 5)
-      : Math.round(Math.random() * 3)
+      : Math.round(Math.random() * 20)
 
     const scaleDecimal = new Big(decimalSizeOfScale).times(0.1)
 
     if (number < 1) {
       return scaleDecimal.toFixed()
     }
-    return scaleDecimal.add(1).toFixed()
+    return scaleDecimal.times(0.1).add(1).toFixed()
   })

@@ -1,10 +1,12 @@
 import React from 'react'
 import styled from 'styled-components'
+import CARD_SYMBOLS from '../../../constants/symbols'
+import { SymbolName } from '../../../types'
 
 interface Props {
-  name: string;
-  icon: string;
+  symbolId: SymbolName;
   symbolScale: string;
+  handleSymbolClick?: ((name: SymbolName) => void) | undefined;
 }
 
 interface SymbolProps {
@@ -13,10 +15,11 @@ interface SymbolProps {
 
 
 const Symbol: React.FC<Props> = (props: Props) => {
-  const { name, icon, symbolScale } = props
+  const { symbolId, symbolScale, handleSymbolClick } = props
+  const { name, icon } = CARD_SYMBOLS[symbolId]
 
   return (
-    <Wrapper>
+    <Wrapper onClick={() => handleSymbolClick && handleSymbolClick(symbolId)}>
       <SymbolIcon
         src={icon}
         symbolScale={symbolScale}
@@ -31,6 +34,7 @@ export const Wrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
 `
 
 const SymbolIcon = styled.img`
