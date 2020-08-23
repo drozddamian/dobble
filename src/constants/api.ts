@@ -1,7 +1,9 @@
-enum API {
-  AUTH = '/api/auth',
-  PLAYER = '/api/player',
-  ROOM = '/api/room',
+const API_SERVER_URL = 'https://dev-dobble.herokuapp.com'
+
+const API = {
+  AUTH: `${API_SERVER_URL}/api/auth`,
+  PLAYER: `${API_SERVER_URL}/api/player`,
+  ROOM: `${API_SERVER_URL}/api/room`,
 }
 
 const { AUTH, PLAYER, ROOM } = API
