@@ -5,7 +5,6 @@ import {
   Route,
 } from 'react-router-dom'
 import GameTableScreen from './screens/GameTableScreen'
-import RoomListScreen from './screens/RoomListScreen'
 import MainScreen from './screens/MainScreen'
 
 

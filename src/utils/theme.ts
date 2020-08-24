@@ -1,3 +1,4 @@
+
 const theme = {
   colors: {
     white: '#FFFFFF',
@@ -13,8 +14,9 @@ const theme = {
     fadedCircleGradient: 'linear-gradient(112.41deg, #FFFFFF 12.04%, rgba(255, 255, 255, 0) 59.31%)',
   },
   fonts: {
-    soraRegular: 'Sora-Regular',
-    soraSemiBold: 'Sora-Semi-Bold',
+    robotoBold: 'RobotoBold',
+    robotoRegular: 'RobotoRegular',
+    Russo: 'Russo',
   },
   fontSize: {
     smallText: '15px',

@@ -36,15 +36,17 @@ const Input: React.FC<Props> = (props: Props) => {
 }
 
 const InputContainer = styled.div`
-
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 40px;
 `
 
 const InputElement = styled.input`
-
+  border-radius: 5px;
 `
 
 const Label = styled.label`
-
+  padding-bottom: 4px;
 `
 
 const Error = styled.span`
