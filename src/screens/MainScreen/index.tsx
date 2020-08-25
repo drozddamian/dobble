@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
+import PageWrapper from '../../components/Page/Container'
 import LoginForm from '../../components/Forms/Login'
 import RegisterForm from '../../components/Forms/Register'
 import SwingText from '../../components/SwingText'
@@ -45,7 +46,7 @@ const MainScreen: React.FC = () => {
   }
 
   return (
-    <Wrapper>
+    <PageWrapper>
       <AuthSection>
         <OperationTitle>
           Sign{' '}
@@ -60,19 +61,14 @@ const MainScreen: React.FC = () => {
           <Text>
             {haveAccountText}
           </Text>
-          <button onClick={handleChange}>
+          <ChangeAuthActionButton onClick={handleChange}>
             {haveAccountButtonText}
-          </button>
+          </ChangeAuthActionButton>
         </ChangeAuthAction>
-
       </AuthSection>
-    </Wrapper>
+    </PageWrapper>
   )
 }
-
-const Wrapper = styled.div`
-
-`
 
 const AuthSection = styled.div`
   display: flex;
@@ -89,15 +85,23 @@ const OperationTitle = styled.h2`
 `
 
 const FormContainer = styled.div`
-
+  width: 100%;
 `
 
 const ChangeAuthAction = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding-top: 24px;
 `
 
 const Text = styled.p``
+
+const ChangeAuthActionButton = styled.button`
+  font-family: ${({ theme }) => theme.fonts.robotoRegular};
+  color: ${({ theme }) => theme.colors.darkBlue};
+  font-size: ${({ theme }) => theme.fontSize.smallText};
+`
+
 
 export default MainScreen

@@ -58,6 +58,7 @@ const Label = styled.label`
 const InputContainer = styled.div`
   display: flex;
   flex-direction: column;
+  width: 100%;
   margin-bottom: 30px;
   position: relative;
   
@@ -90,7 +91,12 @@ const InputContainer = styled.div`
 `
 
 const Error = styled.span`
-
+  font-family: ${({ theme }) => theme.fonts.robotoRegular};
+  font-size: ${({ theme }) => theme.fontSize.s12};
+  color: ${({ theme }) => theme.colors.error};
+  position: absolute;
+  bottom: -15px;
+  left: 4px;
 `
 
 

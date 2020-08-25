@@ -1,7 +1,8 @@
 import React from 'react'
-import styled from 'styled-components'
-import Input from '../Input'
 import { useFormik } from 'formik'
+import Form from '../FormWrapper'
+import Input from '../Input'
+import Button from '../../Button'
 import VALIDATION from '../../../validation'
 
 const { REGISTER_FORM } = VALIDATION
@@ -21,7 +22,7 @@ const RegisterForm: React.FC = () => {
   })
 
   return (
-    <form onSubmit={formik.handleSubmit}>
+    <Form onSubmit={formik.handleSubmit}>
       <Input
         label='Username'
         inputName='username'
@@ -45,9 +46,14 @@ const RegisterForm: React.FC = () => {
         onChange={formik.handleChange}
         error={formik.touched.password && formik.errors.password}
       />
-    </form>
+
+      <Button
+        text='Register'
+        type='submit'
+        uppercase
+      />
+    </Form>
   )
 }
-
 
 export default RegisterForm
