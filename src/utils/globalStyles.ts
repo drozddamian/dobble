@@ -38,6 +38,7 @@ const GlobalStyle = createGlobalStyle`
   
   p {
     font-family: RobotoRegular;
+    color: #333333;
   }
   
   a {
@@ -53,6 +54,7 @@ const GlobalStyle = createGlobalStyle`
   
   input {
     outline: none;
+    border: none;
   }
 `
 

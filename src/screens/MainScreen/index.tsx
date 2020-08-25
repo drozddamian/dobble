@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import LoginForm from '../../components/Forms/Login'
 import RegisterForm from '../../components/Forms/Register'
+import SwingText from '../../components/SwingText'
 
 enum AuthType {
   REGISTER = 'register',
@@ -47,7 +48,8 @@ const MainScreen: React.FC = () => {
     <Wrapper>
       <AuthSection>
         <OperationTitle>
-          Sign {titlePostfix}
+          Sign{' '}
+          <SwingText text={titlePostfix} />
         </OperationTitle>
 
         <FormContainer>
@@ -73,11 +75,17 @@ const Wrapper = styled.div`
 `
 
 const AuthSection = styled.div`
-
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `
 
 const OperationTitle = styled.h2`
-  font-family: 'RobotoBold';
+  font-family: ${({ theme }) => theme.fonts.russo};
+  color: ${({ theme }) => theme.colors.darkBlue};
+  padding-bottom: 40px;
+  width: 100px;
+  display: flex;
 `
 
 const FormContainer = styled.div`

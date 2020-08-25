@@ -2,21 +2,20 @@
 const theme = {
   colors: {
     white: '#FFFFFF',
-    lightGray: '#E5E5E5',
-    white008: 'rgba(255, 255, 255, 0.08)',
-    black03: 'rgba(0, 0, 0, 0.3)',
-    main: '#4845DE',
-    second: '#FFD7BE',
-    lightYellow: '#FFEADD',
-    text: '#0B132B',
-    third: '#242774',
+    darkBlue: '#131E77',
+    pink: '#F752A7',
+    softPink: '#F8DDEC',
     error: '#ff0033',
-    fadedCircleGradient: 'linear-gradient(112.41deg, #FFFFFF 12.04%, rgba(255, 255, 255, 0) 59.31%)',
+    text: '#333333',
+    inputBorder: '#d1d1d1',
+  },
+  shadows: {
+    inputShadow: '0px 5px 8px -4px rgba(19,30,119,1);',
   },
   fonts: {
     robotoBold: 'RobotoBold',
     robotoRegular: 'RobotoRegular',
-    Russo: 'Russo',
+    russo: 'Russo',
   },
   fontSize: {
     smallText: '15px',
