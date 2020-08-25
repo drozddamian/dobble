@@ -4,6 +4,7 @@ import styled from 'styled-components'
 
 interface Props {
   inputName: string;
+  inputType: 'date' | 'email' | 'number' | 'password' | 'text';
   value: string | number;
   onChange;
   label?: string;
@@ -11,8 +12,7 @@ interface Props {
 }
 
 const Input: React.FC<Props> = (props: Props) => {
-
-  const { label, inputName, value, onChange, error } = props
+  const { label, inputName, inputType, value, onChange, error } = props
 
   return (
     <InputContainer>
@@ -24,6 +24,7 @@ const Input: React.FC<Props> = (props: Props) => {
 
       <InputElement
         name={inputName}
+        type={inputType}
         onChange={onChange}
         value={value}
       />

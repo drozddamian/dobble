@@ -26,6 +26,7 @@ const RegisterForm: React.FC = () => {
       <Input
         label='Username'
         inputName='username'
+        inputType='text'
         value={formik.values.username}
         onChange={formik.handleChange}
         error={formik.touched.username && formik.errors.username}
@@ -34,6 +35,7 @@ const RegisterForm: React.FC = () => {
       <Input
         label='Nickname'
         inputName='nickname'
+        inputType='text'
         value={formik.values.nickname}
         onChange={formik.handleChange}
         error={formik.touched.nickname && formik.errors.nickname}
@@ -42,6 +44,7 @@ const RegisterForm: React.FC = () => {
       <Input
         label='Password'
         inputName='password'
+        inputType='password'
         value={formik.values.password}
         onChange={formik.handleChange}
         error={formik.touched.password && formik.errors.password}

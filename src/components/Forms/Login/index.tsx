@@ -25,6 +25,7 @@ const LoginForm: React.FC = () => {
       <Input
         label='Username'
         inputName='username'
+        inputType='text'
         value={formik.values.username}
         onChange={formik.handleChange}
         error={formik.touched.username && formik.errors.username}
@@ -33,6 +34,7 @@ const LoginForm: React.FC = () => {
       <Input
         label='Password'
         inputName='password'
+        inputType='password'
         value={formik.values.password}
         onChange={formik.handleChange}
         error={formik.touched.password && formik.errors.password}
