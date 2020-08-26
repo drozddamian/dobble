@@ -1,5 +1,6 @@
-import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit'
-import rootReducer from './rootReducer'
+import { configureStore, getDefaultMiddleware, Action } from '@reduxjs/toolkit'
+import { ThunkAction } from 'redux-thunk'
+import rootReducer, { RootState } from './rootReducer'
 
 
 export const rootStore = configureStore({
@@ -7,3 +8,5 @@ export const rootStore = configureStore({
   middleware: [...getDefaultMiddleware()],
   devTools: false,
 })
+
+export type AppThunk = ThunkAction<void, RootState, unknown, Action<string>>
