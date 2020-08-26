@@ -1,21 +1,25 @@
 import React from 'react'
+import { useDispatch } from 'react-redux'
 import { useFormik } from 'formik'
 import Form from '../FormWrapper'
 import Input from '../Input'
 import Button from '../../Button'
 import VALIDATION from '../../../validation'
+import { loginAccount } from '../../../redux/account'
 
 const { LOGIN_FORM } = VALIDATION
 
 
 const LoginForm: React.FC = () => {
+  const dispatch = useDispatch()
+
   const formik = useFormik({
     initialValues: {
       username: '',
       password: '',
     },
-    onSubmit: values => {
-      alert(JSON.stringify(values, null, 2));
+    onSubmit: ({ username, password }) => {
+      dispatch(loginAccount(username, password))
     },
     validationSchema: LOGIN_FORM,
   })

@@ -1,22 +1,26 @@
 import React from 'react'
+import { useDispatch } from 'react-redux'
 import { useFormik } from 'formik'
 import Form from '../FormWrapper'
 import Input from '../Input'
 import Button from '../../Button'
 import VALIDATION from '../../../validation'
+import { registerAccount } from '../../../redux/account'
 
 const { REGISTER_FORM } = VALIDATION
 
 
 const RegisterForm: React.FC = () => {
+  const dispatch = useDispatch()
+
   const formik = useFormik({
     initialValues: {
       username: '',
-      nickname: '',
+      nick: '',
       password: '',
     },
-    onSubmit: values => {
-      alert(JSON.stringify(values, null, 2));
+    onSubmit: ({ username, nick, password }) => {
+      dispatch(registerAccount(username, nick, password))
     },
     validationSchema: REGISTER_FORM,
   })
@@ -34,11 +38,11 @@ const RegisterForm: React.FC = () => {
 
       <Input
         label='Nickname'
-        inputName='nickname'
+        inputName='nick'
         inputType='text'
-        value={formik.values.nickname}
+        value={formik.values.nick}
         onChange={formik.handleChange}
-        error={formik.touched.nickname && formik.errors.nickname}
+        error={formik.touched.nick && formik.errors.nick}
       />
 
       <Input
