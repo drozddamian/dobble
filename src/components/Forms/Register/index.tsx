@@ -1,5 +1,5 @@
 import React from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useFormik } from 'formik'
 import Form from '../FormWrapper'
 import Input from '../Input'
@@ -12,6 +12,8 @@ const { REGISTER_FORM } = VALIDATION
 
 const RegisterForm: React.FC = () => {
   const dispatch = useDispatch()
+
+  const { isLoading, error } = useSelector(state => state.account)
 
   const formik = useFormik({
     initialValues: {
@@ -57,6 +59,7 @@ const RegisterForm: React.FC = () => {
       <Button
         text='Register'
         type='submit'
+        isLoading={isLoading}
         uppercase
       />
     </Form>

@@ -66,7 +66,8 @@ export const loginAccount = (username: string, password: string): AppThunk => as
     const loginResult = await login(username, password)
     dispatch(loginSuccess(loginResult))
   } catch(error) {
-    dispatch(accountActionFailure(error))
+    const { data } = error.response
+    dispatch(accountActionFailure(data))
   }
 }
 
