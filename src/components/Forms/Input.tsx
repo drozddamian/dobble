@@ -56,7 +56,7 @@ const Label = styled.label`
   transition: all .2s ease-out;
 `
 
-const InputContainer = styled.div`
+export const InputContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;

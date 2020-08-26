@@ -4,6 +4,7 @@ import { useFormik } from 'formik'
 import Form from '../FormWrapper'
 import Input from '../Input'
 import Button from '../../Button'
+import FormError from '../FormError'
 import VALIDATION from '../../../validation'
 import { registerAccount } from '../../../redux/account'
 
@@ -55,6 +56,8 @@ const RegisterForm: React.FC = () => {
         onChange={formik.handleChange}
         error={formik.touched.password && formik.errors.password}
       />
+
+      <FormError text={error} />
 
       <Button
         text='Register'

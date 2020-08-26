@@ -4,6 +4,7 @@ import { useFormik } from 'formik'
 import Form from '../FormWrapper'
 import Input from '../Input'
 import Button from '../../Button'
+import FormError from '../FormError'
 import VALIDATION from '../../../validation'
 import { loginAccount } from '../../../redux/account'
 
@@ -27,7 +28,7 @@ const LoginForm: React.FC = () => {
   })
 
   return (
-    <Form onSubmit={formik.handleSubmit}>
+    <Form onSubmit={formik.handleSubmit} error={error}>
       <Input
         label='Username'
         inputName='username'
@@ -45,6 +46,8 @@ const LoginForm: React.FC = () => {
         onChange={formik.handleChange}
         error={formik.touched.password && formik.errors.password}
       />
+
+      <FormError text={error} />
 
       <Button
         text='Log in'
