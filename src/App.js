@@ -4,19 +4,28 @@ import {
   Switch,
   Route,
 } from 'react-router-dom'
+import ROUTES from './constants/routes'
 import GameTableScreen from './screens/GameTableScreen'
 import MainScreen from './screens/MainScreen'
 
+
+const {
+  MAIN, GAME, ROOM,
+} = ROUTES
 
 function App() {
   return (
     <Router>
       <Switch>
-        <Route exact path='/'>
+        <Route exact path={MAIN}>
           <MainScreen />
         </Route>
 
-        <Route path='/game'>
+        <Route path={ROOM}>
+          <GameTableScreen />
+        </Route>
+
+        <Route path={GAME}>
           <GameTableScreen />
         </Route>
       </Switch>

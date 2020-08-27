@@ -15,9 +15,10 @@ const RoomItems: React.FC<Props> = (props: Props) => {
       {rooms.map((room) => {
         const { _id, owner, name, howManyPlayers, availableSeats } = room
         const isOwner = true
+        const roomURL = `/room/${_id}`
 
         return (
-          <ItemWrapper key={_id}>
+          <ItemWrapper href={roomURL} key={_id}>
             <RoomInfoCell>
               <RoomTitle>
                 {name}
@@ -64,7 +65,7 @@ const RoomTitle = styled.span`
   }
 `
 
-const ItemWrapper = styled.div`
+const ItemWrapper = styled.a`
   display: flex;
   position: relative;
   cursor: pointer;
