@@ -16,6 +16,7 @@ export const API_METHODS = {
   MODIFY_PLAYER: `${PLAYER}/change_data`,
   GET_ROOMS: `${ROOM}/list_rooms`,
   GET_ROOM: `${ROOM}/:roomId`,
+  GET_MOST_POPULAR_ROOMS: `${ROOM}/most_popular`,
   CREATE_ROOM: `${ROOM}/create_room`,
   DELETE_ROOM: `${ROOM}/:roomId`,
 }

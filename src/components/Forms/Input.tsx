@@ -1,5 +1,5 @@
 import React from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
 
 interface Props {
@@ -11,11 +11,15 @@ interface Props {
   error?: string | boolean;
 }
 
+interface InputContainerProps {
+  hasError: undefined | boolean | string;
+}
+
 const Input: React.FC<Props> = (props: Props) => {
   const { label, inputName, inputType, value, onChange, error } = props
 
   return (
-    <InputContainer>
+    <InputContainer hasError={error}>
       {label && (
         <Label htmlFor={inputName}>
           {label}
@@ -41,12 +45,8 @@ const InputElement = styled.input`
   border: 1px solid ${({ theme }) => theme.colors.inputBorder};
   font-size: ${({ theme }) => theme.fontSize.smallText};
   border-radius: 5px;
-  padding: 16px;
+  padding: 12px 16px;
   z-index: 5;
-  
-  @media (min-width: ${({ theme }) => theme.rwd.mobile.m}) {
-    font-size: ${({ theme }) => theme.fontSize.normalText};
-  }
 `
 
 const Label = styled.label`
@@ -75,6 +75,11 @@ export const InputContainer = styled.div`
     border-radius: 50%;
     transition: all .2s ease-out;
     z-index: 1;
+    
+    ${(props: InputContainerProps) => props.hasError && css`
+      background-color: ${({ theme }) => theme.colors.error};
+      transform: translateY(5px);
+    `};
   }
   
   :focus-within {

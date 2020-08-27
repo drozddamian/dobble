@@ -1,9 +1,13 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
+import { useDispatch, useSelector } from 'react-redux'
 import PageWrapper from '../../components/Page/Container'
 import LoginForm from '../../components/Forms/Login'
 import RegisterForm from '../../components/Forms/Register'
 import SwingText from '../../components/SwingText'
+import RoomList from '../../components/RoomList'
+import { fetchPopularRooms } from '../../redux/room'
+
 
 enum AuthType {
   REGISTER = 'register',
@@ -13,7 +17,14 @@ enum AuthType {
 const { REGISTER, LOGIN } = AuthType
 
 const MainScreen: React.FC = () => {
+  const dispatch = useDispatch()
+
   const [currentAuthAction, setCurrentAuthAction] = useState<AuthType>(LOGIN)
+  const { isLoading, mostPopularRooms } = useSelector(state => state.room)
+
+  useEffect(() => {
+    dispatch(fetchPopularRooms())
+  }, [])
 
   const AuthSectionData = {
     [REGISTER]: {
@@ -46,12 +57,12 @@ const MainScreen: React.FC = () => {
   }
 
   return (
-    <PageWrapper>
+    <MainPageWrapper>
       <AuthSection>
-        <OperationTitle>
+        <SectionTitle>
           Sign{' '}
           <SwingText text={titlePostfix} />
-        </OperationTitle>
+        </SectionTitle>
 
         <FormContainer>
           {formComponent}
@@ -61,27 +72,78 @@ const MainScreen: React.FC = () => {
           <Text>
             {haveAccountText}
           </Text>
+
           <ChangeAuthActionButton onClick={handleChange}>
             {haveAccountButtonText}
           </ChangeAuthActionButton>
         </ChangeAuthAction>
       </AuthSection>
-    </PageWrapper>
+
+      <RoomsSection>
+        <RoomSectionTitle>
+          Most popular rooms
+        </RoomSectionTitle>
+
+        <RoomList
+          rooms={mostPopularRooms}
+          isLoading={isLoading}
+        />
+      </RoomsSection>
+    </MainPageWrapper>
   )
 }
 
-const AuthSection = styled.div`
+const MainPageWrapper = styled(PageWrapper)`
   display: flex;
   flex-direction: column;
   align-items: center;
+  
+  @media (min-width: ${({ theme }) => theme.rwd.desktop.xs}) {
+    flex-direction: row;
+    justify-content: center;
+    align-items: baseline;
+  }
 `
 
-const OperationTitle = styled.h2`
+const AuthSection = styled.section`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 360px;
+  width: 100%;
+  
+  @media (min-width: ${({ theme }) => theme.rwd.desktop.xs}) {
+    padding-right: 100px;
+  }
+  
+  @media (min-width: ${({ theme }) => theme.rwd.desktop.m}) {
+    padding-right: 140px;
+  }
+`
+
+const RoomsSection = styled.section`
+  display: flex;
+  flex-direction: column;
+  margin-top: 80px;
+  width: 100%;
+  max-width: 650px;
+`
+
+const SectionTitle = styled.h2`
   font-family: ${({ theme }) => theme.fonts.russo};
+  font-size: ${({ theme }) => theme.fonts.smallTitle};
   color: ${({ theme }) => theme.colors.darkBlue};
   padding-bottom: 40px;
   width: 100px;
   display: flex;
+  
+  @media (min-width: ${({ theme }) => theme.rwd.desktop.xs}) {
+    align-self: flex-start;
+  }
+`
+
+const RoomSectionTitle = styled(SectionTitle)`
+  width: 100%;
 `
 
 const FormContainer = styled.div`

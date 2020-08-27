@@ -8,6 +8,7 @@ const theme = {
     error: '#ff0033',
     text: '#333333',
     inputBorder: '#d1d1d1',
+    gold: '#FFD92E',
   },
   shadows: {
     inputShadow: '0px 5px 8px -4px rgba(19,30,119,1);',
