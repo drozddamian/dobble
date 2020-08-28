@@ -7,6 +7,7 @@ import {
 import ROUTES from './constants/routes'
 import GameTableScreen from './screens/GameTableScreen'
 import MainScreen from './screens/MainScreen'
+import RoomScreen from './screens/RoomScreen'
 
 
 const {
@@ -22,7 +23,7 @@ function App() {
         </Route>
 
         <Route path={ROOM}>
-          <GameTableScreen />
+          <RoomScreen />
         </Route>
 
         <Route path={GAME}>
