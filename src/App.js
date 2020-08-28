@@ -1,26 +1,36 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from 'react'
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+} from 'react-router-dom'
+import ROUTES from './constants/routes'
+import GameTableScreen from './screens/GameTableScreen'
+import MainScreen from './screens/MainScreen'
+
+
+const {
+  MAIN, GAME, ROOM,
+} = ROUTES
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <Router>
+      <Switch>
+        <Route exact path={MAIN}>
+          <MainScreen />
+        </Route>
+
+        <Route path={ROOM}>
+          <GameTableScreen />
+        </Route>
+
+        <Route path={GAME}>
+          <GameTableScreen />
+        </Route>
+      </Switch>
+    </Router>
+  )
 }
 
-export default App;
+export default App
