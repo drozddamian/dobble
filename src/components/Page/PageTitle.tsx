@@ -27,6 +27,7 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-top: 16px;
   
   ${Button} {
     margin-right: 8px;
@@ -38,7 +39,7 @@ const Title = styled.h1`
   font-size: ${({ theme }) => theme.fontSize.s27};
   color: ${({ theme }) => theme.colors.darkBlue};
 
-  max-width: 235px;
+  max-width: 290px;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
