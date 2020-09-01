@@ -2,6 +2,7 @@ import axios from 'axios'
 import { API_METHODS } from '../../constants/api'
 
 export interface Account {
+  id: string;
   username: string;
   password: string;
   nick: string;

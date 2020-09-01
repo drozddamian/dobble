@@ -2,7 +2,10 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { AppThunk } from '../rootStore'
 import { apiAccount } from '../../api'
 import { LoginSuccess, RegisterSuccess, Account } from '../../api/account'
+import { SESSION_USER_ID } from '../../constants'
+import { useCurrentAccount } from '../../hooks'
 
+const { setUserSessionId } = useCurrentAccount()
 const { login, register, getAccountDetails } = apiAccount
 
 type AccountState = {
@@ -60,10 +63,13 @@ export const {
   getAccountSuccess,
 } = slice.actions
 
+
 export const loginAccount = (username: string, password: string): AppThunk => async dispatch => {
   try {
     dispatch(accountActionStart())
     const loginResult = await login(username, password)
+    const { player } = loginResult
+    setUserSessionId(player.id)
     dispatch(loginSuccess(loginResult))
   } catch(error) {
     const { data } = error.response
@@ -75,6 +81,8 @@ export const registerAccount = (username: string, nick: string, password: string
   try {
     dispatch(accountActionStart())
     const registerResult = await register(username, nick, password)
+    const { player } = registerResult
+    setUserSessionId(player.id)
     dispatch(registerSuccess(registerResult))
   } catch(error) {
     dispatch(accountActionFailure(error))

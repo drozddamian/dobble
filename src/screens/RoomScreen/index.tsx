@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import styled from 'styled-components'
-import { isNil } from 'ramda'
+import { isNil, equals } from 'ramda'
 import { useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import PageWrapper from '../../components/Page/Container'
@@ -8,13 +8,49 @@ import { fetchRoomDetails } from '../../redux/room'
 import PageTitle from '../../components/Page/PageTitle'
 import LoadingBar from '../../components/Loader/LoadingBar'
 import PlayerList from '../../components/PlayerList'
-import Button from "../../components/Button";
+import Button from '../../components/Button'
+import { Account } from '../../api/account'
+import { USER_STATUS, BUTTON_ACTION_DATA } from './constant-data'
+import { useCurrentAccount } from '../../hooks'
+
+
+function getPlayersTitle(howManyPlayers: number) {
+  if (howManyPlayers < 2) {
+    return 'One player in the room'
+  }
+  return `There is ${howManyPlayers} in the room`
+}
+
+const { OWNER, JOIN, LEAVE } = USER_STATUS
+
+const isIdInPlayerList = (currentUserId) => (player) => {
+  return !equals(player._id, currentUserId)
+}
+
+function getButtonData(currentUserId: string | null, ownerId: string, players: Account[]): USER_STATUS {
+  if (isNil(currentUserId) || isNil(players)) {
+    return JOIN
+  }
+  if (equals(currentUserId, ownerId)) {
+    return OWNER
+  }
+  const playerInRoom = players.find(isIdInPlayerList(currentUserId))
+  if (!isNil(playerInRoom)) {
+    return LEAVE
+  }
+  return JOIN
+}
 
 const RoomScreen: React.FC = () => {
   const dispatch = useDispatch()
   const { id } = useParams()
 
   const { isLoading, roomDetails } = useSelector(state => state.room)
+
+  const { currentUserId } = useCurrentAccount()
+  const userStatus = getButtonData(currentUserId, roomDetails?.owner._id, roomDetails?.players)
+
+  const { buttonText, action } = BUTTON_ACTION_DATA[userStatus]
 
   useEffect(() => {
     if (isNil(id)) {
@@ -23,13 +59,6 @@ const RoomScreen: React.FC = () => {
     dispatch(fetchRoomDetails(id))
   }, [id])
 
-  function getPlayersTitle() {
-    const howManyPlayers = roomDetails?.howManyPlayers
-    if (howManyPlayers < 2) {
-      return 'One player in the room'
-    }
-    return `There is ${howManyPlayers} in the room`
-  }
 
   if (isLoading) {
     return (
@@ -43,14 +72,14 @@ const RoomScreen: React.FC = () => {
       <PageWrapper>
         <RoomButtonsContainer>
           <Button
-            text='Join room'
+            text={buttonText}
             type='button'
           />
         </RoomButtonsContainer>
 
         <PlayerListContainer>
           <PlayersTitle>
-            {getPlayersTitle()}
+            {getPlayersTitle(roomDetails?.howManyPlayers)}
           </PlayersTitle>
 
           <PlayerList
