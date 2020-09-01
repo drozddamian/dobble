@@ -2,8 +2,12 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { AppThunk } from '../rootStore'
 import { apiRoom } from '../../api'
 import { Room } from '../../api/room'
+import { displayNotification } from '../notification'
+import { NotificationType } from '../../types'
+import ROUTES from '../../constants/routes'
+import { RouteComponentProps } from 'react-router-dom'
 
-const { getRooms, getMostPopularRooms, getRoomDetails } = apiRoom
+const { getRooms, getMostPopularRooms, getRoomDetails, deleteRoomById } = apiRoom
 
 type RoomState = {
   isLoading: boolean;
@@ -88,6 +92,19 @@ export const fetchPopularRooms = (): AppThunk => async dispatch => {
     dispatch(fetchMostPopularRoomsSuccess(popularRooms))
   } catch(error) {
     const { data } = error.response
+    dispatch(roomActionFailure(data))
+  }
+}
+
+export const deleteRoom = (roomId: string, history: RouteComponentProps): AppThunk => async dispatch => {
+  try {
+    dispatch(roomActionStart())
+    await deleteRoomById(roomId)
+    history.push(ROUTES.MAIN)
+    dispatch(displayNotification(NotificationType.SUCCESS, 'Room deleted'))
+  } catch(error) {
+    const { data } = error.response
+    dispatch(displayNotification(NotificationType.ERROR, "Sorry, we couldn't remove the room"))
     dispatch(roomActionFailure(data))
   }
 }

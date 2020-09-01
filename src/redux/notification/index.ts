@@ -33,7 +33,7 @@ export const displayNotification = (type: NotificationType, text: string): AppTh
 
   setTimeout(() => {
     dispatch(expireNotification())
-  }, 3000)
+  }, 4000)
 }
 
 

@@ -46,7 +46,6 @@ const Wrapper = styled(animated.div)`
   align-items: center;
   z-index: 500;
   padding: 12px 16px;
-  min-width: 220px;
   border-radius: 8px;
   box-shadow: 0 0 4px 0 ${(props: WrapperProps) => props.shadowColor};
   background-color: ${({ theme }) => theme.colors.white};

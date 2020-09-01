@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react'
 import styled from 'styled-components'
 import { isNil, equals } from 'ramda'
-import { useParams } from 'react-router-dom'
+import { useParams, useHistory } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import PageWrapper from '../../components/Page/Container'
 import { fetchRoomDetails } from '../../redux/room'
@@ -44,7 +44,8 @@ function getButtonData(currentUserId: string | null, ownerId: string, players: A
 
 const RoomScreen: React.FC = () => {
   const dispatch = useDispatch()
-  const { id } = useParams()
+  const history = useHistory()
+  const { id: roomId } = useParams()
 
   const { isLoading, roomDetails } = useSelector(state => state.room)
 
@@ -54,18 +55,15 @@ const RoomScreen: React.FC = () => {
   const modalRef = useRef(null)
   const { isModalVisible, handleOpenModal, handleCloseModal } = useModal(modalRef)
 
-  const { buttonText, modalText, acceptModalText } = BUTTON_ACTION_DATA[userStatus]
-
-  const handleActionButtonClick = () => {
-    handleOpenModal()
-  }
+  const { buttonText, modalText, acceptModalText, action } = BUTTON_ACTION_DATA[userStatus]
+  const handleAcceptModalButton = () => dispatch(action(roomId, history))
 
   useEffect(() => {
-    if (isNil(id)) {
+    if (isNil(roomId)) {
       return
     }
-    dispatch(fetchRoomDetails(id))
-  }, [id])
+    dispatch(fetchRoomDetails(roomId))
+  }, [roomId])
 
 
   if (isLoading) {
@@ -82,7 +80,7 @@ const RoomScreen: React.FC = () => {
           <Button
             text={buttonText}
             type='button'
-            handleClick={handleActionButtonClick}
+            handleClick={handleOpenModal}
           />
         </RoomButtonsContainer>
 
@@ -103,7 +101,7 @@ const RoomScreen: React.FC = () => {
         isModalVisible={isModalVisible}
         text={modalText}
         acceptButtonText={acceptModalText}
-        acceptButtonFunction={() => console.log('yes')}
+        acceptButtonFunction={handleAcceptModalButton}
         declineButtonText='Cancel'
         declineButtonFunction={handleCloseModal}
       />

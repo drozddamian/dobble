@@ -28,8 +28,14 @@ const getMostPopularRooms = async () => {
   return data
 }
 
+const deleteRoomById = async (roomId: string) => {
+  const url = `${API_METHODS.DELETE_ROOM}${roomId}`
+  return await axios.delete(url)
+}
+
 export default {
   getRooms,
   getRoomDetails,
   getMostPopularRooms,
+  deleteRoomById,
 }
