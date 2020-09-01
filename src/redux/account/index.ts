@@ -3,6 +3,8 @@ import { AppThunk } from '../rootStore'
 import { apiAccount } from '../../api'
 import { LoginSuccess, RegisterSuccess, Account } from '../../api/account'
 import { useCurrentAccount } from '../../hooks'
+import { displayNotification } from '../notification'
+import { NotificationType } from '../../types'
 
 const { setUserSessionId } = useCurrentAccount()
 const { login, register, getAccountDetails } = apiAccount
@@ -70,6 +72,7 @@ export const loginAccount = (username: string, password: string): AppThunk => as
     const { player } = loginResult
     setUserSessionId(player.id)
     dispatch(loginSuccess(loginResult))
+    dispatch(displayNotification(NotificationType.SUCCESS, 'Logged in successfully'))
   } catch(error) {
     const { data } = error.response
     dispatch(accountActionFailure(data))
@@ -83,6 +86,7 @@ export const registerAccount = (username: string, nick: string, password: string
     const { player } = registerResult
     setUserSessionId(player.id)
     dispatch(registerSuccess(registerResult))
+    dispatch(displayNotification(NotificationType.SUCCESS, "You've been registered successfully!"))
   } catch(error) {
     dispatch(accountActionFailure(error))
   }

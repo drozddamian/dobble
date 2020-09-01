@@ -8,6 +8,7 @@ import ROUTES from './constants/routes'
 import GameTableScreen from './screens/GameTableScreen'
 import MainScreen from './screens/MainScreen'
 import RoomScreen from './screens/RoomScreen'
+import Notification from './components/Notification'
 
 
 const {
@@ -16,21 +17,25 @@ const {
 
 function App() {
   return (
-    <Router>
-      <Switch>
-        <Route exact path={MAIN}>
-          <MainScreen />
-        </Route>
+    <>
+      <Notification />
 
-        <Route path={ROOM}>
-          <RoomScreen />
-        </Route>
+      <Router>
+        <Switch>
+          <Route exact path={MAIN}>
+            <MainScreen />
+          </Route>
 
-        <Route path={GAME}>
-          <GameTableScreen />
-        </Route>
-      </Switch>
-    </Router>
+          <Route path={ROOM}>
+            <RoomScreen />
+          </Route>
+
+          <Route path={GAME}>
+            <GameTableScreen />
+          </Route>
+        </Switch>
+      </Router>
+    </>
   )
 }
 

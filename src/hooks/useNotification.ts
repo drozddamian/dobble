@@ -14,7 +14,7 @@ interface HookResult {
 export const useNotification = (): HookResult => {
   const dispatch = useDispatch()
 
-  const notification = useSelector(state => state.notification)
+  const { notification } = useSelector(state => state.notification)
   const isNotificationVisible = !isNil(notification)
   const notificationText = notification?.text
   const notificationType = notification?.type
