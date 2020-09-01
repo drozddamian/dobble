@@ -52,11 +52,9 @@ const RoomScreen: React.FC = () => {
   const userStatus = getButtonData(currentUserId, roomDetails?.owner._id, roomDetails?.players)
 
   const modalRef = useRef(null)
-  const { isModalVisible, handleOpenModal } = useModal(modalRef)
+  const { isModalVisible, handleOpenModal, handleCloseModal } = useModal(modalRef)
 
-  console.log(modalRef)
-
-  const { buttonText, action } = BUTTON_ACTION_DATA[userStatus]
+  const { buttonText, modalText, acceptModalText } = BUTTON_ACTION_DATA[userStatus]
 
   const handleActionButtonClick = () => {
     handleOpenModal()
@@ -103,9 +101,11 @@ const RoomScreen: React.FC = () => {
       <Modal
         ref={modalRef}
         isModalVisible={isModalVisible}
-        text='Are you sure you want to remove the room?'
-        acceptButtonText='Remove'
+        text={modalText}
+        acceptButtonText={acceptModalText}
         acceptButtonFunction={() => console.log('yes')}
+        declineButtonText='Cancel'
+        declineButtonFunction={handleCloseModal}
       />
     </>
   )

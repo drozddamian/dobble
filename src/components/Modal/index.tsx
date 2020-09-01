@@ -1,5 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
+import Button from '../Button'
+import theme from '../../utils/theme'
 
 interface Props {
   isModalVisible: boolean;
@@ -16,7 +18,7 @@ const Modal = React.forwardRef<
   Props
 >((props, forwardedRef) => {
   // eslint-disable-next-line react/prop-types
-  const { isModalVisible, text, acceptButtonText, acceptButtonFunction } = props
+  const { isModalVisible, text, acceptButtonText, acceptButtonFunction, declineButtonText, declineButtonFunction } = props
 
   if (!isModalVisible) {
     return null
@@ -27,6 +29,27 @@ const Modal = React.forwardRef<
         <ModalText>
           {text}
         </ModalText>
+
+        <ButtonContainer>
+          <Button
+            text={acceptButtonText}
+            type='button'
+            handleClick={acceptButtonFunction}
+            isSmallButton
+          />
+
+          {declineButtonText && (
+            <DeclineButtonContainer>
+              <Button
+                text={declineButtonText}
+                type='button'
+                handleClick={declineButtonFunction}
+                isSmallButton
+                background={theme.colors.inputBorder}
+              />
+            </DeclineButtonContainer>
+          )}
+        </ButtonContainer>
       </ContentContainer>
     </Wrapper>
   )
@@ -45,13 +68,37 @@ const Wrapper = styled.div`
 `
 
 const ContentContainer = styled.div`
+  display: flex;
+  flex-direction: column;
   min-width: 280px;
-  min-height: 300px;
-  padding: 16px;
-  border-radius: 12px;
+  max-width: 380px;
+  min-height: 220px;
+  border-radius: 8px;
+  padding: 40px 0 25px;
   background-color: ${({ theme }) => theme.colors.white};
+  box-shadow: ${({ theme }) => theme.shadows.inputShadow};
 `
 
-const ModalText = styled.p``
+const ModalText = styled.p`
+  padding: 0 24px;
+
+  @media (min-width: ${({ theme }) => theme.rwd.tablet.s}) {
+    padding: 0 40px;
+  }
+`
+
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: auto;
+`
+
+const DeclineButtonContainer = styled.div`
+  margin-left: 24px;
+  
+  @media (min-width: ${({ theme }) => theme.rwd.tablet.s}) {
+    margin-left: 32px;
+  }
+`
 
 export default Modal
