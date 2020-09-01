@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react'
 import styled from 'styled-components'
-import { isNil, equals } from 'ramda'
-import { useParams, useHistory } from 'react-router-dom'
+import { equals, isNil } from 'ramda'
+import { useHistory, useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import PageWrapper from '../../components/Page/Container'
 import { fetchRoomDetails } from '../../redux/room'
@@ -10,9 +10,11 @@ import LoadingBar from '../../components/Loader/LoadingBar'
 import PlayerList from '../../components/PlayerList'
 import Button from '../../components/Button'
 import { Account } from '../../api/account'
-import { USER_STATUS, BUTTON_ACTION_DATA } from './constant-data'
+import { BUTTON_ACTION_DATA, USER_STATUS } from './constant-data'
 import { useCurrentAccount, useModal } from '../../hooks'
 import Modal from '../../components/Modal'
+
+const { OWNER, JOIN, LEAVE } = USER_STATUS
 
 
 function getPlayersTitle(howManyPlayers: number) {
@@ -22,55 +24,64 @@ function getPlayersTitle(howManyPlayers: number) {
   return `There is ${howManyPlayers} in the room`
 }
 
-const { OWNER, JOIN, LEAVE } = USER_STATUS
 
 const isIdInPlayerList = (currentUserId) => (player) => {
-  return !equals(player._id, currentUserId)
+  return equals(player._id, currentUserId)
 }
 
+
 function getButtonData(currentUserId: string | null, ownerId: string, players: Account[]): USER_STATUS {
-  if (isNil(currentUserId) || isNil(players)) {
+  if (isNil(currentUserId)) {
     return JOIN
   }
   if (equals(currentUserId, ownerId)) {
     return OWNER
   }
-  const playerInRoom = players.find(isIdInPlayerList(currentUserId))
-  if (!isNil(playerInRoom)) {
-    return LEAVE
+  const isPlayerInRoom = players.some(isIdInPlayerList(currentUserId))
+  if (!isPlayerInRoom) {
+    return JOIN
   }
-  return JOIN
+  return LEAVE
 }
+
+
 
 const RoomScreen: React.FC = () => {
   const dispatch = useDispatch()
   const history = useHistory()
   const { id: roomId } = useParams()
+  const modalRef = useRef(null)
+
+  const { isModalVisible, handleOpenModal, handleCloseModal } = useModal(modalRef)
+
+  useEffect(() => {
+    dispatch(fetchRoomDetails(roomId))
+  }, [])
 
   const { isLoading, roomDetails } = useSelector(state => state.room)
 
   const { currentUserId } = useCurrentAccount()
-  const userStatus = getButtonData(currentUserId, roomDetails?.owner._id, roomDetails?.players)
-
-  const modalRef = useRef(null)
-  const { isModalVisible, handleOpenModal, handleCloseModal } = useModal(modalRef)
-
-  const { buttonText, modalText, acceptModalText, action } = BUTTON_ACTION_DATA[userStatus]
-  const handleAcceptModalButton = () => dispatch(action(roomId, history))
-
-  useEffect(() => {
-    if (isNil(roomId)) {
-      return
-    }
-    dispatch(fetchRoomDetails(roomId))
-  }, [roomId])
+  const userId = currentUserId || ''
 
 
-  if (isLoading) {
+  if (isLoading || isNil(roomDetails)) {
     return (
       <LoadingBar />
     )
   }
+
+  const userStatus = getButtonData(currentUserId, roomDetails.owner._id, roomDetails.players)
+  const { buttonText, modalText, acceptModalText, action } = BUTTON_ACTION_DATA[userStatus]
+
+  const handleAcceptModalButton = () => {
+    if (userStatus === USER_STATUS.OWNER) {
+      // @ts-ignore
+      dispatch(action(roomId, history))
+      return
+    }
+    dispatch(action(roomId, userId, history))
+  }
+
   return (
     <>
       <PageTitle title={roomDetails?.name} isSubPage />

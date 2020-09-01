@@ -19,4 +19,6 @@ export const API_METHODS = {
   GET_MOST_POPULAR_ROOMS: `${ROOM}/most_popular`,
   CREATE_ROOM: `${ROOM}/create_room`,
   DELETE_ROOM: `${ROOM}/`,
+  JOIN_ROOM: `${ROOM}/join_room`,
+  LEAVE_ROOM: `${ROOM}/leave_room`,
 }

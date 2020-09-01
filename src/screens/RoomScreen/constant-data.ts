@@ -1,4 +1,4 @@
-import { deleteRoom } from '../../redux/room'
+import { deleteRoom, addPlayerToRoom, leaveRoom } from '../../redux/room'
 
 export enum USER_STATUS { OWNER, JOIN, LEAVE }
 const { OWNER, JOIN, LEAVE } = USER_STATUS
@@ -14,12 +14,12 @@ export const BUTTON_ACTION_DATA = {
     buttonText: 'Join room',
     modalText: 'Are you sure you want to join the room?',
     acceptModalText: 'Join now',
-    action: deleteRoom,
+    action: addPlayerToRoom,
   },
   [LEAVE]: {
     buttonText: 'Leave room',
     modalText: 'You are leaving the room',
     acceptModalText: 'Leave now',
-    action: deleteRoom,
+    action: leaveRoom,
   },
 }

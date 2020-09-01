@@ -7,7 +7,7 @@ import { NotificationType } from '../../types'
 import ROUTES from '../../constants/routes'
 import { RouteComponentProps } from 'react-router-dom'
 
-const { getRooms, getMostPopularRooms, getRoomDetails, deleteRoomById } = apiRoom
+const { getRooms, getMostPopularRooms, getRoomDetails, deleteRoomById, joinRoom, removePlayerFromRoom } = apiRoom
 
 type RoomState = {
   isLoading: boolean;
@@ -105,6 +105,32 @@ export const deleteRoom = (roomId: string, history: RouteComponentProps): AppThu
   } catch(error) {
     const { data } = error.response
     dispatch(displayNotification(NotificationType.ERROR, "Sorry, we couldn't remove the room"))
+    dispatch(roomActionFailure(data))
+  }
+}
+
+export const addPlayerToRoom = (roomId: string, playerId: string, history: RouteComponentProps): AppThunk => async dispatch => {
+  try {
+    dispatch(roomActionStart())
+    await joinRoom(roomId, playerId)
+    history.push(`/room/${roomId}`)
+    dispatch(displayNotification(NotificationType.SUCCESS, 'You have joined the room'))
+  } catch(error) {
+    const { data } = error.response
+    dispatch(displayNotification(NotificationType.ERROR, data))
+    dispatch(roomActionFailure(data))
+  }
+}
+
+export const leaveRoom = (roomId: string, playerId: string, history: RouteComponentProps): AppThunk => async dispatch => {
+  try {
+    dispatch(roomActionStart())
+    await removePlayerFromRoom(roomId, playerId)
+    history.push(ROUTES.MAIN)
+    dispatch(displayNotification(NotificationType.SUCCESS, 'You have left the room'))
+  } catch(error) {
+    const { data } = error.response
+    dispatch(displayNotification(NotificationType.ERROR, data))
     dispatch(roomActionFailure(data))
   }
 }
