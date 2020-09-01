@@ -3,6 +3,7 @@ const theme = {
   colors: {
     white: '#FFFFFF',
     darkBlue: '#131E77',
+    darkBlue08: 'rgba(19, 30, 119, 0.8)',
     pink: '#F752A7',
     softPink: '#F8DDEC',
     error: '#ff0033',

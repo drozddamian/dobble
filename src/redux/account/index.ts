@@ -2,7 +2,6 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { AppThunk } from '../rootStore'
 import { apiAccount } from '../../api'
 import { LoginSuccess, RegisterSuccess, Account } from '../../api/account'
-import { SESSION_USER_ID } from '../../constants'
 import { useCurrentAccount } from '../../hooks'
 
 const { setUserSessionId } = useCurrentAccount()

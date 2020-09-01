@@ -8,6 +8,7 @@ interface Props {
   type: 'button' | 'submit' | 'reset';
   uppercase?: boolean;
   isLoading?: boolean;
+  handleClick?: () => void;
 }
 
 interface WrapperProps {
@@ -15,12 +16,13 @@ interface WrapperProps {
 }
 
 const Button: React.FC<Props> = (props: Props) => {
-  const { text, type, uppercase, isLoading } = props
+  const { text, type, uppercase, isLoading, handleClick } = props
 
   return (
     <Wrapper
       type={type}
       uppercase={uppercase}
+      onClick={handleClick}
     >
       {isLoading
         ? <CircleLoader color={theme.colors.darkBlue} />

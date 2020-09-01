@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import styled from 'styled-components'
 import { isNil, equals } from 'ramda'
 import { useParams } from 'react-router-dom'
@@ -11,7 +11,8 @@ import PlayerList from '../../components/PlayerList'
 import Button from '../../components/Button'
 import { Account } from '../../api/account'
 import { USER_STATUS, BUTTON_ACTION_DATA } from './constant-data'
-import { useCurrentAccount } from '../../hooks'
+import { useCurrentAccount, useModal } from '../../hooks'
+import Modal from '../../components/Modal'
 
 
 function getPlayersTitle(howManyPlayers: number) {
@@ -50,7 +51,16 @@ const RoomScreen: React.FC = () => {
   const { currentUserId } = useCurrentAccount()
   const userStatus = getButtonData(currentUserId, roomDetails?.owner._id, roomDetails?.players)
 
+  const modalRef = useRef(null)
+  const { isModalVisible, handleOpenModal } = useModal(modalRef)
+
+  console.log(modalRef)
+
   const { buttonText, action } = BUTTON_ACTION_DATA[userStatus]
+
+  const handleActionButtonClick = () => {
+    handleOpenModal()
+  }
 
   useEffect(() => {
     if (isNil(id)) {
@@ -74,6 +84,7 @@ const RoomScreen: React.FC = () => {
           <Button
             text={buttonText}
             type='button'
+            handleClick={handleActionButtonClick}
           />
         </RoomButtonsContainer>
 
@@ -87,8 +98,15 @@ const RoomScreen: React.FC = () => {
             players={roomDetails?.players}
           />
         </PlayerListContainer>
-
       </PageWrapper>
+
+      <Modal
+        ref={modalRef}
+        isModalVisible={isModalVisible}
+        text='Are you sure you want to remove the room?'
+        acceptButtonText='Remove'
+        acceptButtonFunction={() => console.log('yes')}
+      />
     </>
   )
 }
