@@ -12,6 +12,7 @@ const { AUTH, PLAYER, ROOM } = API
 export const API_METHODS = {
   LOGIN: `${AUTH}/login`,
   REGISTER: `${AUTH}/register`,
+  LOGOUT: `${AUTH}/logout`,
   GET_PLAYER: `${PLAYER}/`,
   MODIFY_PLAYER: `${PLAYER}/change_data`,
   GET_ROOMS: `${ROOM}/list_rooms`,

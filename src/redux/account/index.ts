@@ -1,13 +1,13 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { AppThunk } from '../rootStore'
 import { apiAccount } from '../../api'
-import { LoginSuccess, RegisterSuccess, Account } from '../../api/account'
+import { LoginSuccess, RegisterSuccess, Account, GetPlayerSuccess } from '../../api/account'
 import { useCurrentAccount } from '../../hooks'
 import { displayNotification } from '../notification'
 import { NotificationType } from '../../types'
 
-const { setUserSessionId } = useCurrentAccount()
-const { login, register, getAccountDetails } = apiAccount
+const { setUserSessionId, destroyUserSession } = useCurrentAccount()
+const { login, register, logout, getAccountDetails } = apiAccount
 
 type AccountState = {
   token: string;
@@ -48,8 +48,9 @@ const slice = createSlice({
       state.isLoading = false
       state.error = null
     },
-    getAccountSuccess(state, action: PayloadAction<Account>) {
-      state.accountData = action.payload
+    getAccountSuccess(state, action: PayloadAction<GetPlayerSuccess>) {
+      const { player } = action.payload
+      state.accountData = player
       state.isLoading = false
       state.error = null
     },
@@ -72,6 +73,8 @@ export const loginAccount = (username: string, password: string): AppThunk => as
     const { player } = loginResult
     setUserSessionId(player.id)
     dispatch(loginSuccess(loginResult))
+    //todo
+    window.location.reload()
     dispatch(displayNotification(NotificationType.SUCCESS, 'Logged in successfully'))
   } catch(error) {
     const { data } = error.response
@@ -92,10 +95,21 @@ export const registerAccount = (username: string, nick: string, password: string
   }
 }
 
-export const fetchAccount = (username: string): AppThunk => async dispatch => {
+export const logoutAccount = (): AppThunk => async dispatch => {
   try {
     dispatch(accountActionStart())
-    const playerData = await getAccountDetails(username)
+    await logout()
+    destroyUserSession()
+    dispatch(displayNotification(NotificationType.SUCCESS, "You've been logged out"))
+  } catch(error) {
+    dispatch(accountActionFailure(error))
+  }
+}
+
+export const fetchAccount = (id: string): AppThunk => async dispatch => {
+  try {
+    dispatch(accountActionStart())
+    const playerData = await getAccountDetails(id)
     dispatch(getAccountSuccess(playerData))
   } catch (error) {
     dispatch(accountActionFailure(error))

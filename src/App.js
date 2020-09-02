@@ -9,16 +9,18 @@ import GameTableScreen from './screens/GameTableScreen'
 import MainScreen from './screens/MainScreen'
 import RoomScreen from './screens/RoomScreen'
 import Notification from './components/Notification'
+import Logout from './components/Logout'
 
 
 const {
   MAIN, GAME, ROOM,
 } = ROUTES
 
-function App() {
+const App = () => {
   return (
     <>
       <Notification />
+      <Logout />
 
       <Router>
         <Switch>

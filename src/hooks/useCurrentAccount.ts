@@ -3,6 +3,7 @@ import { SESSION_USER_ID } from '../constants'
 interface HookResult {
   currentUserId: string | null;
   setUserSessionId: (id: string) => void;
+  destroyUserSession: () => void;
 }
 
 export const useCurrentAccount = (): HookResult => {
@@ -12,8 +13,13 @@ export const useCurrentAccount = (): HookResult => {
     sessionStorage.setItem(SESSION_USER_ID, id)
   }
 
+  const destroyUserSession = (): void => {
+    sessionStorage.removeItem(SESSION_USER_ID)
+  }
+
   return {
     currentUserId,
     setUserSessionId,
+    destroyUserSession,
   }
 }

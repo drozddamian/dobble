@@ -19,6 +19,10 @@ export interface RegisterSuccess {
   player: Account;
 }
 
+export interface GetPlayerSuccess {
+  player: Account;
+}
+
 
 const login = async (username: string, password: string) => {
   const { data } = await axios.post<LoginSuccess>(API_METHODS.LOGIN, { username, password })
@@ -34,14 +38,20 @@ const register = async (username: string, nick: string, password: string) => {
   return data
 }
 
-const getAccountDetails = async (username: string) => {
-  const url = `${API_METHODS.GET_PLAYER}${username}`
-  const { data } = await axios.get<Account>(url)
+const logout = async () => {
+  const { data } = await axios.post<string>(API_METHODS.LOGOUT)
+  return data
+}
+
+const getAccountDetails = async (id: string) => {
+  const url = `${API_METHODS.GET_PLAYER}${id}`
+  const { data } = await axios.get<GetPlayerSuccess>(url)
   return data
 }
 
 export default {
   login,
   register,
+  logout,
   getAccountDetails,
 }
