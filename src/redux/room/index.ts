@@ -2,14 +2,19 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { AppThunk } from '../rootStore'
 import { apiRoom } from '../../api'
 import { Room } from '../../api/room'
+import { displayNotification } from '../notification'
+import { NotificationType } from '../../types'
+import ROUTES from '../../constants/routes'
+import { RouteComponentProps } from 'react-router-dom'
 
-const { getRooms, getMostPopularRooms } = apiRoom
+const { getRooms, getMostPopularRooms, getRoomDetails, deleteRoomById, joinRoom, removePlayerFromRoom } = apiRoom
 
 type RoomState = {
   isLoading: boolean;
   error: string | null;
   rooms: Room[] | [];
   mostPopularRooms: Room[] | [];
+  roomDetails: Room | null;
 }
 
 const initialState: RoomState = {
@@ -17,6 +22,7 @@ const initialState: RoomState = {
   error: null,
   rooms: [],
   mostPopularRooms: [],
+  roomDetails: null,
 }
 
 const slice = createSlice({
@@ -41,6 +47,11 @@ const slice = createSlice({
       state.isLoading = false
       state.error = null
     },
+    fetchRoomDetailsSuccess(state, action: PayloadAction<Room>) {
+      state.roomDetails = action.payload
+      state.isLoading = false
+      state.error = null
+    }
   },
 })
 
@@ -49,6 +60,7 @@ export const {
   roomActionFailure,
   fetchRoomsSuccess,
   fetchMostPopularRoomsSuccess,
+  fetchRoomDetailsSuccess,
 } = slice.actions
 
 export const fetchRooms = (): AppThunk => async dispatch => {
@@ -62,6 +74,17 @@ export const fetchRooms = (): AppThunk => async dispatch => {
   }
 }
 
+export const fetchRoomDetails = (roomId: string): AppThunk => async dispatch => {
+  try {
+    dispatch(roomActionStart())
+    const roomDetails = await getRoomDetails(roomId)
+    dispatch(fetchRoomDetailsSuccess(roomDetails[0]))
+  } catch(error) {
+    const { data } = error.response
+    dispatch(roomActionFailure(data))
+  }
+}
+
 export const fetchPopularRooms = (): AppThunk => async dispatch => {
   try {
     dispatch(roomActionStart())
@@ -69,6 +92,45 @@ export const fetchPopularRooms = (): AppThunk => async dispatch => {
     dispatch(fetchMostPopularRoomsSuccess(popularRooms))
   } catch(error) {
     const { data } = error.response
+    dispatch(roomActionFailure(data))
+  }
+}
+
+export const deleteRoom = (roomId: string, history: RouteComponentProps): AppThunk => async dispatch => {
+  try {
+    dispatch(roomActionStart())
+    await deleteRoomById(roomId)
+    history.push(ROUTES.MAIN)
+    dispatch(displayNotification(NotificationType.SUCCESS, 'Room deleted'))
+  } catch(error) {
+    const { data } = error.response
+    dispatch(displayNotification(NotificationType.ERROR, "Sorry, we couldn't remove the room"))
+    dispatch(roomActionFailure(data))
+  }
+}
+
+export const addPlayerToRoom = (roomId: string, playerId: string, history: RouteComponentProps): AppThunk => async dispatch => {
+  try {
+    dispatch(roomActionStart())
+    await joinRoom(roomId, playerId)
+    history.push(`/room/${roomId}`)
+    dispatch(displayNotification(NotificationType.SUCCESS, 'You have joined the room'))
+  } catch(error) {
+    const { data } = error.response
+    dispatch(displayNotification(NotificationType.ERROR, data))
+    dispatch(roomActionFailure(data))
+  }
+}
+
+export const leaveRoom = (roomId: string, playerId: string, history: RouteComponentProps): AppThunk => async dispatch => {
+  try {
+    dispatch(roomActionStart())
+    await removePlayerFromRoom(roomId, playerId)
+    history.push(ROUTES.MAIN)
+    dispatch(displayNotification(NotificationType.SUCCESS, 'You have left the room'))
+  } catch(error) {
+    const { data } = error.response
+    dispatch(displayNotification(NotificationType.ERROR, data))
     dispatch(roomActionFailure(data))
   }
 }

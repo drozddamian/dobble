@@ -19,3 +19,10 @@ export type RoomData = {
   players: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
   isPrivateRoom: boolean;
 }
+
+
+export enum NotificationType { SUCCESS, ERROR, INFO }
+export type NotificationProps = {
+  type: NotificationType;
+  text: string;
+}

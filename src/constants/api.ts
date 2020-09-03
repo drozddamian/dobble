@@ -12,11 +12,14 @@ const { AUTH, PLAYER, ROOM } = API
 export const API_METHODS = {
   LOGIN: `${AUTH}/login`,
   REGISTER: `${AUTH}/register`,
+  LOGOUT: `${AUTH}/logout`,
   GET_PLAYER: `${PLAYER}/`,
   MODIFY_PLAYER: `${PLAYER}/change_data`,
   GET_ROOMS: `${ROOM}/list_rooms`,
-  GET_ROOM: `${ROOM}/:roomId`,
+  GET_ROOM: `${ROOM}/`,
   GET_MOST_POPULAR_ROOMS: `${ROOM}/most_popular`,
   CREATE_ROOM: `${ROOM}/create_room`,
-  DELETE_ROOM: `${ROOM}/:roomId`,
+  DELETE_ROOM: `${ROOM}/`,
+  JOIN_ROOM: `${ROOM}/join_room`,
+  LEAVE_ROOM: `${ROOM}/leave_room`,
 }

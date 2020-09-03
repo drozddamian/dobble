@@ -3,12 +3,15 @@ const theme = {
   colors: {
     white: '#FFFFFF',
     darkBlue: '#131E77',
+    darkBlue08: 'rgba(19, 30, 119, 0.8)',
     pink: '#F752A7',
     softPink: '#F8DDEC',
     error: '#ff0033',
     text: '#333333',
     inputBorder: '#d1d1d1',
     gold: '#FFD92E',
+    success: '#02b875',
+    info: '#5bc0de',
   },
   shadows: {
     inputShadow: '0px 5px 8px -4px rgba(19,30,119,1);',

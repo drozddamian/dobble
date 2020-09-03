@@ -1,6 +1,5 @@
 import axios from 'axios'
 import { API_METHODS } from '../../constants/api'
-import { Account } from '../account'
 
 export interface Room {
   name: string;
@@ -28,8 +27,33 @@ const getMostPopularRooms = async () => {
   return data
 }
 
+const deleteRoomById = async (roomId: string) => {
+  const url = `${API_METHODS.DELETE_ROOM}${roomId}`
+  return await axios.delete(url)
+}
+
+const joinRoom = async (roomId: string, playerId: string) => {
+  const { data } = await axios.post<string>(API_METHODS.JOIN_ROOM, {
+    roomId,
+    playerId,
+  })
+  return data
+}
+
+const removePlayerFromRoom = async (roomId: string, playerId: string) => {
+  const { data } = await axios.post<string>(API_METHODS.LEAVE_ROOM, {
+    roomId,
+    playerId,
+  })
+  return data
+}
+
+
 export default {
   getRooms,
   getRoomDetails,
   getMostPopularRooms,
+  deleteRoomById,
+  joinRoom,
+  removePlayerFromRoom,
 }

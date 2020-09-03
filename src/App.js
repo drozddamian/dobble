@@ -7,29 +7,37 @@ import {
 import ROUTES from './constants/routes'
 import GameTableScreen from './screens/GameTableScreen'
 import MainScreen from './screens/MainScreen'
+import RoomScreen from './screens/RoomScreen'
+import Notification from './components/Notification'
+import Logout from './components/Logout'
 
 
 const {
   MAIN, GAME, ROOM,
 } = ROUTES
 
-function App() {
+const App = () => {
   return (
-    <Router>
-      <Switch>
-        <Route exact path={MAIN}>
-          <MainScreen />
-        </Route>
+    <>
+      <Notification />
+      <Logout />
 
-        <Route path={ROOM}>
-          <GameTableScreen />
-        </Route>
+      <Router>
+        <Switch>
+          <Route exact path={MAIN}>
+            <MainScreen />
+          </Route>
 
-        <Route path={GAME}>
-          <GameTableScreen />
-        </Route>
-      </Switch>
-    </Router>
+          <Route path={ROOM}>
+            <RoomScreen />
+          </Route>
+
+          <Route path={GAME}>
+            <GameTableScreen />
+          </Route>
+        </Switch>
+      </Router>
+    </>
   )
 }
 
