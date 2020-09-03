@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, {useRef, useState} from 'react'
 import styled from 'styled-components'
 import { SectionTitle } from '../index'
 import Button from '../../../components/Button'
@@ -6,6 +6,10 @@ import Select from '../../../components/Select'
 import RoomList from '../../../components/RoomList'
 import { RoomTypes, selectRoomValues } from './constant-data'
 import { Room } from '../../../api/room'
+import Modal from '../../../components/Modal'
+import { useModal } from '../../../hooks'
+import CreateRoomForm from '../../../components/Forms/CreateRoom'
+import {filterArrayByKey} from "../../../utils";
 
 interface Props {
   joinedRooms: Room[];
@@ -17,15 +21,21 @@ const { ALL, JOINED, OWN } = selectRoomValues
 
 const RoomsSection: React.FC<Props> = (props: Props) => {
   const { isLoading, joinedRooms, owningRooms } = props
+
+  const modalRef = useRef(null)
+  const { isModalVisible, handleOpenModal, handleCloseModal } = useModal(modalRef)
+
   const [playerRoomsType, setPlayerRoomsType] = useState<RoomTypes>(ALL)
 
   const valuesToDisplayInRoomSelector = Object.values(selectRoomValues)
-  const allRooms = [...new Set([...joinedRooms, ...owningRooms])]
+  const allRooms = filterArrayByKey([...joinedRooms, ...owningRooms], '_id')
 
   const handleRoomsTypeChange = (event) => {
     const { value } = event.target
     setPlayerRoomsType(value)
   }
+
+  const handleCreateRoomButtonClick = () => handleOpenModal()
 
   const ROOMS_TO_DISPLAY = {
     [ALL]: allRooms,
@@ -36,32 +46,47 @@ const RoomsSection: React.FC<Props> = (props: Props) => {
   const playerRooms = ROOMS_TO_DISPLAY[playerRoomsType]
 
   return (
-    <Wrapper>
-      <RoomsSectionHeader>
-        <SectionTitle>
-          Your rooms
-        </SectionTitle>
+    <>
+      <Wrapper>
+        <RoomsSectionHeader>
+          <TitleContainer>
+            <SectionTitle>
+            Your rooms
+            </SectionTitle>
 
-        <Button
-          isSmallButton
-          text='Create new'
-          type='button'
+            <SeeAllRoomsButton>
+            Show all...
+            </SeeAllRoomsButton>
+          </TitleContainer>
+
+          <Button
+            isSmallButton
+            text='Create new'
+            type='button'
+            handleClick={handleCreateRoomButtonClick}
+          />
+        </RoomsSectionHeader>
+
+        <SelectContainer>
+          <Select
+            name='roomsType'
+            values={valuesToDisplayInRoomSelector}
+            onChange={handleRoomsTypeChange}
+          />
+        </SelectContainer>
+
+        <RoomList
+          rooms={playerRooms}
+          isLoading={isLoading}
         />
-      </RoomsSectionHeader>
+      </Wrapper>
 
-      <SelectContainer>
-        <Select
-          name='roomsType'
-          values={valuesToDisplayInRoomSelector}
-          onChange={handleRoomsTypeChange}
-        />
-      </SelectContainer>
-
-      <RoomList
-        rooms={playerRooms}
-        isLoading={isLoading}
-      />
-    </Wrapper>
+      <Modal isModalVisible={isModalVisible}>
+        <CreateRoomFormWrapper>
+          <CreateRoomForm handleCancelClick={handleCloseModal} />
+        </CreateRoomFormWrapper>
+      </Modal>
+    </>
   )
 }
 
@@ -75,8 +100,24 @@ const RoomsSectionHeader = styled.div`
   align-items: center;
 `
 
+const TitleContainer = styled.div`
+  display: flex;
+`
+
+const SeeAllRoomsButton = styled.button`
+  font-family: ${({ theme }) => theme.fonts.robotoBold};
+  color: ${({ theme }) => theme.colors.info};
+  align-self: flex-end;
+  margin-bottom: 3px;
+  padding-left: 8px;
+`
+
 const SelectContainer = styled.div`
   padding: 16px 0 8px;
+`
+
+const CreateRoomFormWrapper = styled.div`
+  padding: 16px;
 `
 
 export default RoomsSection

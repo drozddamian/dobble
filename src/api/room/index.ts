@@ -48,6 +48,14 @@ const removePlayerFromRoom = async (roomId: string, playerId: string) => {
   return data
 }
 
+const addRoom = async (ownerId: string, name: string, availableSeats: number) => {
+  const { data } = await axios.post<Room>(API_METHODS.CREATE_ROOM, {
+    ownerId,
+    name,
+    availableSeats,
+  })
+  return data
+}
 
 export default {
   getRooms,
@@ -56,4 +64,5 @@ export default {
   deleteRoomById,
   joinRoom,
   removePlayerFromRoom,
+  addRoom,
 }
