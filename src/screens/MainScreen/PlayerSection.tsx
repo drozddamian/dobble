@@ -6,10 +6,14 @@ import { fetchAccount } from '../../redux/account'
 import LoadingComponent from '../../components/Loader/CircleLoader'
 import theme from '../../utils/theme'
 import { Wrapper } from './AuthSection'
-import { SectionTitle } from './index'
+import LevelProgress from '../../components/LevelProgress'
 
 interface Props {
   userId: string;
+}
+
+interface LevelProgressBarProps {
+  progress: string;
 }
 
 const PlayerSection: React.FC<Props> = (props: Props) => {
@@ -30,17 +34,34 @@ const PlayerSection: React.FC<Props> = (props: Props) => {
   return (
     <Wrapper>
       <PlayerInfoContainer>
-        <SectionTitle>
+        <LevelProgress
+          level={23}
+          progressLoaderSize={56}
+        />
+        <PlayerNick>
           {nick}
-        </SectionTitle>
-
+        </PlayerNick>
       </PlayerInfoContainer>
     </Wrapper>
   )
 }
 
-const PlayerInfoContainer = styled.div`
+const PlayerNick = styled.h3`
+  font-family: ${({ theme }) => theme.fonts.russo};
+  color: ${({ theme }) => theme.colors.darkBlue};
+  font-size: ${({ theme }) => theme.fontSize.smallTitle};
+  padding: 0;
+  margin-left: 24px;
+  max-width: 75%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`
 
+const PlayerInfoContainer = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
 `
 
 export default PlayerSection
