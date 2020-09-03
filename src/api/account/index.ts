@@ -1,13 +1,14 @@
 import axios from 'axios'
 import { API_METHODS } from '../../constants/api'
+import { Room } from '../room'
 
 export interface Account {
   id: string;
   username: string;
   password: string;
   nick: string;
-  owningRooms: any[];
-  joinedRooms: any[];
+  owningRooms: Room[];
+  joinedRooms: Room[];
 }
 
 export interface LoginSuccess {
