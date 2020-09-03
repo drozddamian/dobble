@@ -12,10 +12,6 @@ interface Props {
   userId: string;
 }
 
-interface LevelProgressBarProps {
-  progress: string;
-}
-
 const PlayerSection: React.FC<Props> = (props: Props) => {
   const { userId } = props
   const dispatch = useDispatch()
