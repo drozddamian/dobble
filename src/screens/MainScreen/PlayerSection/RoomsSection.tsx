@@ -9,7 +9,7 @@ import { Room } from '../../../api/room'
 import Modal from '../../../components/Modal'
 import { useModal } from '../../../hooks'
 import CreateRoomForm from '../../../components/Forms/CreateRoom'
-import {filterArrayByKey} from "../../../utils";
+import { filterArrayByKey } from '../../../utils'
 
 interface Props {
   joinedRooms: Room[];
@@ -51,11 +51,11 @@ const RoomsSection: React.FC<Props> = (props: Props) => {
         <RoomsSectionHeader>
           <TitleContainer>
             <SectionTitle>
-            Your rooms
+              Your rooms
             </SectionTitle>
 
             <SeeAllRoomsButton>
-            Show all...
+              Show all...
             </SeeAllRoomsButton>
           </TitleContainer>
 

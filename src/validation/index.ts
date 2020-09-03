@@ -15,7 +15,7 @@ const fieldsSchema = {
     .min(3, 'Please provide room name')
     .max(30, "This field can't be longer than 30 characters"),
   availableSeats: Yup.number()
-    .min(2, 'Room must provide space for at least 2 players')
+    .min(2, 'At least 2 players')
     .max(6, 'Maximum 6 players'),
 }
 

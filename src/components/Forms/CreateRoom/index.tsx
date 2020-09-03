@@ -32,7 +32,7 @@ const CreateRoomForm: React.FC<Props> = (props: Props) => {
       if (!currentUserId) {
         return
       }
-      dispatch(createRoom(currentUserId, name, availableSeats))
+      dispatch(createRoom(currentUserId, name, availableSeats, handleCancelClick))
     },
     validationSchema: CREATE_ROOM_FORM,
   })

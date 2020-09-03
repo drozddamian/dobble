@@ -5,6 +5,7 @@ import { LoginSuccess, RegisterSuccess, Account, GetPlayerSuccess } from '../../
 import { useCurrentAccount } from '../../hooks'
 import { displayNotification } from '../notification'
 import { NotificationType } from '../../types'
+import {Room} from "../../api/room";
 
 const { setUserSessionId, destroyUserSession } = useCurrentAccount()
 const { login, register, logout, getAccountDetails } = apiAccount
@@ -54,6 +55,13 @@ const slice = createSlice({
       state.isLoading = false
       state.error = null
     },
+    createNewRoomSuccess(state, action: PayloadAction<Room>) {
+      const owningRooms = state.accountData?.owningRooms
+      // @ts-ignore
+      state.accountData.owningRooms = [...owningRooms, action.payload]
+      state.isLoading = false
+      state.error = null
+    },
   },
 })
 
@@ -63,6 +71,7 @@ export const {
   loginSuccess,
   registerSuccess,
   getAccountSuccess,
+  createNewRoomSuccess,
 } = slice.actions
 
 

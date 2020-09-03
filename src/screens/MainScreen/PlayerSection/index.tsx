@@ -29,6 +29,8 @@ const PlayerSection: React.FC<Props> = (props: Props) => {
 
   const { nick, joinedRooms, owningRooms } = accountData
 
+  console.log(accountData)
+
   return (
     <Wrapper>
       <PlayerInfoContainer>

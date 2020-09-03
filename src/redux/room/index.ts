@@ -6,6 +6,7 @@ import { displayNotification } from '../notification'
 import { NotificationType } from '../../types'
 import ROUTES from '../../constants/routes'
 import { RouteComponentProps } from 'react-router-dom'
+import { createNewRoomSuccess } from '../account'
 
 const { getRooms, getMostPopularRooms, getRoomDetails, deleteRoomById, joinRoom, removePlayerFromRoom, addRoom } = apiRoom
 
@@ -51,7 +52,7 @@ const slice = createSlice({
       state.roomDetails = action.payload
       state.isLoading = false
       state.error = null
-    }
+    },
   },
 })
 
@@ -135,13 +136,16 @@ export const leaveRoom = (roomId: string, playerId: string, history: RouteCompon
   }
 }
 
-export const createRoom = (ownerId: string, name: string, avaiableSeats: number): AppThunk => async dispatch => {
+export const createRoom = (ownerId: string, name: string, availableSeats: number, closeModalCallback: () => void): AppThunk => async dispatch => {
   try {
     dispatch(roomActionStart())
-    await addRoom(ownerId, name, avaiableSeats)
+    const createdRoom = await addRoom(ownerId, name, availableSeats)
+    await dispatch(createNewRoomSuccess(createdRoom))
+    closeModalCallback()
     dispatch(displayNotification(NotificationType.SUCCESS, 'Room successfully created'))
   } catch(error) {
     const { data } = error.response
+    closeModalCallback()
     dispatch(displayNotification(NotificationType.ERROR, data))
     dispatch(roomActionFailure(data))
   }
