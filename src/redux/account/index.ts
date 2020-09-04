@@ -1,11 +1,12 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { isNil } from 'ramda'
 import { AppThunk } from '../rootStore'
 import { apiAccount } from '../../api'
 import { LoginSuccess, RegisterSuccess, Account, GetPlayerSuccess } from '../../api/account'
 import { useCurrentAccount } from '../../hooks'
 import { displayNotification } from '../notification'
 import { NotificationType } from '../../types'
-import {Room} from "../../api/room";
+import { Room } from '../../api/room'
 
 const { setUserSessionId, destroyUserSession } = useCurrentAccount()
 const { login, register, logout, getAccountDetails } = apiAccount
@@ -56,8 +57,10 @@ const slice = createSlice({
       state.error = null
     },
     createNewRoomSuccess(state, action: PayloadAction<Room>) {
-      const owningRooms = state.accountData?.owningRooms
-      // @ts-ignore
+      if (isNil(state.accountData)) {
+        return
+      }
+      const owningRooms = state.accountData.owningRooms
       state.accountData.owningRooms = [...owningRooms, action.payload]
       state.isLoading = false
       state.error = null
