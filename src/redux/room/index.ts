@@ -1,12 +1,13 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { AppThunk } from '../rootStore'
 import { apiRoom } from '../../api'
-import { Room } from '../../api/room'
+import { FetchRoomsSuccess, Room } from '../../api/room'
 import { displayNotification } from '../notification'
 import { NotificationType } from '../../types'
 import ROUTES from '../../constants/routes'
 import { RouteComponentProps } from 'react-router-dom'
 import { createNewRoomSuccess } from '../account'
+import {equals} from "ramda";
 
 const { getRooms, getMostPopularRooms, getRoomDetails, deleteRoomById, joinRoom, removePlayerFromRoom, addRoom } = apiRoom
 
@@ -14,6 +15,8 @@ type RoomState = {
   isLoading: boolean;
   error: string | null;
   rooms: Room[] | [];
+  currentPaginationChunk: number;
+  paginationHasMore: boolean;
   mostPopularRooms: Room[] | [];
   roomDetails: Room | null;
 }
@@ -22,6 +25,8 @@ const initialState: RoomState = {
   isLoading: false,
   error: null,
   rooms: [],
+  currentPaginationChunk: 1,
+  paginationHasMore: true,
   mostPopularRooms: [],
   roomDetails: null,
 }
@@ -38,8 +43,14 @@ const slice = createSlice({
       state.isLoading = false
       state.error = action.payload
     },
-    fetchRoomsSuccess(state, action: PayloadAction<Room[]>) {
-      state.rooms = action.payload
+    fetchRoomsSuccess(state, action: PayloadAction<FetchRoomsSuccess>) {
+      const { rooms, chunkNumber, howManyChunks } = action.payload
+      const currentChunk = chunkNumber + 1
+      const paginationHasMore = !equals(chunkNumber, howManyChunks)
+
+      state.rooms = [...state.rooms, ...rooms]
+      state.currentPaginationChunk = currentChunk
+      state.paginationHasMore = paginationHasMore
       state.isLoading = false
       state.error = null
     },
@@ -64,11 +75,14 @@ export const {
   fetchRoomDetailsSuccess,
 } = slice.actions
 
-export const fetchRooms = (): AppThunk => async dispatch => {
+export const fetchRooms = (): AppThunk => async (dispatch, getState) => {
   try {
     dispatch(roomActionStart())
-    const rooms = await getRooms()
-    dispatch(fetchRoomsSuccess(rooms))
+
+    const { room: { currentPaginationChunk } } = getState()
+    const paginationRequestResult = await getRooms(currentPaginationChunk)
+
+    dispatch(fetchRoomsSuccess(paginationRequestResult))
   } catch(error) {
     const { data } = error.response
     dispatch(roomActionFailure(data))

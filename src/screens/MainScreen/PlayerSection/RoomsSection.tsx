@@ -1,6 +1,7 @@
 import React, {useRef, useState} from 'react'
 import styled from 'styled-components'
 import { SectionTitle } from '../index'
+import ROUTES from '../../../constants/routes'
 import Button from '../../../components/Button'
 import Select from '../../../components/Select'
 import RoomList from '../../../components/RoomList'
@@ -54,7 +55,7 @@ const RoomsSection: React.FC<Props> = (props: Props) => {
               Your rooms
             </SectionTitle>
 
-            <SeeAllRoomsButton>
+            <SeeAllRoomsButton href={ROUTES.ROOMS}>
               Show all...
             </SeeAllRoomsButton>
           </TitleContainer>
@@ -104,7 +105,7 @@ const TitleContainer = styled.div`
   display: flex;
 `
 
-const SeeAllRoomsButton = styled.button`
+const SeeAllRoomsButton = styled.a`
   font-family: ${({ theme }) => theme.fonts.robotoBold};
   color: ${({ theme }) => theme.colors.info};
   align-self: flex-end;

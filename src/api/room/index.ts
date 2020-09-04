@@ -11,8 +11,15 @@ export interface Room {
   howManyPlayers: 0 | 1 | 2 | 3 | 4 | 5 | 6;
 }
 
-const getRooms = async () => {
-  const { data } = await axios.get<Room[]>(API_METHODS.GET_ROOMS)
+export interface FetchRoomsSuccess {
+  rooms: Room[];
+  chunkNumber: number;
+  howManyChunks: number;
+}
+
+const getRooms = async (chunkNumber: number) => {
+  const url = `${API_METHODS.GET_ROOMS}?chunkNumber=${chunkNumber}`
+  const { data } = await axios.get<FetchRoomsSuccess>(url)
   return data
 }
 
