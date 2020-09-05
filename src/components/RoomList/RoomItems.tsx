@@ -1,7 +1,9 @@
 import React from 'react'
+import { equals } from 'ramda'
 import styled from 'styled-components'
 import { Room } from '../../api/room'
 import crown from '../../assets/icons/crown.svg'
+import { useCurrentAccount, useWindowSize } from '../../hooks'
 
 interface Props {
   rooms: Room[];
@@ -9,12 +11,17 @@ interface Props {
 
 const RoomItems: React.FC<Props> = (props: Props) => {
   const { rooms } = props
+  const { currentUserId } = useCurrentAccount()
+  const { width } = useWindowSize()
+  const isMobile = width < 740
 
   return (
     <>
       {rooms.map((room) => {
         const { _id, owner, name, howManyPlayers, availableSeats } = room
-        const isOwner = true
+        const { _id: ownerId } = owner
+
+        const isOwner = equals(ownerId, currentUserId)
         const roomURL = `/room/${_id}`
 
         return (
@@ -35,15 +42,27 @@ const RoomItems: React.FC<Props> = (props: Props) => {
               )}
             </RoomInfoCell>
 
-            <RoomInfoCell>
-              <Text>
-                {howManyPlayers}/
-              </Text>
+            <RoomPlayersInfoCell>
+              {isMobile
+                ? (
+                  <PlayerInfoText>
+                    {howManyPlayers}/{availableSeats}
+                  </PlayerInfoText>
+                )
+                : (
+                  <>
+                    <PlayerInfoText>
+                Players in room:
+                      <NumberInfo>{howManyPlayers}</NumberInfo>
+                    </PlayerInfoText>
 
-              <Text>
-                {availableSeats}
-              </Text>
-            </RoomInfoCell>
+                    <PlayerInfoText>
+                Available seats:
+                      <NumberInfo>{availableSeats}</NumberInfo>
+                    </PlayerInfoText>
+                  </>
+                )}
+            </RoomPlayersInfoCell>
           </ItemWrapper>
         )
       })}
@@ -58,7 +77,7 @@ const RoomTitle = styled.span`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  
+
   @media (min-width: ${({ theme }) => theme.rwd.mobile.s}) {
     max-width: 320px;
     font-size: ${({ theme }) => theme.fontSize.smallText};
@@ -72,16 +91,16 @@ const ItemWrapper = styled.a`
   overflow: hidden;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 12px;
+  padding: 16px 24px;
   background: linear-gradient(to right, white 35%, rgba(0,116,217,0.2) 100%);
-  
+
   :first-of-type {
     border-top-right-radius: 5px;
   }
   :last-of-type {
     border-bottom-right-radius: 5px;
   }
-  
+
   :after {
     position: absolute;
     content: '';
@@ -93,12 +112,12 @@ const ItemWrapper = styled.a`
     transform: translateX(100%);
     transition: transform .3s ease-in-out;
   }
-  
+
   :hover{
     ${RoomTitle} {
       color: ${({ theme }) => theme.colors.pink};
     }
-    
+
     :after {
       transform: translateX(0);
     }
@@ -110,12 +129,31 @@ const RoomInfoCell = styled.div`
   align-items: center;
 `
 
+const RoomPlayersInfoCell = styled.div`
+  display: flex;
+  flex-direction: column;
+  
+  @media (min-width: 740px) {
+    min-width: 140px;
+  }
+`
+
+const PlayerInfoText = styled.p`
+  font-family: ${({ theme }) => theme.fonts.robotoBold};
+  font-size: ${({ theme }) => theme.fontSize.smallText};
+  display: flex;
+`
+
+const NumberInfo = styled.span`
+  margin-left: auto;
+`
+
 const OwnerContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   margin-left: 8px;
-  
+
   @media (min-width: ${({ theme }) => theme.rwd.mobile.s}) {
     margin-left: 16px;
   }
@@ -128,10 +166,6 @@ const OwnerText = styled.p`
 
 const OwnerIcon = styled.img`
   height: 18px;
-`
-
-const Text = styled.p`
-  font-family: ${({ theme }) => theme.fonts.robotoBold};
 `
 
 

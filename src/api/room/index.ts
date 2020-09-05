@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { API_METHODS } from '../../constants/api'
+import { Account } from '../account'
 
 export interface Room {
   name: string;

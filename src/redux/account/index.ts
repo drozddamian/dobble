@@ -83,9 +83,8 @@ export const loginAccount = (username: string, password: string): AppThunk => as
     dispatch(accountActionStart())
     const loginResult = await login(username, password)
     const { player } = loginResult
-    setUserSessionId(player.id)
+    setUserSessionId(player._id)
     dispatch(loginSuccess(loginResult))
-    //todo
     window.location.reload()
     dispatch(displayNotification(NotificationType.SUCCESS, 'Logged in successfully'))
   } catch(error) {
@@ -99,7 +98,7 @@ export const registerAccount = (username: string, nick: string, password: string
     dispatch(accountActionStart())
     const registerResult = await register(username, nick, password)
     const { player } = registerResult
-    setUserSessionId(player.id)
+    setUserSessionId(player._id)
     dispatch(registerSuccess(registerResult))
     dispatch(displayNotification(NotificationType.SUCCESS, "You've been registered successfully!"))
   } catch(error) {

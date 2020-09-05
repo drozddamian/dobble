@@ -3,7 +3,7 @@ import { API_METHODS } from '../../constants/api'
 import { Room } from '../room'
 
 export interface Account {
-  id: string;
+  _id: string;
   username: string;
   password: string;
   nick: string;
