@@ -3,10 +3,12 @@ import { debounce } from 'lodash'
 import { isNil } from 'ramda'
 import styled from 'styled-components'
 import { useDispatch, useSelector } from 'react-redux'
+import { fetchRooms } from '../../redux/room'
 import PageTitle from '../../components/Page/PageTitle'
 import PageWrapper from '../../components/Page/Container'
-import { fetchRooms } from '../../redux/room'
-import { Room } from '../../api/room'
+import LoadingComponent from '../../components/Loader/CircleLoader'
+import RoomItems from '../../components/RoomList/RoomItems'
+import theme from '../../utils/theme'
 
 
 const AllRoomsScreen: React.FC = () => {
@@ -45,58 +47,63 @@ const AllRoomsScreen: React.FC = () => {
   }, [paginateOnScroll])
 
   return (
-    <>
+    <PageWrapper>
       <PageTitle title='All rooms' isSubPage />
 
-      <PaginatedRoomsTable ref={paginatedTableRef}>
-        {rooms.map((room: Room) => (
-          <>
-            <Item key={room._id}>
-              {room._id}
-            </Item>
-            <Item key={room._id}>
-              {room._id}
-            </Item>
-            <Item key={room._id}>
-              {room._id}
-            </Item>
-            <Item key={room._id}>
-              {room._id}
-            </Item>
-            <Item key={room._id}>
-              {room._id}
-            </Item>
-            <Item key={room._id}>
-              {room._id}
-            </Item>
-            <Item key={room._id}>
-              {room._id}
-            </Item>
-            <Item key={room._id}>
-              {room._id}
-            </Item>
-          </>
-        ))}
-      </PaginatedRoomsTable>
-    </>
+      <AllRoomsContainer>
+        <PaginatedRoomsTable ref={paginatedTableRef}>
+          <RoomItems rooms={rooms} />
+
+          {isLoading && (
+            <LoadingContainer>
+              <LoadingComponent color={theme.colors.white}/>
+            </LoadingContainer>
+          )}
+        </PaginatedRoomsTable>
+      </AllRoomsContainer>
+    </PageWrapper>
   )
 }
 
-const Wrapper = styled(PageWrapper)`
-  height: 1500px;
+
+
+const AllRoomsContainer = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 60px;
 `
 
 const PaginatedRoomsTable = styled.div`
+  width: 100%;
   min-height: 350px;
-  border: 1px solid blue;
   max-height: 500px;
-  overflow: scroll;
+  overflow-y: scroll;
+  
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+ 
+  ::-webkit-scrollbar-track {
+    box-shadow: ${({ theme }) => theme.shadows.scrollBarShadow};
+  }
+ 
+  ::-webkit-scrollbar-thumb {
+    background-color: ${({ theme }) => theme.colors.softPink};
+    border-radius: 5px;
+  }
+  
+  @media (min-width: ${({ theme }) => theme.rwd.tablet.s}) {
+    max-width: 700px;
+  }
 `
 
-const Item = styled.div`
-  height: 100px;
+const LoadingContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 100%;
-  border: 2px solid red;
+  height: 80px;
 `
 
 export default AllRoomsScreen

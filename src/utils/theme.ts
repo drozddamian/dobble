@@ -14,7 +14,8 @@ const theme = {
     info: '#5bc0de',
   },
   shadows: {
-    inputShadow: '0px 5px 8px -4px rgba(19,30,119,1);',
+    inputShadow: '0px 5px 8px -4px rgba(19,30,119,1)',
+    scrollBarShadow: 'inset 0px 0px 6px -4px rgba(19,30,119,1)',
   },
   fonts: {
     robotoBold: 'RobotoBold',
