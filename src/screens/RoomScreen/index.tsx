@@ -4,12 +4,12 @@ import { equals, isNil } from 'ramda'
 import { useHistory, useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import PageWrapper from '../../components/Page/Container'
-import { fetchRoomDetails } from '../../redux/room'
+import { fetchRoomItem } from '../../redux/rooms'
 import PageTitle from '../../components/Page/PageTitle'
 import LoadingBar from '../../components/Loader/LoadingBar'
 import PlayerList from '../../components/PlayerList'
 import Button from '../../components/Button'
-import { Account } from '../../api/account'
+import { Player } from '../../api/players'
 import { BUTTON_ACTION_DATA, USER_STATUS } from './constant-data'
 import { useCurrentAccount, useModal } from '../../hooks'
 import Modal from '../../components/Modal'
@@ -30,7 +30,7 @@ const isIdInPlayerList = (currentUserId) => (player) => {
 }
 
 
-function getButtonData(currentUserId: string | null, ownerId: string, players: Account[]): USER_STATUS {
+function getButtonData(currentUserId: string | null, ownerId: string, players: Player[]): USER_STATUS {
   if (isNil(currentUserId)) {
     return JOIN
   }
@@ -55,22 +55,22 @@ const RoomScreen: React.FC = () => {
   const { isModalVisible, handleOpenModal, handleCloseModal } = useModal(modalRef)
 
   useEffect(() => {
-    dispatch(fetchRoomDetails(roomId))
+    dispatch(fetchRoomItem(roomId))
   }, [])
 
-  const { isLoading, roomDetails } = useSelector(state => state.room)
+  const { isLoading, roomItem } = useSelector(state => state.rooms)
 
   const { currentUserId } = useCurrentAccount()
   const userId = currentUserId || ''
 
 
-  if (isLoading || isNil(roomDetails)) {
+  if (isLoading || isNil(roomItem)) {
     return (
       <LoadingBar />
     )
   }
 
-  const userStatus = getButtonData(currentUserId, roomDetails.owner._id, roomDetails.players)
+  const userStatus = getButtonData(currentUserId, roomItem.owner._id, roomItem.players)
   const { buttonText, modalText, acceptModalText, action } = BUTTON_ACTION_DATA[userStatus]
 
   const handleAcceptModalButton = () => {
@@ -84,7 +84,7 @@ const RoomScreen: React.FC = () => {
 
   return (
     <>
-      <PageTitle title={roomDetails?.name} isSubPage />
+      <PageTitle title={roomItem?.name} isSubPage />
 
       <PageWrapper>
         <RoomButtonsContainer>
@@ -97,12 +97,12 @@ const RoomScreen: React.FC = () => {
 
         <PlayerListContainer>
           <PlayersTitle>
-            {getPlayersTitle(roomDetails?.howManyPlayers)}
+            {getPlayersTitle(roomItem?.howManyPlayers)}
           </PlayersTitle>
 
           <PlayerList
-            owner={roomDetails?.owner.nick}
-            players={roomDetails?.players}
+            owner={roomItem?.owner.nick}
+            players={roomItem?.players}
           />
         </PlayerListContainer>
       </PageWrapper>

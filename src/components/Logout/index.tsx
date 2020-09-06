@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux'
 import styled from 'styled-components'
 import Modal from '../Modal'
 import LogoutIcon from '../../assets/icons/logout.svg'
-import { logoutAccount } from '../../redux/account'
+import { logoutAccount } from '../../redux/players'
 import { useCurrentAccount, useModal } from '../../hooks'
 
 

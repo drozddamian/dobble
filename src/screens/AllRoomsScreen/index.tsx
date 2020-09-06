@@ -3,7 +3,7 @@ import { debounce } from 'lodash'
 import { isNil } from 'ramda'
 import styled from 'styled-components'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchRooms } from '../../redux/room'
+import { fetchRooms } from '../../redux/rooms'
 import PageTitle from '../../components/Page/PageTitle'
 import PageWrapper from '../../components/Page/Container'
 import LoadingComponent from '../../components/Loader/CircleLoader'
@@ -15,7 +15,7 @@ const AllRoomsScreen: React.FC = () => {
   const dispatch = useDispatch()
   const getMoreRooms = () => dispatch(fetchRooms())
   const paginatedTableRef = useRef<HTMLDivElement>(null)
-  const { rooms, paginationHasMore, isLoading } = useSelector(state => state.room)
+  const { rooms, paginationHasMore, isLoading } = useSelector(state => state.rooms)
 
   const loadMoreRooms = debounce(() => {
     const tableContainer = paginatedTableRef.current

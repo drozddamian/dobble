@@ -4,7 +4,7 @@ import { isNil } from 'ramda'
 import { useDispatch, useSelector } from 'react-redux'
 import PageWrapper from '../../components/Page/Container'
 import RoomList from '../../components/RoomList'
-import { fetchPopularRooms } from '../../redux/room'
+import { fetchPopularRooms } from '../../redux/rooms'
 import { useCurrentAccount } from '../../hooks'
 import AuthSection from './AuthSection'
 import PlayerSection from './PlayerSection'
@@ -22,7 +22,7 @@ const MainScreen: React.FC = () => {
   }, [])
 
   const { currentUserId } = useCurrentAccount()
-  const { isLoading, mostPopularRooms } = useSelector(state => state.room)
+  const { isLoading, mostPopularRooms } = useSelector(state => state.rooms)
 
   const getPlayerComponent = () => {
     if (isNil(currentUserId)) {

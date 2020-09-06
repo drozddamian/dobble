@@ -1,32 +1,35 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { isNil } from 'ramda'
 import { AppThunk } from '../rootStore'
-import { apiAccount } from '../../api'
-import { LoginSuccess, RegisterSuccess, Account, GetPlayerSuccess } from '../../api/account'
+import { apiAuthentication, apiPlayers } from '../../api'
+import { Room } from '../../api/rooms'
+import { LoginSuccess, RegisterSuccess } from '../../api/authentication'
+import { Player, GetPlayerSuccess } from '../../api/players'
 import { useCurrentAccount } from '../../hooks'
 import { displayNotification } from '../notification'
 import { NotificationType } from '../../types'
-import { Room } from '../../api/room'
+
 
 const { setUserSessionId, destroyUserSession } = useCurrentAccount()
-const { login, register, logout, getAccountDetails } = apiAccount
+const { getPlayer } = apiPlayers
+const { login, register, logout } = apiAuthentication
 
 type AccountState = {
   token: string;
   isLoading: boolean;
   error: string | null;
-  accountData: Account | null;
+  player: Player | null;
 }
 
 const initialState: AccountState = {
   token: '',
   isLoading: false,
   error: null,
-  accountData: null,
+  player: null,
 }
 
 const slice = createSlice({
-  name: 'account',
+  name: 'players',
   initialState,
   reducers: {
     accountActionStart(state) {
@@ -40,28 +43,28 @@ const slice = createSlice({
     loginSuccess(state, action: PayloadAction<LoginSuccess>) {
       const { player, token } = action.payload
       state.token = token
-      state.accountData = player
+      state.player = player
       state.isLoading = false
       state.error = null
     },
     registerSuccess(state, action: PayloadAction<RegisterSuccess>) {
       const { player } = action.payload
-      state.accountData = player
+      state.player = player
       state.isLoading = false
       state.error = null
     },
     getAccountSuccess(state, action: PayloadAction<GetPlayerSuccess>) {
       const { player } = action.payload
-      state.accountData = player
+      state.player = player
       state.isLoading = false
       state.error = null
     },
     createNewRoomSuccess(state, action: PayloadAction<Room>) {
-      if (isNil(state.accountData)) {
+      if (isNil(state.player)) {
         return
       }
-      const owningRooms = state.accountData.owningRooms
-      state.accountData.owningRooms = [...owningRooms, action.payload]
+      const owningRooms = state.player.owningRooms
+      state.player.owningRooms = [...owningRooms, action.payload]
       state.isLoading = false
       state.error = null
     },
@@ -120,7 +123,7 @@ export const logoutAccount = (): AppThunk => async dispatch => {
 export const fetchAccount = (id: string): AppThunk => async dispatch => {
   try {
     dispatch(accountActionStart())
-    const playerData = await getAccountDetails(id)
+    const playerData = await getPlayer(id)
     dispatch(getAccountSuccess(playerData))
   } catch (error) {
     dispatch(accountActionFailure(error))

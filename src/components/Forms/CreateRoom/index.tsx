@@ -8,7 +8,7 @@ import Button from '../../Button'
 import VALIDATION from '../../../validation'
 import theme from '../../../utils/theme'
 import { useCurrentAccount } from '../../../hooks'
-import { createRoom } from '../../../redux/room'
+import { newRoom } from '../../../redux/rooms'
 
 const { CREATE_ROOM_FORM } = VALIDATION
 
@@ -21,7 +21,7 @@ const CreateRoomForm: React.FC<Props> = (props: Props) => {
   const dispatch = useDispatch()
   const { currentUserId } = useCurrentAccount()
 
-  const { isLoading } = useSelector(state => state.room)
+  const { isLoading } = useSelector(state => state.rooms)
 
   const formik = useFormik({
     initialValues: {
@@ -32,7 +32,7 @@ const CreateRoomForm: React.FC<Props> = (props: Props) => {
       if (!currentUserId) {
         return
       }
-      dispatch(createRoom(currentUserId, name, availableSeats, handleCancelClick))
+      dispatch(newRoom(currentUserId, name, availableSeats, handleCancelClick))
     },
     validationSchema: CREATE_ROOM_FORM,
   })

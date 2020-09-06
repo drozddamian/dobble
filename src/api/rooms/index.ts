@@ -1,13 +1,13 @@
 import axios from 'axios'
 import { API_METHODS } from '../../constants/api'
-import { Account } from '../account'
+import { Player } from '../players'
 
 export interface Room {
   name: string;
-  players: string[] | Account[];
+  players: string[] | Player[];
   createdAt: string;
   _id: string;
-  owner: Account;
+  owner: Player;
   availableSeats: 2 | 3 | 4 | 5 | 6;
   howManyPlayers: 0 | 1 | 2 | 3 | 4 | 5 | 6;
 }
@@ -19,25 +19,34 @@ export interface FetchRoomsSuccess {
 }
 
 const getRooms = async (chunkNumber: number) => {
-  const url = `${API_METHODS.GET_ROOMS}?chunkNumber=${chunkNumber}`
+  const url = `${API_METHODS.ROOMS_ROOT}?chunkNumber=${chunkNumber}`
   const { data } = await axios.get<FetchRoomsSuccess>(url)
   return data
 }
 
-const getRoomDetails = async (roomId: string) => {
-  const url = `${API_METHODS.GET_ROOM}${roomId}`
+const getRoomItem = async (roomId: string) => {
+  const url = `${API_METHODS.ROOMS_ROOT}${roomId}`
   const { data } = await axios.get<Room>(url)
   return data
+}
+
+const createRoom = async (ownerId: string, name: string, availableSeats: number) => {
+  const { data } = await axios.post<Room>(API_METHODS.ROOMS_ROOT, {
+    ownerId,
+    name,
+    availableSeats,
+  })
+  return data
+}
+
+const deleteRoom = async (roomId: string) => {
+  const url = `${API_METHODS.ROOMS_ROOT}${roomId}`
+  return await axios.delete(url)
 }
 
 const getMostPopularRooms = async () => {
   const { data } = await axios.get<Room[]>(API_METHODS.GET_MOST_POPULAR_ROOMS)
   return data
-}
-
-const deleteRoomById = async (roomId: string) => {
-  const url = `${API_METHODS.DELETE_ROOM}${roomId}`
-  return await axios.delete(url)
 }
 
 const joinRoom = async (roomId: string, playerId: string) => {
@@ -48,7 +57,7 @@ const joinRoom = async (roomId: string, playerId: string) => {
   return data
 }
 
-const removePlayerFromRoom = async (roomId: string, playerId: string) => {
+const leaveRoom = async (roomId: string, playerId: string) => {
   const { data } = await axios.post<string>(API_METHODS.LEAVE_ROOM, {
     roomId,
     playerId,
@@ -56,21 +65,13 @@ const removePlayerFromRoom = async (roomId: string, playerId: string) => {
   return data
 }
 
-const addRoom = async (ownerId: string, name: string, availableSeats: number) => {
-  const { data } = await axios.post<Room>(API_METHODS.CREATE_ROOM, {
-    ownerId,
-    name,
-    availableSeats,
-  })
-  return data
-}
 
 export default {
   getRooms,
-  getRoomDetails,
+  getRoomItem,
+  createRoom,
+  deleteRoom,
   getMostPopularRooms,
-  deleteRoomById,
   joinRoom,
-  removePlayerFromRoom,
-  addRoom,
+  leaveRoom,
 }

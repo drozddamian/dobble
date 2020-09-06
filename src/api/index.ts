@@ -1,7 +1,9 @@
-import apiAccount from './account'
-import apiRoom from './room'
+import apiAuthentication from './authentication'
+import apiRooms from './rooms'
+import apiPlayers from './players'
 
 export {
-  apiAccount,
-  apiRoom,
+  apiAuthentication,
+  apiRooms,
+  apiPlayers,
 }

@@ -1,27 +1,15 @@
 import axios from 'axios'
 import { API_METHODS } from '../../constants/api'
-import { Room } from '../room'
+import { Player } from '../players'
 
-export interface Account {
-  _id: string;
-  username: string;
-  password: string;
-  nick: string;
-  owningRooms: Room[];
-  joinedRooms: Room[];
-}
 
 export interface LoginSuccess {
-  player: Account;
+  player: Player;
   token: string;
 }
 
 export interface RegisterSuccess {
-  player: Account;
-}
-
-export interface GetPlayerSuccess {
-  player: Account;
+  player: Player;
 }
 
 
@@ -44,15 +32,9 @@ const logout = async () => {
   return data
 }
 
-const getAccountDetails = async (id: string) => {
-  const url = `${API_METHODS.GET_PLAYER}${id}`
-  const { data } = await axios.get<GetPlayerSuccess>(url)
-  return data
-}
 
 export default {
   login,
   register,
   logout,
-  getAccountDetails,
 }

@@ -1,7 +1,7 @@
 import React from 'react'
 import { equals } from 'ramda'
 import styled from 'styled-components'
-import { Room } from '../../api/room'
+import { Room } from '../../api/rooms'
 import crown from '../../assets/icons/crown.svg'
 import { useCurrentAccount, useWindowSize } from '../../hooks'
 
@@ -52,12 +52,12 @@ const RoomItems: React.FC<Props> = (props: Props) => {
                 : (
                   <>
                     <PlayerInfoText>
-                Players in room:
+                      Players in room:
                       <NumberInfo>{howManyPlayers}</NumberInfo>
                     </PlayerInfoText>
 
                     <PlayerInfoText>
-                Available seats:
+                      Available seats:
                       <NumberInfo>{availableSeats}</NumberInfo>
                     </PlayerInfoText>
                   </>
