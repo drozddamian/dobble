@@ -71,9 +71,11 @@ const RoomsSection = styled.section`
 `
 
 export const SectionTitle = styled.h2`
+  display: flex;
   font-family: ${({ theme }) => theme.fonts.russo};
   font-size: ${({ theme }) => theme.fonts.smallTitle};
   color: ${({ theme }) => theme.colors.darkBlue};
+  width: 100%;
   ${(props: SectionTitleProps) => props.width && css`
     width: ${props.width};
   `};
@@ -85,5 +87,7 @@ export const SectionTitle = styled.h2`
     align-self: flex-start;
   }
 `
+
+
 
 export default MainScreen

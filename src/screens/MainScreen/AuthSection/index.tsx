@@ -48,7 +48,7 @@ const AuthSection: React.FC = () => {
 
   return (
     <Wrapper>
-      <SectionTitle>
+      <SectionTitle padding='0 0 40px 0'>
           Sign{' '}
         <SwingText text={titlePostfix} />
       </SectionTitle>
