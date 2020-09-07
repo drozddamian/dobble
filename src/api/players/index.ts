@@ -17,7 +17,7 @@ export interface GetPlayerSuccess {
 }
 
 const getPlayer = async (id: string) => {
-  const url = `${API_METHODS.PLAYERS_ROOT}${id}`
+  const url = `${API_METHODS.PLAYERS_ROOT}/${id}`
   const { data } = await axios.get<GetPlayerSuccess>(url)
   return data
 }

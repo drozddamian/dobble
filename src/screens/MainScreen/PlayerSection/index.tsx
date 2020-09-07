@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import { isNil } from 'ramda'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchAccount } from '../../../redux/players'
+import { fetchPlayer } from '../../../redux/players'
 import LoadingComponent from '../../../components/Loader/CircleLoader'
 import theme from '../../../utils/theme'
 import LevelProgress from '../../../components/LevelProgress'
@@ -18,7 +18,7 @@ const PlayerSection: React.FC<Props> = (props: Props) => {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    dispatch(fetchAccount(userId))
+    dispatch(fetchPlayer(userId))
   }, [])
 
   const { player, isLoading } = useSelector(state => state.players)
