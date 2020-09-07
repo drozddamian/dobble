@@ -25,7 +25,7 @@ const getRooms = async (chunkNumber: number) => {
 }
 
 const getRoomItem = async (roomId: string) => {
-  const url = `${API_METHODS.ROOMS_ROOT}${roomId}`
+  const url = `${API_METHODS.ROOMS_ROOT}/${roomId}`
   const { data } = await axios.get<Room>(url)
   return data
 }
@@ -40,7 +40,7 @@ const createRoom = async (ownerId: string, name: string, availableSeats: number)
 }
 
 const deleteRoom = async (roomId: string) => {
-  const url = `${API_METHODS.ROOMS_ROOT}${roomId}`
+  const url = `${API_METHODS.ROOMS_ROOT}/${roomId}`
   return await axios.delete(url)
 }
 

@@ -3,10 +3,10 @@ import { equals } from 'ramda'
 import { AppThunk } from '../rootStore'
 import { apiRooms } from '../../api'
 import { FetchRoomsSuccess, Room } from '../../api/rooms'
+import { updatePlayerRoomList } from '../players'
 import { displayNotification } from '../notification'
 import { NotificationType } from '../../types'
 import { RouteComponentProps } from 'react-router-dom'
-import { createNewRoomSuccess } from '../players'
 import ROUTES from '../../constants/routes'
 
 
@@ -65,6 +65,10 @@ const slice = createSlice({
       state.isLoading = false
       state.error = null
     },
+    createNewRoomSuccess(state, action: PayloadAction<Room>) {
+      state.isLoading = false
+      state.error = null
+    },
   },
 })
 
@@ -74,6 +78,7 @@ export const {
   fetchRoomsSuccess,
   fetchMostPopularRoomsSuccess,
   fetchRoomDetailsSuccess,
+  createNewRoomSuccess,
 } = slice.actions
 
 export const fetchRooms = (): AppThunk => async (dispatch, getState) => {
@@ -151,19 +156,24 @@ export const removePlayerFromRoom = (roomId: string, playerId: string, history: 
   }
 }
 
-export const newRoom = (ownerId: string, name: string, availableSeats: number, closeModalCallback: () => void): AppThunk => async dispatch => {
-  try {
-    dispatch(roomActionStart())
-    const createdRoom = await createRoom(ownerId, name, availableSeats)
-    await dispatch(createNewRoomSuccess(createdRoom))
-    closeModalCallback()
-    dispatch(displayNotification(NotificationType.SUCCESS, 'Room successfully created'))
-  } catch(error) {
-    const { data } = error.response
-    closeModalCallback()
-    dispatch(displayNotification(NotificationType.ERROR, data))
-    dispatch(roomActionFailure(data))
-  }
-}
+export const newRoom =
+    (ownerId: string, name: string, availableSeats: number, closeModalCallback: () => void): AppThunk =>
+      async (dispatch) => {
+        try {
+          dispatch(roomActionStart())
+
+          const createdRoom = await createRoom(ownerId, name, availableSeats)
+          updatePlayerRoomList(createdRoom)
+
+          await dispatch(createNewRoomSuccess(createdRoom))
+          closeModalCallback()
+          dispatch(displayNotification(NotificationType.SUCCESS, 'Room successfully created'))
+        } catch(error) {
+          const { data } = error.response
+          closeModalCallback()
+          dispatch(displayNotification(NotificationType.ERROR, data))
+          dispatch(roomActionFailure(data))
+        }
+      }
 
 export default slice
