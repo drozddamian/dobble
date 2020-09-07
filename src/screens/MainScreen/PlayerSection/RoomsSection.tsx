@@ -1,4 +1,5 @@
 import React, { useRef, useState } from 'react'
+import { isEmpty } from 'ramda'
 import styled from 'styled-components'
 import { SectionTitle } from '../index'
 import ROUTES from '../../../constants/routes'
@@ -55,9 +56,11 @@ const RoomsSection: React.FC<Props> = (props: Props) => {
               Your rooms
             </SectionTitle>
 
-            <SeeAllRoomsButton href={ROUTES.ROOMS}>
+            {!isEmpty(allRooms) && (
+              <SeeAllRoomsButton href={ROUTES.ROOMS}>
               Show all...
-            </SeeAllRoomsButton>
+              </SeeAllRoomsButton>
+            )}
           </TitleContainer>
 
           <Button
