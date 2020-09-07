@@ -101,7 +101,7 @@ const Error = styled.span`
   font-size: ${({ theme }) => theme.fontSize.s12};
   color: ${({ theme }) => theme.colors.error};
   position: absolute;
-  bottom: -15px;
+  bottom: -20px;
   left: 4px;
 `
 

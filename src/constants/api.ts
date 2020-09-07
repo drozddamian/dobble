@@ -1,22 +1,22 @@
 const API_SERVER_URL = 'https://dev-dobble.herokuapp.com'
 
 const API = {
-  AUTH: `${API_SERVER_URL}/api/auth`,
-  PLAYER: `${API_SERVER_URL}/api/player`,
-  ROOM: `${API_SERVER_URL}/api/room`,
+  AUTHENTICATION: `${API_SERVER_URL}/api/authentication`,
+  PLAYERS: `${API_SERVER_URL}/api/players`,
+  ROOMS: `${API_SERVER_URL}/api/rooms`,
 }
 
-const { AUTH, PLAYER, ROOM } = API
+const { AUTHENTICATION, PLAYERS, ROOMS } = API
 
 
 export const API_METHODS = {
-  LOGIN: `${AUTH}/login`,
-  REGISTER: `${AUTH}/register`,
-  GET_PLAYER: `${PLAYER}/`,
-  MODIFY_PLAYER: `${PLAYER}/change_data`,
-  GET_ROOMS: `${ROOM}/list_rooms`,
-  GET_ROOM: `${ROOM}/:roomId`,
-  GET_MOST_POPULAR_ROOMS: `${ROOM}/most_popular`,
-  CREATE_ROOM: `${ROOM}/create_room`,
-  DELETE_ROOM: `${ROOM}/:roomId`,
+  LOGIN: `${AUTHENTICATION}/login`,
+  REGISTER: `${AUTHENTICATION}/register`,
+  LOGOUT: `${AUTHENTICATION}/logout`,
+  PLAYERS_ROOT: `${PLAYERS}`,
+  GET_PODIUM_PLAYERS: `${PLAYERS}/podium`,
+  ROOMS_ROOT: `${ROOMS}`,
+  GET_MOST_POPULAR_ROOMS: `${ROOMS}/most_popular`,
+  JOIN_ROOM: `${ROOMS}/join_room`,
+  LEAVE_ROOM: `${ROOMS}/leave_room`,
 }

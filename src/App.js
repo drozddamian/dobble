@@ -5,31 +5,44 @@ import {
   Route,
 } from 'react-router-dom'
 import ROUTES from './constants/routes'
+import Notification from './components/Notification'
+import Logout from './components/Logout'
+
 import GameTableScreen from './screens/GameTableScreen'
 import MainScreen from './screens/MainScreen'
-
+import RoomScreen from './screens/RoomScreen'
+import AllRoomsScreen from './screens/AllRoomsScreen'
 
 const {
-  MAIN, GAME, ROOM,
+  MAIN, GAME, ROOM, ROOMS,
 } = ROUTES
 
-function App() {
+const App = () => {
   return (
-    <Router>
-      <Switch>
-        <Route exact path={MAIN}>
-          <MainScreen />
-        </Route>
+    <>
+      <Notification />
+      <Logout />
 
-        <Route path={ROOM}>
-          <GameTableScreen />
-        </Route>
+      <Router>
+        <Switch>
+          <Route exact path={MAIN}>
+            <MainScreen />
+          </Route>
 
-        <Route path={GAME}>
-          <GameTableScreen />
-        </Route>
-      </Switch>
-    </Router>
+          <Route path={ROOM}>
+            <RoomScreen />
+          </Route>
+
+          <Route path={GAME}>
+            <GameTableScreen />
+          </Route>
+
+          <Route path={ROOMS}>
+            <AllRoomsScreen />
+          </Route>
+        </Switch>
+      </Router>
+    </>
   )
 }
 
