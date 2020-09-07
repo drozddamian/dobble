@@ -2,18 +2,15 @@ import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import { isNil } from 'ramda'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchAccount } from '../../redux/account'
-import LoadingComponent from '../../components/Loader/CircleLoader'
-import theme from '../../utils/theme'
-import { Wrapper } from './AuthSection'
-import LevelProgress from '../../components/LevelProgress'
+import { fetchAccount } from '../../../redux/players'
+import LoadingComponent from '../../../components/Loader/CircleLoader'
+import theme from '../../../utils/theme'
+import LevelProgress from '../../../components/LevelProgress'
+import RoomsSection from './RoomsSection'
+
 
 interface Props {
   userId: string;
-}
-
-interface LevelProgressBarProps {
-  progress: string;
 }
 
 const PlayerSection: React.FC<Props> = (props: Props) => {
@@ -24,12 +21,13 @@ const PlayerSection: React.FC<Props> = (props: Props) => {
     dispatch(fetchAccount(userId))
   }, [])
 
-  const { accountData, isLoading } = useSelector(state => state.account)
+  const { player, isLoading } = useSelector(state => state.players)
 
-  if (isLoading || isNil(accountData)) {
+  if (isLoading || isNil(player)) {
     return <LoadingComponent color={theme.colors.white} />
   }
-  const { nick } = accountData
+
+  const { nick, joinedRooms, owningRooms } = player
 
   return (
     <Wrapper>
@@ -42,9 +40,20 @@ const PlayerSection: React.FC<Props> = (props: Props) => {
           {nick}
         </PlayerNick>
       </PlayerInfoContainer>
+
+      <RoomsSection
+        isLoading={isLoading}
+        joinedRooms={joinedRooms}
+        owningRooms={owningRooms}
+      />
     </Wrapper>
   )
 }
+
+const Wrapper = styled.div`
+  width: 100%;
+  max-width: 500px;
+`
 
 const PlayerNick = styled.h3`
   font-family: ${({ theme }) => theme.fonts.russo};

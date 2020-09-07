@@ -1,15 +1,18 @@
 import React, { useEffect } from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { isNil } from 'ramda'
 import { useDispatch, useSelector } from 'react-redux'
 import PageWrapper from '../../components/Page/Container'
 import RoomList from '../../components/RoomList'
-import { fetchPopularRooms } from '../../redux/room'
+import { fetchPopularRooms } from '../../redux/rooms'
 import { useCurrentAccount } from '../../hooks'
 import AuthSection from './AuthSection'
 import PlayerSection from './PlayerSection'
 
-
+interface SectionTitleProps {
+  width?: string;
+  padding?: string;
+}
 
 const MainScreen: React.FC = () => {
   const dispatch = useDispatch()
@@ -19,7 +22,7 @@ const MainScreen: React.FC = () => {
   }, [])
 
   const { currentUserId } = useCurrentAccount()
-  const { isLoading, mostPopularRooms } = useSelector(state => state.room)
+  const { isLoading, mostPopularRooms } = useSelector(state => state.rooms)
 
   const getPlayerComponent = () => {
     if (isNil(currentUserId)) {
@@ -34,9 +37,9 @@ const MainScreen: React.FC = () => {
       {getPlayerComponent()}
 
       <RoomsSection>
-        <RoomSectionTitle>
+        <SectionTitle padding='0 0 40px 0'>
           Most popular rooms
-        </RoomSectionTitle>
+        </SectionTitle>
 
         <RoomList
           rooms={mostPopularRooms}
@@ -68,21 +71,23 @@ const RoomsSection = styled.section`
 `
 
 export const SectionTitle = styled.h2`
+  display: flex;
   font-family: ${({ theme }) => theme.fonts.russo};
   font-size: ${({ theme }) => theme.fonts.smallTitle};
   color: ${({ theme }) => theme.colors.darkBlue};
-  padding-bottom: 40px;
-  width: 100px;
-  display: flex;
+  width: 100%;
+  ${(props: SectionTitleProps) => props.width && css`
+    width: ${props.width};
+  `};
+  ${(props: SectionTitleProps) => props.padding && css`
+    padding: ${props.padding};
+  `};
   
   @media (min-width: ${({ theme }) => theme.rwd.desktop.xs}) {
     align-self: flex-start;
   }
 `
 
-const RoomSectionTitle = styled(SectionTitle)`
-  width: 100%;
-`
 
 
 export default MainScreen

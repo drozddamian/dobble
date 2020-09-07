@@ -1,7 +1,7 @@
 import React from 'react'
 import styled, { css } from 'styled-components'
 import { isEmpty } from 'ramda'
-import { Room } from '../../api/room'
+import { Room } from '../../api/rooms'
 import LoadingBar from '../Loader/LoadingBar'
 import RoomItems from './RoomItems'
 

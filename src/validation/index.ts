@@ -11,6 +11,12 @@ const fieldsSchema = {
   nickname: Yup.string()
     .min(3, "Nickname must contain at least 3 characters")
     .max(14, "Nickname can't be longer than 14 characters"),
+  roomName: Yup.string()
+    .min(3, 'Please provide room name')
+    .max(30, "This field can't be longer than 30 characters"),
+  availableSeats: Yup.number()
+    .min(2, 'At least 2 players')
+    .max(6, 'Maximum 6 players'),
 }
 
 
@@ -23,5 +29,9 @@ export default {
     username: fieldsSchema.username,
     password: fieldsSchema.password,
     nickname: fieldsSchema.nickname,
-  })
+  }),
+  CREATE_ROOM_FORM: Yup.object().shape({
+    name: fieldsSchema.roomName,
+    availableSeats: fieldsSchema.availableSeats,
+  }),
 }

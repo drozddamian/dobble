@@ -1,11 +1,11 @@
 import { combineReducers } from '@reduxjs/toolkit'
-import account from './account'
-import room from './room'
+import players from './players'
+import rooms from './rooms'
 import notification from './notification'
 
 const rootReducer = combineReducers({
-  account: account.reducer,
-  room: room.reducer,
+  players: players.reducer,
+  rooms: rooms.reducer,
   notification: notification.reducer,
 })
 

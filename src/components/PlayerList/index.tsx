@@ -1,12 +1,12 @@
 import React from 'react'
 import { isNil, equals } from 'ramda'
 import styled from 'styled-components'
-import { Account } from '../../api/account'
+import { Player } from '../../api/players'
 import PlayerListItem from './PlayerListItem'
 
 interface Props {
   owner: string;
-  players: Account[];
+  players: Player[];
 }
 
 const PlayerList: React.FC<Props> = (props: Props) => {

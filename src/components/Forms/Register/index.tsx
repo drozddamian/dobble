@@ -6,7 +6,7 @@ import Input from '../Input'
 import Button from '../../Button'
 import FormError from '../FormError'
 import VALIDATION from '../../../validation'
-import { registerAccount } from '../../../redux/account'
+import { registerAccount } from '../../../redux/players'
 
 const { REGISTER_FORM } = VALIDATION
 
@@ -14,7 +14,7 @@ const { REGISTER_FORM } = VALIDATION
 const RegisterForm: React.FC = () => {
   const dispatch = useDispatch()
 
-  const { isLoading, error } = useSelector(state => state.account)
+  const { isLoading, error } = useSelector(state => state.players)
 
   const formik = useFormik({
     initialValues: {

@@ -1,15 +1,16 @@
-import React from 'react'
+import React, { ReactElement } from 'react'
 import styled from 'styled-components'
 import Button from '../Button'
 import theme from '../../utils/theme'
 
 interface Props {
   isModalVisible: boolean;
-  text: string;
-  acceptButtonText: string;
+  text?: string;
+  acceptButtonText?: string;
   declineButtonText?: string;
-  acceptButtonFunction: () => void;
+  acceptButtonFunction?: () => void;
   declineButtonFunction?: () => void;
+  children?: ReactElement;
 }
 
 // eslint-disable-next-line react/display-name
@@ -18,7 +19,7 @@ const Modal = React.forwardRef<
   Props
 >((props, forwardedRef) => {
   // eslint-disable-next-line react/prop-types
-  const { isModalVisible, text, acceptButtonText, acceptButtonFunction, declineButtonText, declineButtonFunction } = props
+  const { isModalVisible, text, acceptButtonText, acceptButtonFunction, declineButtonText, declineButtonFunction, children } = props
 
   if (!isModalVisible) {
     return null
@@ -26,30 +27,34 @@ const Modal = React.forwardRef<
   return (
     <Wrapper>
       <ContentContainer ref={forwardedRef}>
-        <ModalText>
-          {text}
-        </ModalText>
+        {children || (
+          <ModalText>
+            {text}
+          </ModalText>
+        )}
 
-        <ButtonContainer>
-          <Button
-            text={acceptButtonText}
-            type='button'
-            handleClick={acceptButtonFunction}
-            isSmallButton
-          />
+        {acceptButtonText && (
+          <ButtonContainer>
+            <Button
+              text={acceptButtonText}
+              type='button'
+              handleClick={acceptButtonFunction}
+              isSmallButton
+            />
 
-          {declineButtonText && (
-            <DeclineButtonContainer>
-              <Button
-                text={declineButtonText}
-                type='button'
-                handleClick={declineButtonFunction}
-                isSmallButton
-                background={theme.colors.inputBorder}
-              />
-            </DeclineButtonContainer>
-          )}
-        </ButtonContainer>
+            {declineButtonText && (
+              <DeclineButtonContainer>
+                <Button
+                  text={declineButtonText}
+                  type='button'
+                  handleClick={declineButtonFunction}
+                  isSmallButton
+                  background={theme.colors.inputBorder}
+                />
+              </DeclineButtonContainer>
+            )}
+          </ButtonContainer>
+        )}
       </ContentContainer>
     </Wrapper>
   )
