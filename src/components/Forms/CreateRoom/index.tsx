@@ -3,12 +3,21 @@ import styled from 'styled-components'
 import { useDispatch, useSelector } from 'react-redux'
 import { useFormik } from 'formik'
 import Form from '../FormWrapper'
-import Input from '../Input'
+import Input, { InputProps } from '../Input'
 import Button from '../../Button'
 import VALIDATION from '../../../validation'
 import theme from '../../../utils/theme'
-import { useCurrentAccount } from '../../../hooks'
+import NumberChangerInput from '../NumberChangerInput'
 import { newRoom } from '../../../redux/rooms'
+import {
+  useCurrentAccount,
+  useNumberChanger,
+} from '../../../hooks'
+import {
+  MIN_PLAYERS_IN_ROOM,
+  MAX_PLAYERS_IN_ROOM,
+} from '../../../constants'
+
 
 const { CREATE_ROOM_FORM } = VALIDATION
 
@@ -20,15 +29,15 @@ const CreateRoomForm: React.FC<Props> = (props: Props) => {
   const { handleCancelClick } = props
   const dispatch = useDispatch()
   const { currentUserId } = useCurrentAccount()
+  const { value: availableSeats, increase, decrease } = useNumberChanger(MIN_PLAYERS_IN_ROOM, MAX_PLAYERS_IN_ROOM)
 
   const { isLoading } = useSelector(state => state.rooms)
 
   const formik = useFormik({
     initialValues: {
       name: '',
-      availableSeats: 2,
     },
-    onSubmit: ({ name, availableSeats }) => {
+    onSubmit: ({ name }) => {
       if (!currentUserId) {
         return
       }
@@ -37,24 +46,27 @@ const CreateRoomForm: React.FC<Props> = (props: Props) => {
     validationSchema: CREATE_ROOM_FORM,
   })
 
+  const roomNameInputProps: InputProps = {
+    type: 'text',
+    value: formik.values.name,
+    onChange: formik.handleChange,
+  }
+
   return (
     <Form onSubmit={formik.handleSubmit}>
       <Input
         label='Room name'
         inputName='name'
-        inputType='text'
-        value={formik.values.name}
-        onChange={formik.handleChange}
         error={formik.touched.name && formik.errors.name}
+        inputProps={roomNameInputProps}
       />
 
-      <Input
+      <NumberChangerInput
         label='Available seats'
         inputName='availableSeats'
-        inputType='number'
-        value={formik.values.availableSeats}
-        onChange={formik.handleChange}
-        error={formik.touched.availableSeats && formik.errors.availableSeats}
+        value={availableSeats}
+        increaseValue={increase}
+        decreaseValue={decrease}
       />
 
       <ButtonContainer>
