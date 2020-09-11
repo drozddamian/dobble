@@ -17,12 +17,21 @@ interface SectionTitleProps {
 const MainScreen: React.FC = () => {
   const dispatch = useDispatch()
 
+  const { currentUserId } = useCurrentAccount()
+  const { isLoading, rooms, mostPopularRooms } = useSelector(state => state.rooms)
+
+  const getPopularRooms = () => dispatch(fetchPopularRooms())
+
   useEffect(() => {
-    dispatch(fetchPopularRooms())
+    getPopularRooms()
   }, [])
 
-  const { currentUserId } = useCurrentAccount()
-  const { isLoading, mostPopularRooms } = useSelector(state => state.rooms)
+  useEffect(() => {
+    if (rooms.length > 5) {
+      return
+    }
+    getPopularRooms()
+  }, [rooms.length])
 
   const getPlayerComponent = () => {
     if (isNil(currentUserId)) {

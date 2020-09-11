@@ -66,6 +66,7 @@ const slice = createSlice({
       state.error = null
     },
     createNewRoomSuccess(state, action: PayloadAction<Room>) {
+      state.rooms = [...state.rooms, action.payload]
       state.isLoading = false
       state.error = null
     },
