@@ -114,6 +114,7 @@ const SeeAllRoomsButton = styled.a`
   align-self: flex-end;
   margin-bottom: 3px;
   padding-left: 8px;
+  white-space: nowrap;
 `
 
 const SelectContainer = styled.div`
