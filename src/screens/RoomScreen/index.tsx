@@ -73,12 +73,15 @@ const RoomScreen: React.FC = () => {
 
   const { owner, players, howManyPlayers, availableSeats } = roomItem
 
-  const isRoomFull = equals(howManyPlayers, availableSeats)
   const userStatus = getButtonData(currentUserId, owner._id, players)
+
+  const isRoomFull = equals(howManyPlayers, availableSeats)
+  const isUserToJoin = equals(userStatus, USER_STATUS.JOIN)
+  const noSeatAvailableToJoin = isRoomFull && isUserToJoin
   const { buttonText, modalText, acceptModalText, action } = BUTTON_ACTION_DATA[userStatus]
 
   const handleInitializeModal = () => {
-    if (isRoomFull && userStatus === USER_STATUS.JOIN) {
+    if (noSeatAvailableToJoin) {
       dispatch(displayNotification(NotificationType.ERROR, 'Sorry, there is no seat available'))
       return
     }
@@ -103,7 +106,7 @@ const RoomScreen: React.FC = () => {
             text={buttonText}
             type='button'
             handleClick={handleInitializeModal}
-            isDisabled
+            isDisabled={noSeatAvailableToJoin}
           />
         </RoomButtonsContainer>
 

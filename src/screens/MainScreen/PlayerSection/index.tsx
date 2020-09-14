@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { fetchPlayer } from '../../../redux/players'
 import LoadingComponent from '../../../components/Loader/CircleLoader'
 import theme from '../../../utils/theme'
-import LevelProgress from '../../../components/LevelProgress'
 import RoomsSection from './RoomsSection'
 import PlayerBadge from "../../../components/PlayerBadge";
 
