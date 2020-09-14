@@ -5,12 +5,12 @@ import theme from "../../utils/theme";
 
 interface Props {
   level: number;
+  percentToNextLevel: number;
   progressLoaderSize: number;
 }
 
 const LevelProgress: React.FC<Props> = (props: Props) => {
-  const { level, progressLoaderSize } = props
-  const levelProgression = 82
+  const { level, percentToNextLevel, progressLoaderSize } = props
 
   return (
     <Wrapper>
@@ -23,7 +23,7 @@ const LevelProgress: React.FC<Props> = (props: Props) => {
       </LevelText>
 
       <CircleProgress
-        levelProgression={levelProgression}
+        levelProgression={percentToNextLevel}
         progressLoaderSize={progressLoaderSize}
         progressColor={theme.colors.pink}
       />

@@ -7,6 +7,7 @@ import LoadingComponent from '../../../components/Loader/CircleLoader'
 import theme from '../../../utils/theme'
 import LevelProgress from '../../../components/LevelProgress'
 import RoomsSection from './RoomsSection'
+import PlayerBadge from "../../../components/PlayerBadge";
 
 
 interface Props {
@@ -28,19 +29,11 @@ const PlayerSection: React.FC<Props> = (props: Props) => {
     return <LoadingComponent color={theme.colors.white} />
   }
 
-  const { nick, joinedRooms, owningRooms } = player
+  const { joinedRooms, owningRooms } = player
 
   return (
     <Wrapper>
-      <PlayerInfoContainer>
-        <LevelProgress
-          level={23}
-          progressLoaderSize={56}
-        />
-        <PlayerNick>
-          {nick}
-        </PlayerNick>
-      </PlayerInfoContainer>
+      <PlayerBadge player={player} />
 
       <RoomsSection
         isLoading={isLoading}
@@ -54,24 +47,6 @@ const PlayerSection: React.FC<Props> = (props: Props) => {
 const Wrapper = styled.div`
   width: 100%;
   max-width: 500px;
-`
-
-const PlayerNick = styled.h3`
-  font-family: ${({ theme }) => theme.fonts.russo};
-  color: ${({ theme }) => theme.colors.darkBlue};
-  font-size: ${({ theme }) => theme.fontSize.smallTitle};
-  padding: 0;
-  margin-left: 24px;
-  max-width: 75%;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-`
-
-const PlayerInfoContainer = styled.div`
-  width: 100%;
-  display: flex;
-  align-items: center;
 `
 
 export default PlayerSection

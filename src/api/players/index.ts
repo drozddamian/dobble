@@ -8,6 +8,10 @@ export interface Player {
   username: string;
   password: string;
   nick: string;
+  level: number;
+  percentToNextLevel: number;
+  experience: number;
+  experienceToNextLevel: number;
   owningRooms: Room[];
   joinedRooms: Room[];
 }
