@@ -5,14 +5,16 @@ import { useHistory, useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import PageWrapper from '../../components/Page/Container'
 import { fetchRoomItem } from '../../redux/rooms'
+import { displayNotification } from '../../redux/notification'
 import PageTitle from '../../components/Page/PageTitle'
 import LoadingBar from '../../components/Loader/LoadingBar'
 import PlayerList from '../../components/PlayerList'
 import Button from '../../components/Button'
+import Modal from '../../components/Modal'
 import { Player } from '../../api/players'
+import { NotificationType } from '../../types'
 import { BUTTON_ACTION_DATA, USER_STATUS } from './constant-data'
 import { useCurrentAccount, useModal } from '../../hooks'
-import Modal from '../../components/Modal'
 
 const { OWNER, JOIN, LEAVE } = USER_STATUS
 
@@ -51,17 +53,16 @@ const RoomScreen: React.FC = () => {
   const history = useHistory()
   const { id: roomId } = useParams()
   const modalRef = useRef(null)
-
   const { isModalVisible, handleOpenModal, handleCloseModal } = useModal(modalRef)
+  const { currentUserId } = useCurrentAccount()
+
+
+  const { isLoading, roomItem } = useSelector(state => state.rooms)
+  const userId = currentUserId || ''
 
   useEffect(() => {
     dispatch(fetchRoomItem(roomId))
   }, [])
-
-  const { isLoading, roomItem } = useSelector(state => state.rooms)
-
-  const { currentUserId } = useCurrentAccount()
-  const userId = currentUserId || ''
 
 
   if (isLoading || isNil(roomItem)) {
@@ -70,13 +71,23 @@ const RoomScreen: React.FC = () => {
     )
   }
 
-  const userStatus = getButtonData(currentUserId, roomItem.owner._id, roomItem.players)
+  const { owner, players, howManyPlayers, availableSeats } = roomItem
+
+  const isRoomFull = equals(howManyPlayers, availableSeats)
+  const userStatus = getButtonData(currentUserId, owner._id, players)
   const { buttonText, modalText, acceptModalText, action } = BUTTON_ACTION_DATA[userStatus]
+
+  const handleInitializeModal = () => {
+    if (userStatus === USER_STATUS.JOIN && isRoomFull) {
+      dispatch(displayNotification(NotificationType.ERROR, 'Sorry, there is no seat available'))
+      return
+    }
+    handleOpenModal()
+  }
 
   const handleAcceptModalButton = () => {
     if (userStatus === USER_STATUS.OWNER) {
-      // @ts-ignore
-      dispatch(action(roomId, history))
+      dispatch(action(roomId, history, null))
       return
     }
     dispatch(action(roomId, userId, history))
@@ -91,7 +102,8 @@ const RoomScreen: React.FC = () => {
           <Button
             text={buttonText}
             type='button'
-            handleClick={handleOpenModal}
+            handleClick={handleInitializeModal}
+            isDisabled
           />
         </RoomButtonsContainer>
 

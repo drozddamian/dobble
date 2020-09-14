@@ -8,6 +8,7 @@ interface Props {
   type: 'button' | 'submit' | 'reset';
   uppercase?: boolean;
   isLoading?: boolean;
+  isDisabled?: boolean;
   handleClick?: () => void;
   isSmallButton?: boolean;
   background?: string;
@@ -16,11 +17,12 @@ interface Props {
 interface WrapperProps {
   uppercase?: boolean;
   isSmallButton?: boolean;
+  isDisabled?: boolean;
   background?: string;
 }
 
 const Button: React.FC<Props> = (props: Props) => {
-  const { text, type, uppercase, isLoading, handleClick, isSmallButton, background } = props
+  const { text, type, uppercase, isLoading, handleClick, isDisabled, isSmallButton, background } = props
 
   return (
     <Wrapper
@@ -29,6 +31,7 @@ const Button: React.FC<Props> = (props: Props) => {
       onClick={handleClick}
       isSmallButton={isSmallButton}
       background={background}
+      isDisabled={isDisabled}
     >
       {isLoading
         ? <CircleLoader color={theme.colors.darkBlue} />
@@ -48,6 +51,12 @@ const Wrapper = styled.button`
   min-width: 220px;
   border-radius: 8px;
   padding: 12px 24px;
+  
+  
+  ${(props: WrapperProps) => props.isDisabled && css`
+    opacity: 0.8;
+    cursor: default;
+  `};
   
   ${(props: WrapperProps) => props.uppercase && css`
     text-transform: uppercase;
