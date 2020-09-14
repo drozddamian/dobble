@@ -78,7 +78,7 @@ const RoomScreen: React.FC = () => {
   const { buttonText, modalText, acceptModalText, action } = BUTTON_ACTION_DATA[userStatus]
 
   const handleInitializeModal = () => {
-    if (userStatus === USER_STATUS.JOIN && isRoomFull) {
+    if (isRoomFull && userStatus === USER_STATUS.JOIN) {
       dispatch(displayNotification(NotificationType.ERROR, 'Sorry, there is no seat available'))
       return
     }
