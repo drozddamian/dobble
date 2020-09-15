@@ -90,7 +90,7 @@ const RoomScreen: React.FC = () => {
 
   const handleAcceptModalButton = () => {
     if (userStatus === USER_STATUS.OWNER) {
-      dispatch(action(roomId, history, null))
+      dispatch(action(roomId, history))
       return
     }
     dispatch(action(roomId, userId, history))

@@ -58,7 +58,7 @@ const RoomsSection: React.FC<Props> = (props: Props) => {
 
             {!isEmpty(allRooms) && (
               <SeeAllRoomsButton href={ROUTES.ROOMS}>
-              Show all...
+              Show all
               </SeeAllRoomsButton>
             )}
           </TitleContainer>

@@ -131,7 +131,7 @@ export const deleteRoomItem = (roomId: string, history: RouteComponentProps): Ap
   }
 }
 
-export const addPlayerToRoom = (roomId: string, playerId: string, history: RouteComponentProps): AppThunk => async dispatch => {
+export const addPlayerToRoom = (roomId: string, playerId: string, history?: RouteComponentProps): AppThunk => async dispatch => {
   try {
     dispatch(roomActionStart())
     await joinRoom(roomId, playerId)
@@ -144,7 +144,7 @@ export const addPlayerToRoom = (roomId: string, playerId: string, history: Route
   }
 }
 
-export const removePlayerFromRoom = (roomId: string, playerId: string, history: RouteComponentProps): AppThunk => async dispatch => {
+export const removePlayerFromRoom = (roomId: string, playerId: string, history?: RouteComponentProps): AppThunk => async dispatch => {
   try {
     dispatch(roomActionStart())
     await leaveRoom(roomId, playerId)
