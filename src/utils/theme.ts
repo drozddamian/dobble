@@ -2,6 +2,7 @@
 const theme = {
   colors: {
     white: '#FFFFFF',
+    white08: 'rgba(255, 255, 255, 0.8)',
     darkBlue: '#131E77',
     darkBlue08: 'rgba(19, 30, 119, 0.8)',
     pink: '#F752A7',
