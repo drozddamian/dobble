@@ -33,10 +33,6 @@ const App = () => {
             <RoomScreen />
           </Route>
 
-          <Route path={GAME}>
-            <GameTableScreen />
-          </Route>
-
           <Route path={ROOMS}>
             <AllRoomsScreen />
           </Route>

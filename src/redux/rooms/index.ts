@@ -100,7 +100,7 @@ export const fetchRoomItem = (roomId: string): AppThunk => async dispatch => {
   try {
     dispatch(roomActionStart())
     const roomItem = await getRoomItem(roomId)
-    dispatch(fetchRoomDetailsSuccess(roomItem[0]))
+    dispatch(fetchRoomDetailsSuccess(roomItem))
   } catch(error) {
     const { data } = error.response
     dispatch(roomActionFailure(data))
