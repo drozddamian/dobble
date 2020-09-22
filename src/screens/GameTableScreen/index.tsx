@@ -37,7 +37,7 @@ const GameTableScreen = () => {
 
 
   if (isEmpty(playerCards))
-    return 'loading'
+    return <p>Loading...</p>
 
   return (
     <Wrapper>

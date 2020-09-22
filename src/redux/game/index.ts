@@ -1,9 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { RouteComponentProps } from 'react-router-dom'
 import { AppThunk } from '../rootStore'
 import { GameSession } from '../../api/game'
 import { apiGame } from '../../api'
 import { displayNotification } from '../notification'
 import { NotificationType } from '../../types'
+import ROUTES from '../../constants/routes'
 
 
 const { joinGameSessionApi } = apiGame
@@ -46,13 +48,14 @@ export const {
   joinGameSessionSuccess,
 } = slice.actions
 
-export const joinGameSession = (sessionId: string, playerId: string): AppThunk => async (dispatch) => {
+export const joinGameSession = (sessionId: string, playerId: string, history: RouteComponentProps): AppThunk => async (dispatch) => {
   try {
     dispatch(gameActionStart())
 
     const joinedGameSession = await joinGameSessionApi(sessionId, playerId)
-
     dispatch(joinGameSessionSuccess(joinedGameSession))
+    const gameSessionUrl = `${ROUTES.GAME}/${sessionId}`
+    history.push(gameSessionUrl)
   } catch(error) {
     const { data } = error.response
     dispatch(displayNotification(NotificationType.ERROR, data))

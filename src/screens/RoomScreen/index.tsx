@@ -15,7 +15,7 @@ import { Player } from '../../api/players'
 import { NotificationType } from '../../types'
 import { BUTTON_ACTION_DATA, USER_STATUS } from './constant-data'
 import { useCurrentAccount, useModal } from '../../hooks'
-import {joinGameSession} from '../../redux/game'
+import { joinGameSession } from '../../redux/game'
 
 const { OWNER, JOIN, LEAVE } = USER_STATUS
 
@@ -83,7 +83,7 @@ const RoomScreen: React.FC = () => {
 
   const handlePlayButtonClick = () => {
     if (isNil(currentUserId)) { return }
-    dispatch(joinGameSession(gameSession, currentUserId))
+    dispatch(joinGameSession(gameSession, currentUserId, history))
   }
 
   const handleInitializeModal = () => {
