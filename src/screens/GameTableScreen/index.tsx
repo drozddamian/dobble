@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import io from 'socket.io-client'
 import styled from 'styled-components'
+import { isNil } from 'ramda'
 import { useSelector, useDispatch } from 'react-redux'
-import { last, isEmpty, isNil } from 'ramda'
 import { useHistory, useParams } from 'react-router-dom'
 import Card from '../../components/Card'
-import PlayerSeat from '../../components/PlayerSeat'
 import { SymbolName } from '../../types'
 import GameDialog from '../../components/Game/GameDialog'
 import Button from '../../components/Button'
@@ -33,6 +32,8 @@ const socket = io(SOCKET_URL)
 
 const GameTableScreen = () => {
   const [roundStartCountdown, setRoundStartCountdown] = useState<number | null>(null)
+  const [centerCard, setCenterCard] = useState(null)
+  const [playerCard, setPlayerCard] = useState<string[]>([] as string[])
 
   const history = useHistory()
   const { id: gameSessionId } = useParams()
@@ -53,6 +54,11 @@ const GameTableScreen = () => {
   socket.on(ROUND_START_COUNTDOWN, (countdown) => {
     setRoundStartCountdown(countdown)
     dispatch(setGameInProcess())
+  })
+  socket.on(ROUND_START, (cards) => {
+    const { centerCard, cardsByPlayer } = cards
+    setCenterCard(centerCard)
+    setPlayerCard(cardsByPlayer[currentUserId])
   })
 
   useEffect(() => {
@@ -87,21 +93,26 @@ const GameTableScreen = () => {
       />
 
       <TableWrapper>
-        <StartRoundWrapper>
-          <GameDialog
-            roundStartCountdown={roundStartCountdown}
-            handleRoundStartClick={handleRoundStartClick}
-          />
-        </StartRoundWrapper>
+        {isNil(centerCard) && (
+          <StartRoundWrapper>
+            <GameDialog
+              roundStartCountdown={roundStartCountdown}
+              handleRoundStartClick={handleRoundStartClick}
+            />
+          </StartRoundWrapper>
+        )}
 
-{/*        <TableCenterContainer>
-          <Card cardSymbols={centerCard} />
+        <TableCenterContainer>
+          {centerCard && (
+            <Card cardSymbols={centerCard} />
+          )}
         </TableCenterContainer>
 
-        <PlayerSeat
-          cards={playerCards}
-          handleSymbolClick={handleSymbolClick}
-        />*/}
+        <PlayerCardContainer>
+          {playerCard && (
+            <Card cardSymbols={playerCard} />
+          )}
+        </PlayerCardContainer>
       </TableWrapper>
 
       <p>
@@ -111,9 +122,7 @@ const GameTableScreen = () => {
   )
 }
 
-const Wrapper = styled.div`
-  
-`
+const Wrapper = styled.div``
 
 const TableWrapper = styled.div`
   position: relative;
@@ -143,5 +152,8 @@ const TableCenterContainer = styled.div`
   align-items: center;
 `
 
+const PlayerCardContainer = styled.div`
+  grid-area: firstPlayer;
+`
 
 export default GameTableScreen

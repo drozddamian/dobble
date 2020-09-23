@@ -13,10 +13,8 @@ interface WrapperProps {
   cardRotation: number;
 }
 
-
 const Card: React.FC<Props> = (props: Props) => {
   const { cardSymbols, handleSymbolClick } = props
-  const symbolIds = Object.keys(cardSymbols) as SymbolName[]
 
   const cardRotation = Math.floor(Math.random() * 360)
   const symbolScaleArray = getSymbolScales()
@@ -24,7 +22,7 @@ const Card: React.FC<Props> = (props: Props) => {
   return (
     <Wrapper>
       <CardContainer cardRotation={cardRotation}>
-        {symbolIds.map((symbolId, index) => {
+        {cardSymbols.map((symbolId, index) => {
           return (
             <Symbol
               key={`${symbolId}_${index}`}
