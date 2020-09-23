@@ -1,18 +1,23 @@
 import React from 'react'
 import styled from 'styled-components'
+import { useSelector } from 'react-redux'
 import Button from '../Button'
-import { Player } from '../../api/players'
+
 
 interface Props {
-  isGameInProcess: boolean;
-  playerList: Player[];
+  roundStartCountdown: number | null;
+  handleRoundStartClick: () => void;
 }
 
 const GameDialog: React.FC<Props> = (props: Props) => {
-  const { isGameInProcess, playerList } = props
+  const { isGameInProcess, playerList } = useSelector(state => state.game)
+  const { roundStartCountdown, handleRoundStartClick } = props
   const isEnoughPlayersForGame = playerList.length > 1
 
   const getInfoText = () => {
+    if (roundStartCountdown) {
+      return roundStartCountdown
+    }
     if (isGameInProcess) {
       return 'Waiting for game to finish'
     }
@@ -25,6 +30,7 @@ const GameDialog: React.FC<Props> = (props: Props) => {
       <Button
         text='Start new round'
         type='button'
+        handleClick={handleRoundStartClick}
       />
     )
   }

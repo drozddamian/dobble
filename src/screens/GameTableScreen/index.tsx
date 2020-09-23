@@ -6,7 +6,6 @@ import { last, isEmpty, isNil } from 'ramda'
 import { useHistory, useParams } from 'react-router-dom'
 import Card from '../../components/Card'
 import PlayerSeat from '../../components/PlayerSeat'
-import { getCards } from '../../utils/cards'
 import { SymbolName } from '../../types'
 import GameDialog from '../../components/Game/GameDialog'
 import Button from '../../components/Button'
@@ -15,7 +14,7 @@ import ROUTES from '../../constants/routes'
 import { useCurrentAccount } from '../../hooks'
 import {
   fetchGameSession,
-  updateGameSession,
+  setGameInProcess,
   updatePlayerList,
 } from '../../redux/game'
 
@@ -23,6 +22,8 @@ import {
 const {
   PLAYER_JOIN,
   PLAYER_LEAVE,
+  ROUND_START,
+  ROUND_START_COUNTDOWN,
   GAME_ERROR,
 } = GAME_SOCKET_ACTIONS
 
@@ -31,8 +32,7 @@ const SOCKET_URL = `http://localhost:80`
 const socket = io(SOCKET_URL)
 
 const GameTableScreen = () => {
-  const [centerCard, setCenterCard] = useState(null)
-  const [playerCards, setPlayerCards] = useState<string[]>([])
+  const [roundStartCountdown, setRoundStartCountdown] = useState<number | null>(null)
 
   const history = useHistory()
   const { id: gameSessionId } = useParams()
@@ -42,11 +42,17 @@ const GameTableScreen = () => {
 
   socket.on('event:move-result', (move) => console.log(move))
   socket.on(PLAYER_LEAVE, (playerList) => {
-    console.log(playerList)
     dispatch(updatePlayerList(playerList))
   })
   socket.on(PLAYER_JOIN, (playerList) => {
     dispatch(updatePlayerList(playerList))
+  })
+  socket.on(GAME_ERROR, (error) => {
+    console.error(error)
+  })
+  socket.on(ROUND_START_COUNTDOWN, (countdown) => {
+    setRoundStartCountdown(countdown)
+    dispatch(setGameInProcess())
   })
 
   useEffect(() => {
@@ -54,42 +60,22 @@ const GameTableScreen = () => {
     dispatch(fetchGameSession(gameSessionId))
   }, [currentGameSession])
 
-  useEffect(() => {
-    const { firstTableCard , cards } = getCards()
-    setCenterCard(firstTableCard)
-    setPlayerCards(cards)
-  }, [])
-
   const handleLeaveGameClick = () => {
     socket.emit(PLAYER_LEAVE, { gameId: gameSessionId, playerId: currentUserId })
     history.push(ROUTES.MAIN)
   }
 
+  const handleRoundStartClick = () => {
+    socket.emit(ROUND_START, { gameId: gameSessionId })
+  }
+
   const handleSymbolClick = (cardName: SymbolName) => {
     socket.emit('event:card-chosen', { card: cardName });
-
-    if (isEmpty(playerCards) || isNil(centerCard)) {
-      return
-    }
-    // @ts-ignore
-    if (!centerCard.hasOwnProperty(cardName)) {
-      return
-    }
-
-    const currentPlayerCard = last(playerCards)
-    // @ts-ignore
-    setCenterCard(currentPlayerCard)
-
-    const currentCards = [...playerCards]
-    currentCards.pop()
-    setPlayerCards(currentCards)
   }
 
-  if (isLoading || isEmpty(playerCards)) {
+  if (isLoading) {
     return <p>Loading...</p>
   }
-
-  const { isGameInProcess } = currentGameSession
 
   return (
     <Wrapper>
@@ -103,19 +89,19 @@ const GameTableScreen = () => {
       <TableWrapper>
         <StartRoundWrapper>
           <GameDialog
-            isGameInProcess={isGameInProcess}
-            playerList={playerList}
+            roundStartCountdown={roundStartCountdown}
+            handleRoundStartClick={handleRoundStartClick}
           />
         </StartRoundWrapper>
 
-        <TableCenterContainer>
+{/*        <TableCenterContainer>
           <Card cardSymbols={centerCard} />
         </TableCenterContainer>
 
         <PlayerSeat
           cards={playerCards}
           handleSymbolClick={handleSymbolClick}
-        />
+        />*/}
       </TableWrapper>
 
       <p>

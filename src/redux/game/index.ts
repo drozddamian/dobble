@@ -13,6 +13,7 @@ type GameState = {
   isLoading: boolean;
   error: string | null;
   currentGameSession: GameSession | null;
+  isGameInProcess: boolean;
   playerList: Player[];
 }
 
@@ -20,6 +21,7 @@ const initialState: GameState = {
   isLoading: false,
   error: null,
   currentGameSession: null,
+  isGameInProcess: false,
   playerList: [],
 }
 
@@ -47,6 +49,9 @@ const slice = createSlice({
     updatePlayerList(state, action: PayloadAction<Player[]>) {
       state.playerList = action.payload
     },
+    setGameInProcess(state) {
+      state.isGameInProcess = true
+    },
   },
 })
 
@@ -56,6 +61,7 @@ export const {
   fetchGameSessionSuccess,
   updateGameSession,
   updatePlayerList,
+  setGameInProcess,
 } = slice.actions
 
 export const joinGameSession = (sessionId: string, playerId: string, history: RouteComponentProps): AppThunk => async (dispatch) => {
