@@ -1,4 +1,4 @@
-const API_SERVER_URL = 'http://localhost:5000'
+const API_SERVER_URL = 'https://dev-dobble.herokuapp.com'
 
 const API = {
   AUTHENTICATION: `${API_SERVER_URL}/api/authentication`,
