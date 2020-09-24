@@ -1,11 +1,14 @@
 import { isNil } from 'ramda'
+import { AppThunk } from '../rootStore'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { Card, MappedGameRound } from '../../types'
 import { SESSION_USER_ID } from '../../constants'
+import { resetTable } from '../gameTable'
 
 
 type GameRoundState = {
   roundId: string | null;
+  roundWinner: string | null;
   isGameRoundInProcess: boolean;
   spotterId: string | null;
   centerCard: Card | null;
@@ -15,6 +18,7 @@ type GameRoundState = {
 
 const initialState: GameRoundState = {
   roundId: null,
+  roundWinner: null,
   isGameRoundInProcess: false,
   spotterId: null,
   centerCard: null,
@@ -46,12 +50,35 @@ const slice = createSlice({
       state.experienceForSpotter = experienceForSpotter
       state.playerCard = currentPlayerCards
     },
+    finishGameRound(state, action: PayloadAction<string>) {
+      state.roundWinner = action.payload
+      state.roundId = null
+      state.isGameRoundInProcess = false
+      state.spotterId = null
+      state.centerCard = null
+      state.experienceForSpotter = 0
+      state.playerCard = null
+    },
+    eraseRoundWinner(state) {
+      state.roundWinner = null
+    }
   },
 })
 
 export const {
   updateGameRound,
+  finishGameRound,
+  eraseRoundWinner,
 } = slice.actions
 
+
+export const finishGameAndShowResult = (winner: string): AppThunk => (dispatch) => {
+  dispatch(finishGameRound(winner))
+
+  setTimeout(() => {
+    dispatch(eraseRoundWinner())
+    dispatch(resetTable())
+  }, 4000)
+}
 
 export default slice

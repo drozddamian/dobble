@@ -10,6 +10,7 @@ interface Props {
 
 const GameDialog: React.FC<Props> = (props: Props) => {
   const { isGameInProcess, roundStartCountdown, playerList } = useSelector(state => state.gameTable)
+  const { roundWinner } = useSelector(state => state.gameRound)
   const { handleRoundStartClick } = props
   const isEnoughPlayersForGame = playerList.length > 1
 
@@ -23,6 +24,13 @@ const GameDialog: React.FC<Props> = (props: Props) => {
     //return 'Waiting for game to finish'
   }
 
+  if (roundWinner) {
+    return (
+      <InfoText>
+        {`${roundWinner} is the winner!`}
+      </InfoText>
+    )
+  }
 
   if (isEnoughPlayersForGame && !isGameInProcess) {
     return (

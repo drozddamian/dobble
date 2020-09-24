@@ -46,7 +46,11 @@ const slice = createSlice({
       state.isGameInProcess = isGameInProcess
       state.roundStartCountdown = roundStartCountdown
       state.playerList = players
-    }
+    },
+    resetTable(state) {
+      state.isGameInProcess = false
+      state.roundStartCountdown = 3
+    },
   },
 })
 
@@ -55,6 +59,7 @@ export const {
   tableActionFailure,
   tableActionSuccess,
   updateTable,
+  resetTable,
 } = slice.actions
 
 export const joinGameTable = (tableId: string, playerId: string, history: RouteComponentProps): AppThunk => async (dispatch) => {

@@ -4,15 +4,15 @@ import styled from 'styled-components'
 import { useSelector, useDispatch } from 'react-redux'
 import { useHistory, useParams } from 'react-router-dom'
 import { SymbolName } from '../../types'
+import Button from '../../components/Button'
 import GameDialog from '../../components/GameTable/GameDialog'
 import TablePlayers from '../../components/GameTable/TablePlayers'
-import Button from '../../components/Button'
+import GameTable from '../../components/GameTable'
 import GAME_SOCKET_ACTIONS from '../../constants/gameSocket'
 import ROUTES from '../../constants/routes'
 import { useCurrentAccount } from '../../hooks'
 import { updateTable } from '../../redux/gameTable'
-import { updateGameRound } from '../../redux/gameRound'
-import GameTable from '../../components/GameTable'
+import { updateGameRound, finishGameAndShowResult } from '../../redux/gameRound'
 
 
 const {
@@ -21,6 +21,7 @@ const {
   ROUND_START,
   GAME_CHANGE,
   GAME_ERROR,
+  GAME_END,
   SPOT_SHAPE,
 } = GAME_SOCKET_ACTIONS
 
@@ -50,6 +51,10 @@ const GameTableScreen = () => {
       dispatch(updateGameRound(gameRound))
     })
 
+    socket.on(GAME_END, ({ winner }) => {
+      dispatch(finishGameAndShowResult(winner))
+    })
+
     socket.on(GAME_ERROR, (error) => {
       console.error(error)
     })
@@ -72,7 +77,7 @@ const GameTableScreen = () => {
     if (!centerCard.includes(spottedSymbol)) {
       return
     }
-    socket.emit(SPOT_SHAPE, { roundId, spottedSymbol, playerId: currentUserId })
+    socket.emit(SPOT_SHAPE, { roundId, playerId: currentUserId })
   }
 
   if (isLoading) {
