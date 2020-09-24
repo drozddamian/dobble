@@ -15,6 +15,7 @@ import { Player } from '../../api/players'
 import { NotificationType } from '../../types'
 import { BUTTON_ACTION_DATA, USER_STATUS } from './constant-data'
 import { useCurrentAccount, useModal } from '../../hooks'
+import { joinGameTable } from '../../redux/gameTable'
 
 const { OWNER, JOIN, LEAVE } = USER_STATUS
 
@@ -56,14 +57,14 @@ const RoomScreen: React.FC = () => {
   const { isModalVisible, handleOpenModal, handleCloseModal } = useModal(modalRef)
   const { currentUserId } = useCurrentAccount()
 
-
   const { isLoading, roomItem } = useSelector(state => state.rooms)
+  const { isLoading: isJoiningGameInProcess } = useSelector(state => state.gameTable)
   const userId = currentUserId || ''
+
 
   useEffect(() => {
     dispatch(fetchRoomItem(roomId))
   }, [])
-
 
   if (isLoading || isNil(roomItem)) {
     return (
@@ -71,7 +72,7 @@ const RoomScreen: React.FC = () => {
     )
   }
 
-  const { owner, players, howManyPlayers, availableSeats } = roomItem
+  const { owner, players, howManyPlayers, availableSeats, gameTable } = roomItem
 
   const userStatus = getButtonData(currentUserId, owner._id, players)
 
@@ -79,6 +80,11 @@ const RoomScreen: React.FC = () => {
   const isUserToJoin = equals(userStatus, USER_STATUS.JOIN)
   const noSeatAvailableToJoin = isRoomFull && isUserToJoin
   const { buttonText, modalText, acceptModalText, action } = BUTTON_ACTION_DATA[userStatus]
+
+  const handlePlayButtonClick = () => {
+    if (isNil(currentUserId)) { return }
+    dispatch(joinGameTable(gameTable, currentUserId, history))
+  }
 
   const handleInitializeModal = () => {
     if (noSeatAvailableToJoin) {
@@ -103,6 +109,7 @@ const RoomScreen: React.FC = () => {
       <PageWrapper>
         <RoomButtonsContainer>
           <Button
+            isSmallButton
             text={buttonText}
             type='button'
             handleClick={handleInitializeModal}
@@ -110,10 +117,25 @@ const RoomScreen: React.FC = () => {
           />
         </RoomButtonsContainer>
 
+        <GameSessionContainer>
+          <ContainerTitle>
+            Let's play the game!
+          </ContainerTitle>
+
+
+          <Button
+            text='Play'
+            type='button'
+            handleClick={handlePlayButtonClick}
+            isDisabled={isUserToJoin}
+            isLoading={isJoiningGameInProcess}
+          />
+        </GameSessionContainer>
+
         <PlayerListContainer>
-          <PlayersTitle>
+          <ContainerTitle>
             {getPlayersTitle(roomItem?.howManyPlayers)}
-          </PlayersTitle>
+          </ContainerTitle>
 
           <PlayerList
             owner={roomItem?.owner.nick}
@@ -136,15 +158,19 @@ const RoomScreen: React.FC = () => {
 }
 
 const RoomButtonsContainer = styled.div`
-  margin: 25px 0 60px 0;
+  margin-bottom: 60px;
 `
 
 const PlayerListContainer = styled.div``
 
-const PlayersTitle = styled.h2`
+const ContainerTitle = styled.h2`
   font-family: ${({ theme }) => theme.fonts.russo};
   font-size: ${({ theme }) => theme.fontSize.normalText};
   padding-bottom: 16px;
+`
+
+const GameSessionContainer = styled.div`
+  margin: 60px 0;
 `
 
 export default RoomScreen
