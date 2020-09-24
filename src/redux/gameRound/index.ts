@@ -5,6 +5,7 @@ import { SESSION_USER_ID } from '../../constants'
 
 
 type GameRoundState = {
+  roundId: string | null;
   isGameRoundInProcess: boolean;
   spotterId: string | null;
   centerCard: Card | null;
@@ -13,6 +14,7 @@ type GameRoundState = {
 }
 
 const initialState: GameRoundState = {
+  roundId: null,
   isGameRoundInProcess: false,
   spotterId: null,
   centerCard: null,
@@ -26,6 +28,7 @@ const slice = createSlice({
   reducers: {
     updateGameRound(state, action: PayloadAction<MappedGameRound>) {
       const {
+        id,
         isGameRoundInProcess,
         spotterId,
         centerCard,
@@ -36,6 +39,7 @@ const slice = createSlice({
       const playerId = sessionStorage.getItem(SESSION_USER_ID)
       const currentPlayerCards = !isNil(playerId) ? cardsByPlayerId[playerId] : null
 
+      state.roundId = id
       state.isGameRoundInProcess = isGameRoundInProcess
       state.spotterId = spotterId
       state.centerCard = centerCard

@@ -1,10 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import socketIOClient from 'socket.io-client'
 import styled from 'styled-components'
-import { isNil } from 'ramda'
 import { useSelector, useDispatch } from 'react-redux'
 import { useHistory, useParams } from 'react-router-dom'
-import Card from '../../components/Card'
 import { SymbolName } from '../../types'
 import GameDialog from '../../components/GameTable/GameDialog'
 import TablePlayers from '../../components/GameTable/TablePlayers'
@@ -14,7 +12,7 @@ import ROUTES from '../../constants/routes'
 import { useCurrentAccount } from '../../hooks'
 import { updateTable } from '../../redux/gameTable'
 import { updateGameRound } from '../../redux/gameRound'
-import GameTable from "../../components/GameTable";
+import GameTable from '../../components/GameTable'
 
 
 const {
@@ -23,6 +21,7 @@ const {
   ROUND_START,
   GAME_CHANGE,
   GAME_ERROR,
+  SPOT_SHAPE,
 } = GAME_SOCKET_ACTIONS
 
 
@@ -30,13 +29,13 @@ const SOCKET_URL = `http://localhost:80`
 let socket
 
 const GameTableScreen = () => {
-  const { isGameRoundInProcess } = useSelector(state => state.gameRound)
+  const { isLoading } = useSelector(state => state.gameTable)
+  const { roundId, isGameRoundInProcess, centerCard } = useSelector(state => state.gameRound)
 
+  const dispatch = useDispatch()
   const history = useHistory()
   const { id: gameTableId } = useParams()
   const { currentUserId } = useCurrentAccount()
-  const dispatch = useDispatch()
-  const { isLoading } = useSelector(state => state.gameTable)
 
   useEffect(() => {
     socket = socketIOClient(SOCKET_URL, {
@@ -69,8 +68,11 @@ const GameTableScreen = () => {
     socket.emit(ROUND_START, { gameId: gameTableId })
   }
 
-  const handleSymbolClick = (symbolClicked: SymbolName) => {
-    console.log(symbolClicked)
+  const handleSymbolClick = (spottedSymbol: SymbolName) => {
+    if (!centerCard.includes(spottedSymbol)) {
+      return
+    }
+    socket.emit(SPOT_SHAPE, { roundId, spottedSymbol, playerId: currentUserId })
   }
 
   if (isLoading) {
@@ -79,17 +81,18 @@ const GameTableScreen = () => {
 
   return (
     <Wrapper>
-      <Button
-        isSmallButton
-        text='Leave game session'
-        type='button'
-        handleClick={handleLeaveGameClick}
-      />
-
       {!isGameRoundInProcess && (
-        <StartRoundWrapper>
-          <GameDialog handleRoundStartClick={handleRoundStartClick} />
-        </StartRoundWrapper>
+        <>
+          <Button
+            isSmallButton
+            text='Leave game session'
+            type='button'
+            handleClick={handleLeaveGameClick}
+          />
+          <StartRoundWrapper>
+            <GameDialog handleRoundStartClick={handleRoundStartClick} />
+          </StartRoundWrapper>
+        </>
       )}
 
       <GameTable handleSymbolClick={handleSymbolClick} />
