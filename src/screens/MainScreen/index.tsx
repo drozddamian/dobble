@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import styled, { css } from 'styled-components'
-import { isNil } from 'ramda'
+import { isNil, isEmpty } from 'ramda'
 import { useDispatch, useSelector } from 'react-redux'
 import PageWrapper from '../../components/Page/Container'
 import RoomList from '../../components/RoomList'
@@ -19,7 +19,6 @@ const MainScreen: React.FC = () => {
 
   const { currentUserId } = useCurrentAccount()
   const { isLoading, rooms, mostPopularRooms } = useSelector(state => state.rooms)
-
   const getPopularRooms = () => dispatch(fetchPopularRooms())
 
   useEffect(() => {
@@ -34,7 +33,7 @@ const MainScreen: React.FC = () => {
   }, [rooms.length])
 
   const getPlayerComponent = () => {
-    if (isNil(currentUserId)) {
+    if (isNil(currentUserId) || isEmpty(currentUserId)) {
       return <AuthSection />
     }
     return <PlayerSection userId={currentUserId} />

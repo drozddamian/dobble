@@ -1,18 +1,18 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RouteComponentProps } from 'react-router-dom'
 import { AppThunk } from '../rootStore'
-import { GameSession } from '../../api/game'
+import { GameTable } from '../../api/gameTable'
 import { apiGame } from '../../api'
 import { displayNotification } from '../notification'
 import { NotificationType } from '../../types'
-import {Player} from "../../api/players";
+import { Player } from '../../api/players'
 
-const { getGameSession, joinGameSessionApi } = apiGame
+const { getGameTable, joinGameTableApi } = apiGame
 
 type GameState = {
   isLoading: boolean;
   error: string | null;
-  currentGameSession: GameSession | null;
+  currentGameSession: GameTable | null;
   isGameInProcess: boolean;
   playerList: Player[];
 }
@@ -37,13 +37,13 @@ const slice = createSlice({
       state.isLoading = false
       state.error = action.payload
     },
-    fetchGameSessionSuccess(state, action: PayloadAction<GameSession>) {
+    fetchGameSessionSuccess(state, action: PayloadAction<GameTable>) {
       state.currentGameSession = action.payload
       state.playerList = action.payload.players
       state.isLoading = false
       state.error = null
     },
-    updateGameSession(state, action: PayloadAction<GameSession>) {
+    updateGameSession(state, action: PayloadAction<GameTable>) {
       state.currentGameSession = action.payload
     },
     updatePlayerList(state, action: PayloadAction<Player[]>) {
@@ -64,34 +64,34 @@ export const {
   setGameInProcess,
 } = slice.actions
 
-export const joinGameSession = (sessionId: string, playerId: string, history: RouteComponentProps): AppThunk => async (dispatch) => {
-  const gameSessionUrl = `/game/${sessionId}`
+export const joinGameTable = (sessionId: string, playerId: string, history: RouteComponentProps): AppThunk => async (dispatch) => {
+  const gameTableUrl = `/game/${sessionId}`
 
   try {
     dispatch(gameActionStart())
 
-    const joinedGameSession = await joinGameSessionApi(sessionId, playerId)
+    const joinedGameSession = await joinGameTableApi(sessionId, playerId)
     dispatch(fetchGameSessionSuccess(joinedGameSession))
 
     //TODO: change to routes
   } catch(error) {
-    const { data } = error.response
-    dispatch(displayNotification(NotificationType.ERROR, data))
-    dispatch(gameActionFailure(data))
+    const { message } = error
+    dispatch(displayNotification(NotificationType.ERROR, message))
+    dispatch(gameActionFailure(message))
   } finally {
-    history.push(gameSessionUrl)
+    history.push(gameTableUrl)
   }
 }
 
-export const fetchGameSession = (sessionId: string): AppThunk => async (dispatch) => {
+export const fetchGameTable = (gameTableId: string): AppThunk => async (dispatch) => {
   try {
     dispatch(gameActionStart())
-    const currentGameSession = await getGameSession(sessionId)
+    const currentGameSession = await getGameTable(gameTableId)
     dispatch(fetchGameSessionSuccess(currentGameSession))
   } catch(error) {
-    const { data } = error.response
-    dispatch(displayNotification(NotificationType.ERROR, data))
-    dispatch(gameActionFailure(data))
+    const { message } = error
+    dispatch(displayNotification(NotificationType.ERROR, message))
+    dispatch(gameActionFailure(message))
   }
 }
 

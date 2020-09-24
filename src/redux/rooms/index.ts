@@ -113,8 +113,8 @@ export const fetchPopularRooms = (): AppThunk => async dispatch => {
     const popularRooms = await getMostPopularRooms()
     dispatch(fetchMostPopularRoomsSuccess(popularRooms))
   } catch(error) {
-    const { data } = error.response
-    dispatch(roomActionFailure(data))
+    const { message } = error
+    dispatch(roomActionFailure(message))
   }
 }
 
@@ -125,9 +125,9 @@ export const deleteRoomItem = (roomId: string, history: RouteComponentProps): Ap
     history.push(ROUTES.MAIN)
     dispatch(displayNotification(NotificationType.SUCCESS, 'Room deleted'))
   } catch(error) {
-    const { data } = error.response
+    const { message } = error
     dispatch(displayNotification(NotificationType.ERROR, "Sorry, we couldn't remove the room"))
-    dispatch(roomActionFailure(data))
+    dispatch(roomActionFailure(message))
   }
 }
 
@@ -138,9 +138,9 @@ export const addPlayerToRoom = (roomId: string, playerId: string, history?: Rout
     history.push(`/room/${roomId}`)
     dispatch(displayNotification(NotificationType.SUCCESS, 'You have joined the room'))
   } catch(error) {
-    const { data } = error.response
-    dispatch(displayNotification(NotificationType.ERROR, data))
-    dispatch(roomActionFailure(data))
+    const { message } = error
+    dispatch(displayNotification(NotificationType.ERROR, message))
+    dispatch(roomActionFailure(message))
   }
 }
 
@@ -151,9 +151,9 @@ export const removePlayerFromRoom = (roomId: string, playerId: string, history?:
     history.push(ROUTES.MAIN)
     dispatch(displayNotification(NotificationType.SUCCESS, 'You have left the room'))
   } catch(error) {
-    const { data } = error.response
-    dispatch(displayNotification(NotificationType.ERROR, data))
-    dispatch(roomActionFailure(data))
+    const { message } = error
+    dispatch(displayNotification(NotificationType.ERROR, message))
+    dispatch(roomActionFailure(message))
   }
 }
 
@@ -170,10 +170,10 @@ export const newRoom =
           closeModalCallback()
           dispatch(displayNotification(NotificationType.SUCCESS, 'Room successfully created'))
         } catch(error) {
-          const { data } = error.response
+          const { message } = error
           closeModalCallback()
-          dispatch(displayNotification(NotificationType.ERROR, data))
-          dispatch(roomActionFailure(data))
+          dispatch(displayNotification(NotificationType.ERROR, message))
+          dispatch(roomActionFailure(message))
         }
       }
 

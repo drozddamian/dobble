@@ -3,7 +3,7 @@ import authentication from './authentication'
 import players from './players'
 import rooms from './rooms'
 import notification from './notification'
-import game from './game'
+import game from './gameTable'
 
 const rootReducer = combineReducers({
   authentication: authentication.reducer,
