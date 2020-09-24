@@ -14,6 +14,7 @@ import ROUTES from '../../constants/routes'
 import { useCurrentAccount } from '../../hooks'
 import { updateTable } from '../../redux/gameTable'
 import { updateGameRound } from '../../redux/gameRound'
+import GameTable from "../../components/GameTable";
 
 
 const {
@@ -29,10 +30,7 @@ const SOCKET_URL = `http://localhost:80`
 let socket
 
 const GameTableScreen = () => {
-  const {
-    centerCard,
-    playerCard,
-  } = useSelector(state => state.gameRound)
+  const { isGameRoundInProcess } = useSelector(state => state.gameRound)
 
   const history = useHistory()
   const { id: gameTableId } = useParams()
@@ -88,25 +86,13 @@ const GameTableScreen = () => {
         handleClick={handleLeaveGameClick}
       />
 
-      <TableWrapper>
-        {isNil(centerCard) && (
-          <StartRoundWrapper>
-            <GameDialog handleRoundStartClick={handleRoundStartClick} />
-          </StartRoundWrapper>
-        )}
+      {!isGameRoundInProcess && (
+        <StartRoundWrapper>
+          <GameDialog handleRoundStartClick={handleRoundStartClick} />
+        </StartRoundWrapper>
+      )}
 
-        <TableCenterContainer>
-          {centerCard && (
-            <Card cardSymbols={centerCard} />
-          )}
-        </TableCenterContainer>
-
-        <PlayerCardContainer>
-          {playerCard && (
-            <Card cardSymbols={playerCard} />
-          )}
-        </PlayerCardContainer>
-      </TableWrapper>
+      <GameTable handleSymbolClick={handleSymbolClick} />
 
       <PlayersContainer>
         <TablePlayers />
@@ -117,16 +103,6 @@ const GameTableScreen = () => {
 
 const Wrapper = styled.div``
 
-const TableWrapper = styled.div`
-  position: relative;
-  display: grid;
-  grid-template: repeat(2, 1fr) / repeat(3, 1fr);
-  grid-gap: 20px;
-  grid-template-areas: 
-     "fifthPlayer tableCenter sixthPlayer"
-     "seventhPlayer firstPlayer eighthPlayer";
-`
-
 const StartRoundWrapper = styled.div`
   position: absolute;
   z-index: 10;
@@ -136,17 +112,6 @@ const StartRoundWrapper = styled.div`
   justify-content: center;
   align-items: center;
   background: ${({ theme }) => theme.colors.white08};
-`
-
-const TableCenterContainer = styled.div`
-  grid-area: tableCenter;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`
-
-const PlayerCardContainer = styled.div`
-  grid-area: firstPlayer;
 `
 
 const PlayersContainer = styled.div`
