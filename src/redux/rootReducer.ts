@@ -3,14 +3,16 @@ import authentication from './authentication'
 import players from './players'
 import rooms from './rooms'
 import notification from './notification'
-import game from './gameTable'
+import gameTable from './gameTable'
+import gameRound from './gameRound'
 
 const rootReducer = combineReducers({
   authentication: authentication.reducer,
   players: players.reducer,
   rooms: rooms.reducer,
   notification: notification.reducer,
-  game: game.reducer,
+  gameTable: gameTable.reducer,
+  gameRound: gameRound.reducer,
 })
 
 export type RootState = ReturnType<typeof rootReducer>

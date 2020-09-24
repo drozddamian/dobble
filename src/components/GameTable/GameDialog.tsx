@@ -5,23 +5,22 @@ import Button from '../Button'
 
 
 interface Props {
-  roundStartCountdown: number | null;
   handleRoundStartClick: () => void;
 }
 
 const GameDialog: React.FC<Props> = (props: Props) => {
-  const { isGameInProcess, playerList } = useSelector(state => state.game)
-  const { roundStartCountdown, handleRoundStartClick } = props
+  const { isGameInProcess, roundStartCountdown, playerList } = useSelector(state => state.gameTable)
+  const { handleRoundStartClick } = props
   const isEnoughPlayersForGame = playerList.length > 1
 
   const getInfoText = () => {
+    if (!isGameInProcess) {
+      return 'Waiting for more players to join'
+    }
     if (roundStartCountdown) {
       return roundStartCountdown
     }
-    if (isGameInProcess) {
-      return 'Waiting for game to finish'
-    }
-    return 'Waiting for more players to join'
+    //return 'Waiting for game to finish'
   }
 
 

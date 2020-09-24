@@ -17,8 +17,8 @@ const getGameTable = async (gameTableId: string) => {
   return data
 }
 
-const joinGameTableApi = async (sessionId: string, playerId: string) => {
-  const { data } = await axios.post<GameTable>(API_METHODS.GAME_TABLE_ROOT, { sessionId, playerId })
+const joinGameTableApi = async (tableId: string, playerId: string) => {
+  const { data } = await axios.post<GameTable>(API_METHODS.GAME_TABLE_ROOT, { tableId, playerId })
   return data
 }
 

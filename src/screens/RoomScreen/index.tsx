@@ -58,7 +58,7 @@ const RoomScreen: React.FC = () => {
   const { currentUserId } = useCurrentAccount()
 
   const { isLoading, roomItem } = useSelector(state => state.rooms)
-  const { isLoading: isJoiningGameInProcess } = useSelector(state => state.game)
+  const { isLoading: isJoiningGameInProcess } = useSelector(state => state.gameTable)
   const userId = currentUserId || ''
 
 
@@ -72,7 +72,7 @@ const RoomScreen: React.FC = () => {
     )
   }
 
-  const { owner, players, howManyPlayers, availableSeats, gameSession } = roomItem
+  const { owner, players, howManyPlayers, availableSeats, gameTable } = roomItem
 
   const userStatus = getButtonData(currentUserId, owner._id, players)
 
@@ -83,7 +83,7 @@ const RoomScreen: React.FC = () => {
 
   const handlePlayButtonClick = () => {
     if (isNil(currentUserId)) { return }
-    dispatch(joinGameTable(gameSession, currentUserId, history))
+    dispatch(joinGameTable(gameTable, currentUserId, history))
   }
 
   const handleInitializeModal = () => {

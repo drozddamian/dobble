@@ -6,22 +6,21 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useHistory, useParams } from 'react-router-dom'
 import Card from '../../components/Card'
 import { SymbolName } from '../../types'
-import GameDialog from '../../components/Game/GameDialog'
+import GameDialog from '../../components/GameTable/GameDialog'
+import TablePlayers from '../../components/GameTable/TablePlayers'
 import Button from '../../components/Button'
 import GAME_SOCKET_ACTIONS from '../../constants/gameSocket'
 import ROUTES from '../../constants/routes'
 import { useCurrentAccount } from '../../hooks'
-import {
-  setGameInProcess,
-  updatePlayerList,
-} from '../../redux/gameTable'
+import { updateTable } from '../../redux/gameTable'
+import { updateGameRound } from '../../redux/gameRound'
 
 
 const {
-  PLAYER_JOIN,
+  TABLE_CHANGE,
   PLAYER_LEAVE,
   ROUND_START,
-  ROUND_START_COUNTDOWN,
+  GAME_CHANGE,
   GAME_ERROR,
 } = GAME_SOCKET_ACTIONS
 
@@ -30,40 +29,36 @@ const SOCKET_URL = `http://localhost:80`
 let socket
 
 const GameTableScreen = () => {
-  const [roundStartCountdown, setRoundStartCountdown] = useState<number | null>(null)
-  const [centerCard, setCenterCard] = useState(null)
-  const [playerCard, setPlayerCard] = useState<string[]>([] as string[])
+  const {
+    centerCard,
+    playerCard,
+  } = useSelector(state => state.gameRound)
 
   const history = useHistory()
   const { id: gameTableId } = useParams()
   const { currentUserId } = useCurrentAccount()
   const dispatch = useDispatch()
-  const { isLoading, playerList } = useSelector(state => state.game)
+  const { isLoading } = useSelector(state => state.gameTable)
 
   useEffect(() => {
-    socket = socketIOClient(SOCKET_URL, { query: `tableId=${gameTableId}`})
+    socket = socketIOClient(SOCKET_URL, {
+      query: `tableId=${gameTableId}&playerId=${currentUserId}`
+    })
 
-    socket.on(PLAYER_LEAVE, (playerList) => {
-      dispatch(updatePlayerList(playerList))
+    socket.on(TABLE_CHANGE, (tableData) => {
+      dispatch(updateTable(tableData))
     })
-    socket.on(PLAYER_JOIN, (playerList) => {
-      dispatch(updatePlayerList(playerList))
+
+    socket.on(GAME_CHANGE, (gameRound) => {
+      dispatch(updateGameRound(gameRound))
     })
+
     socket.on(GAME_ERROR, (error) => {
       console.error(error)
     })
-    socket.on(ROUND_START_COUNTDOWN, (countdown) => {
-      setRoundStartCountdown(countdown)
-      dispatch(setGameInProcess())
-    })
-    socket.on(ROUND_START, (cards) => {
-      const { centerCard, cardsByPlayer } = cards
-      setCenterCard(centerCard)
-      setPlayerCard(cardsByPlayer[currentUserId])
-    })
 
     return () => {
-      socket.disconnect()
+      socket.close()
     }
   }, [])
 
@@ -96,10 +91,7 @@ const GameTableScreen = () => {
       <TableWrapper>
         {isNil(centerCard) && (
           <StartRoundWrapper>
-            <GameDialog
-              roundStartCountdown={roundStartCountdown}
-              handleRoundStartClick={handleRoundStartClick}
-            />
+            <GameDialog handleRoundStartClick={handleRoundStartClick} />
           </StartRoundWrapper>
         )}
 
@@ -116,9 +108,9 @@ const GameTableScreen = () => {
         </PlayerCardContainer>
       </TableWrapper>
 
-      <p>
-        {JSON.stringify(playerList)}
-      </p>
+      <PlayersContainer>
+        <TablePlayers />
+      </PlayersContainer>
     </Wrapper>
   )
 }
@@ -155,6 +147,10 @@ const TableCenterContainer = styled.div`
 
 const PlayerCardContainer = styled.div`
   grid-area: firstPlayer;
+`
+
+const PlayersContainer = styled.div`
+
 `
 
 export default GameTableScreen

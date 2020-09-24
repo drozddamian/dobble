@@ -8,7 +8,7 @@ export interface Room {
   createdAt: string;
   _id: string;
   owner: Player;
-  gameSession: string;
+  gameTable: string;
   availableSeats: 2 | 3 | 4 | 5 | 6;
   howManyPlayers: 0 | 1 | 2 | 3 | 4 | 5 | 6;
 }

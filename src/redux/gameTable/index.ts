@@ -7,21 +7,21 @@ import { displayNotification } from '../notification'
 import { NotificationType } from '../../types'
 import { Player } from '../../api/players'
 
-const { getGameTable, joinGameTableApi } = apiGame
+const { joinGameTableApi } = apiGame
 
 type GameState = {
   isLoading: boolean;
   error: string | null;
-  currentGameSession: GameTable | null;
   isGameInProcess: boolean;
+  roundStartCountdown: 0 | 1 | 2 | 3;
   playerList: Player[];
 }
 
 const initialState: GameState = {
   isLoading: false,
   error: null,
-  currentGameSession: null,
   isGameInProcess: false,
+  roundStartCountdown: 3,
   playerList: [],
 }
 
@@ -29,69 +29,47 @@ const slice = createSlice({
   name: 'game',
   initialState,
   reducers: {
-    gameActionStart(state) {
+    tableActionStart(state) {
       state.isLoading = true
       state.error = null
     },
-    gameActionFailure(state, action: PayloadAction<string>) {
+    tableActionFailure(state, action: PayloadAction<string>) {
       state.isLoading = false
       state.error = action.payload
     },
-    fetchGameSessionSuccess(state, action: PayloadAction<GameTable>) {
-      state.currentGameSession = action.payload
-      state.playerList = action.payload.players
+    tableActionSuccess(state) {
       state.isLoading = false
       state.error = null
     },
-    updateGameSession(state, action: PayloadAction<GameTable>) {
-      state.currentGameSession = action.payload
-    },
-    updatePlayerList(state, action: PayloadAction<Player[]>) {
-      state.playerList = action.payload
-    },
-    setGameInProcess(state) {
-      state.isGameInProcess = true
-    },
+    updateTable(state, action) {
+      const { isGameInProcess, roundStartCountdown, players } = action.payload
+      state.isGameInProcess = isGameInProcess
+      state.roundStartCountdown = roundStartCountdown
+      state.playerList = players
+    }
   },
 })
 
 export const {
-  gameActionStart,
-  gameActionFailure,
-  fetchGameSessionSuccess,
-  updateGameSession,
-  updatePlayerList,
-  setGameInProcess,
+  tableActionStart,
+  tableActionFailure,
+  tableActionSuccess,
+  updateTable,
 } = slice.actions
 
-export const joinGameTable = (sessionId: string, playerId: string, history: RouteComponentProps): AppThunk => async (dispatch) => {
-  const gameTableUrl = `/game/${sessionId}`
+export const joinGameTable = (tableId: string, playerId: string, history: RouteComponentProps): AppThunk => async (dispatch) => {
+  const gameTableUrl = `/game/${tableId}`
 
   try {
-    dispatch(gameActionStart())
-
-    const joinedGameSession = await joinGameTableApi(sessionId, playerId)
-    dispatch(fetchGameSessionSuccess(joinedGameSession))
-
-    //TODO: change to routes
+    dispatch(tableActionStart())
+    await joinGameTableApi(tableId, playerId)
+    dispatch(tableActionSuccess())
   } catch(error) {
     const { message } = error
     dispatch(displayNotification(NotificationType.ERROR, message))
-    dispatch(gameActionFailure(message))
+    dispatch(tableActionFailure(message))
   } finally {
     history.push(gameTableUrl)
-  }
-}
-
-export const fetchGameTable = (gameTableId: string): AppThunk => async (dispatch) => {
-  try {
-    dispatch(gameActionStart())
-    const currentGameSession = await getGameTable(gameTableId)
-    dispatch(fetchGameSessionSuccess(currentGameSession))
-  } catch(error) {
-    const { message } = error
-    dispatch(displayNotification(NotificationType.ERROR, message))
-    dispatch(gameActionFailure(message))
   }
 }
 
