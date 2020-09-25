@@ -1,4 +1,7 @@
-const API_SERVER_URL = 'https://dev-dobble.herokuapp.com'
+const API_SERVER_URL = process.env.NODE_ENV === 'development'
+  ? 'https://dev-dobble.herokuapp.com/'
+  : 'https://prod-dobble.herokuapp.com/'
+
 
 const API = {
   AUTHENTICATION: `${API_SERVER_URL}/api/authentication`,
