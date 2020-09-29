@@ -1,6 +1,9 @@
-import {createSlice, PayloadAction} from '@reduxjs/toolkit'
-import {AppThunk} from '../rootStore'
-import {NotificationProps, NotificationType} from '../../types'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { AppThunk } from '../rootStore'
+import {
+  NotificationProps,
+  NotificationType,
+} from '../../types'
 
 type NotificationState = {
   notification: NotificationProps | null;

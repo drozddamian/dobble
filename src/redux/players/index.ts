@@ -1,9 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { isNil } from 'ramda'
 import { AppThunk } from '../rootStore'
 import { apiPlayers } from '../../api'
 import { Player, GetPlayerSuccess } from '../../api/players'
 import { Room } from '../../api/rooms'
-import {isNil} from "ramda";
+import { ResponseError } from '../../types'
 
 const { getPlayer } = apiPlayers
 
@@ -27,9 +28,10 @@ const slice = createSlice({
       state.isLoading = true
       state.error = null
     },
-    playerActionFailure(state, action: PayloadAction<string>) {
+    playerActionFailure(state, action: PayloadAction<ResponseError>) {
+      const { message } = action.payload
       state.isLoading = false
-      state.error = action.payload
+      state.error = message
     },
     getAccountSuccess(state, action: PayloadAction<GetPlayerSuccess>) {
       const { player } = action.payload

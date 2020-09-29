@@ -4,8 +4,11 @@ import { apiAuthentication } from '../../api'
 import { LoginSuccess } from '../../api/authentication'
 import { useCurrentAccount } from '../../hooks'
 import { displayNotification } from '../notification'
-import { NotificationType } from '../../types'
 import { setCurrentPlayer } from '../players'
+import {
+  NotificationType,
+  ResponseError,
+} from '../../types'
 
 
 const { setUserSessionId, destroyUserSession } = useCurrentAccount()
@@ -31,9 +34,10 @@ const slice = createSlice({
       state.isLoading = true
       state.error = null
     },
-    authenticationActionFailure(state, action: PayloadAction<string>) {
+    authenticationActionFailure(state, action: PayloadAction<ResponseError>) {
+      const { message } = action.payload
       state.isLoading = false
-      state.error = action.payload
+      state.error = message
     },
     loginSuccess(state, action: PayloadAction<LoginSuccess>) {
       const { token } = action.payload
@@ -100,6 +104,7 @@ export const logoutAccount = (): AppThunk => async dispatch => {
     dispatch(authenticationActionStart())
     await logout()
     destroyUserSession()
+    window.location.reload()
     dispatch(displayNotification(NotificationType.SUCCESS, "You've been logged out"))
   } catch(error) {
     dispatch(authenticationActionFailure(error))
