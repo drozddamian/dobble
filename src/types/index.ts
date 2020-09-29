@@ -40,3 +40,10 @@ export type NotificationProps = {
   type: NotificationType;
   text: string;
 }
+
+
+export type ResponseError = {
+  message: string;
+  status: string;
+  statusCode: 400 | 401 | 404 | 409 | 500;
+}

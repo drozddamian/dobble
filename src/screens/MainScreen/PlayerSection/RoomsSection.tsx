@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react'
-import { isEmpty } from 'ramda'
+import { isEmpty, equals } from 'ramda'
 import styled from 'styled-components'
 import { SectionTitle } from '../index'
 import ROUTES from '../../../constants/routes'
@@ -46,6 +46,7 @@ const RoomsSection: React.FC<Props> = (props: Props) => {
   }
 
   const playerRooms = ROOMS_TO_DISPLAY[playerRoomsType]
+  const hasOnlyOwnRooms = equals(owningRooms.length, allRooms.length)
 
   return (
     <>
@@ -71,13 +72,15 @@ const RoomsSection: React.FC<Props> = (props: Props) => {
           />
         </RoomsSectionHeader>
 
-        <SelectContainer>
-          <Select
-            name='roomsType'
-            values={valuesToDisplayInRoomSelector}
-            onChange={handleRoomsTypeChange}
-          />
-        </SelectContainer>
+        {!hasOnlyOwnRooms && (
+          <SelectContainer>
+            <Select
+              name='roomsType'
+              values={valuesToDisplayInRoomSelector}
+              onChange={handleRoomsTypeChange}
+            />
+          </SelectContainer>
+        )}
 
         <RoomList
           rooms={playerRooms}
@@ -102,6 +105,7 @@ const RoomsSectionHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding-bottom: 16px;
 `
 
 const TitleContainer = styled.div`
@@ -118,7 +122,7 @@ const SeeAllRoomsButton = styled.a`
 `
 
 const SelectContainer = styled.div`
-  padding: 16px 0 8px;
+  padding-bottom: 8px;
 `
 
 const CreateRoomFormWrapper = styled.div`

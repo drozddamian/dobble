@@ -1,13 +1,19 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { equals } from 'ramda'
+import { RouteComponentProps } from 'react-router-dom'
 import { AppThunk } from '../rootStore'
 import { apiRooms } from '../../api'
-import { FetchRoomsSuccess, Room } from '../../api/rooms'
 import { updatePlayerRoomList } from '../players'
 import { displayNotification } from '../notification'
-import { NotificationType } from '../../types'
-import { RouteComponentProps } from 'react-router-dom'
 import ROUTES from '../../constants/routes'
+import {
+  NotificationType,
+  ResponseError,
+} from '../../types'
+import {
+  FetchRoomsSuccess,
+  Room,
+} from '../../api/rooms'
 
 
 const { getRooms, getRoomItem, createRoom, deleteRoom, getMostPopularRooms, joinRoom, leaveRoom } = apiRooms
@@ -40,9 +46,10 @@ const slice = createSlice({
       state.isLoading = true
       state.error = null
     },
-    roomActionFailure(state, action: PayloadAction<string>) {
+    roomActionFailure(state, action: PayloadAction<ResponseError>) {
+      const { message } = action.payload
       state.isLoading = false
-      state.error = action.payload
+      state.error = message
     },
     fetchRoomsSuccess(state, action: PayloadAction<FetchRoomsSuccess>) {
       const { rooms, chunkNumber, howManyChunks } = action.payload
@@ -91,8 +98,7 @@ export const fetchRooms = (): AppThunk => async (dispatch, getState) => {
 
     dispatch(fetchRoomsSuccess(paginationRequestResult))
   } catch(error) {
-    const { data } = error.response
-    dispatch(roomActionFailure(data))
+    dispatch(roomActionFailure(error))
   }
 }
 
@@ -102,8 +108,7 @@ export const fetchRoomItem = (roomId: string): AppThunk => async dispatch => {
     const roomItem = await getRoomItem(roomId)
     dispatch(fetchRoomDetailsSuccess(roomItem))
   } catch(error) {
-    const { data } = error.response
-    dispatch(roomActionFailure(data))
+    dispatch(roomActionFailure(error))
   }
 }
 
@@ -113,8 +118,7 @@ export const fetchPopularRooms = (): AppThunk => async dispatch => {
     const popularRooms = await getMostPopularRooms()
     dispatch(fetchMostPopularRoomsSuccess(popularRooms))
   } catch(error) {
-    const { message } = error
-    dispatch(roomActionFailure(message))
+    dispatch(roomActionFailure(error))
   }
 }
 
@@ -125,9 +129,9 @@ export const deleteRoomItem = (roomId: string, history: RouteComponentProps): Ap
     history.push(ROUTES.MAIN)
     dispatch(displayNotification(NotificationType.SUCCESS, 'Room deleted'))
   } catch(error) {
-    const { message } = error
-    dispatch(displayNotification(NotificationType.ERROR, "Sorry, we couldn't remove the room"))
-    dispatch(roomActionFailure(message))
+    const { message } = error as ResponseError
+    dispatch(displayNotification(NotificationType.ERROR, message))
+    dispatch(roomActionFailure(error))
   }
 }
 
@@ -138,9 +142,9 @@ export const addPlayerToRoom = (roomId: string, playerId: string, history?: Rout
     history.push(`/room/${roomId}`)
     dispatch(displayNotification(NotificationType.SUCCESS, 'You have joined the room'))
   } catch(error) {
-    const { message } = error
+    const { message } = error as ResponseError
     dispatch(displayNotification(NotificationType.ERROR, message))
-    dispatch(roomActionFailure(message))
+    dispatch(roomActionFailure(error))
   }
 }
 
@@ -151,9 +155,9 @@ export const removePlayerFromRoom = (roomId: string, playerId: string, history?:
     history.push(ROUTES.MAIN)
     dispatch(displayNotification(NotificationType.SUCCESS, 'You have left the room'))
   } catch(error) {
-    const { message } = error
+    const { message } = error as ResponseError
     dispatch(displayNotification(NotificationType.ERROR, message))
-    dispatch(roomActionFailure(message))
+    dispatch(roomActionFailure(error))
   }
 }
 
@@ -170,10 +174,10 @@ export const newRoom =
           closeModalCallback()
           dispatch(displayNotification(NotificationType.SUCCESS, 'Room successfully created'))
         } catch(error) {
-          const { message } = error
+          const { message } = error as ResponseError
           closeModalCallback()
           dispatch(displayNotification(NotificationType.ERROR, message))
-          dispatch(roomActionFailure(message))
+          dispatch(roomActionFailure(error))
         }
       }
 

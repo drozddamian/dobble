@@ -1,10 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RouteComponentProps } from 'react-router-dom'
 import { AppThunk } from '../rootStore'
-import { GameTable } from '../../api/gameTable'
 import { apiGame } from '../../api'
 import { displayNotification } from '../notification'
-import { NotificationType } from '../../types'
+import {NotificationType, ResponseError} from '../../types'
 import { Player } from '../../api/players'
 
 const { joinGameTableApi } = apiGame
@@ -33,9 +32,10 @@ const slice = createSlice({
       state.isLoading = true
       state.error = null
     },
-    tableActionFailure(state, action: PayloadAction<string>) {
+    tableActionFailure(state, action: PayloadAction<ResponseError>) {
+      const { message } = action.payload
       state.isLoading = false
-      state.error = action.payload
+      state.error = message
     },
     tableActionSuccess(state) {
       state.isLoading = false
@@ -70,9 +70,9 @@ export const joinGameTable = (tableId: string, playerId: string, history: RouteC
     await joinGameTableApi(tableId, playerId)
     dispatch(tableActionSuccess())
   } catch(error) {
-    const { message } = error
+    const { message } = error as ResponseError
     dispatch(displayNotification(NotificationType.ERROR, message))
-    dispatch(tableActionFailure(message))
+    dispatch(tableActionFailure(error))
   } finally {
     history.push(gameTableUrl)
   }
