@@ -1,10 +1,13 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { RouteComponentProps } from 'react-router-dom'
 import { AppThunk } from '../rootStore'
 import { apiGame } from '../../api'
 import { displayNotification } from '../notification'
-import {NotificationType, ResponseError} from '../../types'
 import { Player } from '../../api/players'
+import history from '../../helpers/history'
+import {
+  NotificationType,
+  ResponseError,
+} from '../../types'
 
 const { joinGameTableApi } = apiGame
 
@@ -62,7 +65,7 @@ export const {
   resetTable,
 } = slice.actions
 
-export const joinGameTable = (tableId: string, playerId: string, history: RouteComponentProps): AppThunk => async (dispatch) => {
+export const joinGameTable = (tableId: string, playerId: string): AppThunk => async (dispatch) => {
   const gameTableUrl = `/game/${tableId}`
 
   try {
