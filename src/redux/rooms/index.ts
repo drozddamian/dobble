@@ -6,6 +6,7 @@ import { apiRooms } from '../../api'
 import { updatePlayerRoomList } from '../players'
 import { displayNotification } from '../notification'
 import ROUTES from '../../constants/routes'
+import history from '../../helpers/history'
 import {
   NotificationType,
   ResponseError,
@@ -122,7 +123,7 @@ export const fetchPopularRooms = (): AppThunk => async dispatch => {
   }
 }
 
-export const deleteRoomItem = (roomId: string, history: RouteComponentProps): AppThunk => async dispatch => {
+export const deleteRoomItem = (roomId: string, playerId: string): AppThunk => async dispatch => {
   try {
     dispatch(roomActionStart())
     await deleteRoom(roomId)
@@ -135,7 +136,7 @@ export const deleteRoomItem = (roomId: string, history: RouteComponentProps): Ap
   }
 }
 
-export const addPlayerToRoom = (roomId: string, playerId: string, history?: RouteComponentProps): AppThunk => async dispatch => {
+export const addPlayerToRoom = (roomId: string, playerId: string): AppThunk => async dispatch => {
   try {
     dispatch(roomActionStart())
     await joinRoom(roomId, playerId)
@@ -148,7 +149,7 @@ export const addPlayerToRoom = (roomId: string, playerId: string, history?: Rout
   }
 }
 
-export const removePlayerFromRoom = (roomId: string, playerId: string, history?: RouteComponentProps): AppThunk => async dispatch => {
+export const removePlayerFromRoom = (roomId: string, playerId: string): AppThunk => async dispatch => {
   try {
     dispatch(roomActionStart())
     await leaveRoom(roomId, playerId)
