@@ -11,13 +11,13 @@ export interface GameTable {
   players: Player[];
 }
 
-const getGameTable = async (gameTableId: string) => {
+const getGameTable = async (gameTableId: string): Promise<GameTable> => {
   const URL = `${API_METHODS.GAME_TABLE_ROOT}/${gameTableId}`
   const { data } = await axios.get<GameTable>(URL)
   return data
 }
 
-const joinGameTableApi = async (tableId: string, playerId: string) => {
+const joinGameTableApi = async (tableId: string, playerId: string): Promise<GameTable> => {
   const { data } = await axios.post<GameTable>(API_METHODS.GAME_TABLE_ROOT, { tableId, playerId })
   return data
 }

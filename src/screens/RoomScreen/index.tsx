@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react'
 import styled from 'styled-components'
 import { equals, isNil } from 'ramda'
-import { useHistory, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import PageWrapper from '../../components/Page/Container'
 import { fetchRoomItem } from '../../redux/rooms'
@@ -51,7 +51,6 @@ function getButtonData(currentUserId: string | null, ownerId: string, players: P
 
 const RoomScreen: React.FC = () => {
   const dispatch = useDispatch()
-  const history = useHistory()
   const { id: roomId } = useParams()
   const modalRef = useRef(null)
   const { isModalVisible, handleOpenModal, handleCloseModal } = useModal(modalRef)
@@ -83,7 +82,7 @@ const RoomScreen: React.FC = () => {
 
   const handlePlayButtonClick = () => {
     if (isNil(currentUserId)) { return }
-    dispatch(joinGameTable(gameTable, currentUserId, history))
+    dispatch(joinGameTable(gameTable, currentUserId))
   }
 
   const handleInitializeModal = () => {
@@ -95,11 +94,7 @@ const RoomScreen: React.FC = () => {
   }
 
   const handleAcceptModalButton = () => {
-    if (userStatus === USER_STATUS.OWNER) {
-      dispatch(action(roomId, history))
-      return
-    }
-    dispatch(action(roomId, userId, history))
+    dispatch(action(roomId, userId))
   }
 
   return (

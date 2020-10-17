@@ -19,17 +19,16 @@ const MainScreen: React.FC = () => {
 
   const { currentUserId } = useCurrentAccount()
   const { isLoading, rooms, mostPopularRooms } = useSelector(state => state.rooms)
-  const getPopularRooms = () => dispatch(fetchPopularRooms())
 
   useEffect(() => {
-    getPopularRooms()
+    dispatch(fetchPopularRooms())
   }, [])
 
   useEffect(() => {
     if (rooms.length > 5) {
       return
     }
-    getPopularRooms()
+    dispatch(fetchPopularRooms())
   }, [rooms.length])
 
   const getPlayerComponent = () => {
