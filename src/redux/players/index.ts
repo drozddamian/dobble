@@ -66,7 +66,8 @@ export const fetchPlayer = (id: string): AppThunk => async dispatch => {
     const playerData = await getPlayer(id)
     dispatch(getAccountSuccess(playerData))
   } catch (error) {
-    dispatch(playerActionFailure(error))
+    const errorData: ResponseError = error.response.data
+    dispatch(playerActionFailure(errorData))
   }
 }
 

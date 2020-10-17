@@ -70,8 +70,8 @@ export const loginAccount =
         window.location.reload()
         dispatch(displayNotification(NotificationType.SUCCESS, 'Logged in successfully'))
       } catch(error) {
-        const { data } = error.response
-        dispatch(authenticationActionFailure(data))
+        const errorData: ResponseError = error.response.data
+        dispatch(authenticationActionFailure(errorData))
       }
     }
 
@@ -90,7 +90,8 @@ export const registerAccount =
         window.location.reload()
         dispatch(displayNotification(NotificationType.SUCCESS, "You've been registered successfully!"))
       } catch(error) {
-        dispatch(authenticationActionFailure(error))
+        const errorData: ResponseError = error.response.data
+        dispatch(authenticationActionFailure(errorData))
       }
     }
 
@@ -102,7 +103,9 @@ export const logoutAccount = (): AppThunk => async dispatch => {
     window.location.reload()
     dispatch(displayNotification(NotificationType.SUCCESS, "You've been logged out"))
   } catch(error) {
-    dispatch(authenticationActionFailure(error))
+    const errorData: ResponseError = error.response.data
+    dispatch(authenticationActionFailure(errorData))
+    dispatch(displayNotification(NotificationType.ERROR, "Logging out failed."))
   }
 }
 

@@ -1,13 +1,10 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { AppThunk } from '../rootStore'
-import { apiGame } from '../../api'
-import { displayNotification } from '../notification'
-import { Player } from '../../api/players'
+import {createSlice, PayloadAction} from '@reduxjs/toolkit'
+import {AppThunk} from '../rootStore'
+import {apiGame} from '../../api'
+import {displayNotification} from '../notification'
+import {Player} from '../../api/players'
 import history from '../../helpers/history'
-import {
-  NotificationType,
-  ResponseError,
-} from '../../types'
+import {NotificationType, ResponseError,} from '../../types'
 
 const { joinGameTableApi } = apiGame
 
@@ -73,8 +70,14 @@ export const joinGameTable = (tableId: string, playerId: string): AppThunk => as
     await joinGameTableApi(tableId, playerId)
     dispatch(tableActionSuccess())
   } catch(error) {
-    const { message } = error as ResponseError
-    dispatch(displayNotification(NotificationType.ERROR, message))
+    const errorData: ResponseError = error.response.data
+    const { statusCode, message } = errorData
+
+    if (statusCode === 409) {
+      dispatch(displayNotification(NotificationType.INFO, 'Welcome back!'))
+    } else {
+      dispatch(displayNotification(NotificationType.ERROR, message))
+    }
     dispatch(tableActionFailure(error))
   } finally {
     history.push(gameTableUrl)
