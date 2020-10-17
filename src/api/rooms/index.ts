@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios from '../../helpers/axios'
 import { API_METHODS } from '../../constants/api'
 import { Player } from '../players'
 
@@ -19,19 +19,19 @@ export interface FetchRoomsSuccess {
   howManyChunks: number;
 }
 
-const getRooms = async (chunkNumber: number) => {
+const getRooms = async (chunkNumber: number): Promise<FetchRoomsSuccess> => {
   const url = `${API_METHODS.ROOMS_ROOT}?chunkNumber=${chunkNumber}`
   const { data } = await axios.get<FetchRoomsSuccess>(url)
   return data
 }
 
-const getRoomItem = async (roomId: string) => {
+const getRoomItem = async (roomId: string): Promise<Room> => {
   const url = `${API_METHODS.ROOMS_ROOT}/${roomId}`
   const { data } = await axios.get<Room>(url)
   return data
 }
 
-const createRoom = async (ownerId: string, name: string, availableSeats: number) => {
+const createRoom = async (ownerId: string, name: string, availableSeats: number): Promise<Room> => {
   const { data } = await axios.post<Room>(API_METHODS.ROOMS_ROOT, {
     ownerId,
     name,
@@ -40,26 +40,27 @@ const createRoom = async (ownerId: string, name: string, availableSeats: number)
   return data
 }
 
-const deleteRoom = async (roomId: string) => {
+const deleteRoom = async (roomId: string): Promise<Room> => {
   const url = `${API_METHODS.ROOMS_ROOT}/${roomId}`
-  return await axios.delete(url)
+  const { data } = await axios.delete<Room>(url)
+  return data
 }
 
-const getMostPopularRooms = async () => {
+const getMostPopularRooms = async (): Promise<Room[]> => {
   const { data } = await axios.get<Room[]>(API_METHODS.GET_MOST_POPULAR_ROOMS)
   return data
 }
 
-const joinRoom = async (roomId: string, playerId: string) => {
-  const { data } = await axios.post<string>(API_METHODS.JOIN_ROOM, {
+const joinRoom = async (roomId: string, playerId: string): Promise<Player> => {
+  const { data } = await axios.post<Player>(API_METHODS.JOIN_ROOM, {
     roomId,
     playerId,
   })
   return data
 }
 
-const leaveRoom = async (roomId: string, playerId: string) => {
-  const { data } = await axios.post<string>(API_METHODS.LEAVE_ROOM, {
+const leaveRoom = async (roomId: string, playerId: string): Promise<Player> => {
+  const { data } = await axios.post<Player>(API_METHODS.LEAVE_ROOM, {
     roomId,
     playerId,
   })
