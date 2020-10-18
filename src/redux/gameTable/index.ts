@@ -1,20 +1,18 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { AppThunk } from '../rootStore'
-import { apiGame } from '../../api'
-import { displayNotification } from '../notification'
-import { Player } from '../../api/players'
+import {createSlice, PayloadAction} from '@reduxjs/toolkit'
+import {AppThunk} from '../rootStore'
+import {apiGame} from '../../api'
+import {displayNotification} from '../notification'
+import {Player} from '../../api/players'
 import history from '../../helpers/history'
-import {
-  NotificationType,
-  ResponseError,
-} from '../../types'
+import {GameTableStatus, NotificationType, ResponseError,} from '../../types'
 
 const { joinGameTableApi } = apiGame
+const { Joining, Waiting, Countdown, Processing } = GameTableStatus
 
 type GameState = {
   isLoading: boolean;
   error: string | null;
-  isGameInProcess: boolean;
+  gameStatus: GameTableStatus;
   roundStartCountdown: 0 | 1 | 2 | 3;
   playerList: Player[];
 }
@@ -22,7 +20,7 @@ type GameState = {
 const initialState: GameState = {
   isLoading: false,
   error: null,
-  isGameInProcess: false,
+  gameStatus: Joining,
   roundStartCountdown: 3,
   playerList: [],
 }
@@ -45,13 +43,13 @@ const slice = createSlice({
       state.error = null
     },
     updateTable(state, action) {
-      const { isGameInProcess, roundStartCountdown, players } = action.payload
-      state.isGameInProcess = isGameInProcess
+      const { gameStatus, roundStartCountdown, players } = action.payload
+      state.gameStatus = gameStatus
       state.roundStartCountdown = roundStartCountdown
       state.playerList = players
     },
     resetTable(state) {
-      state.isGameInProcess = false
+      state.gameStatus = Joining
       state.roundStartCountdown = 3
     },
   },
@@ -73,8 +71,14 @@ export const joinGameTable = (tableId: string, playerId: string): AppThunk => as
     await joinGameTableApi(tableId, playerId)
     dispatch(tableActionSuccess())
   } catch(error) {
-    const { message } = error as ResponseError
-    dispatch(displayNotification(NotificationType.ERROR, message))
+    const errorData: ResponseError = error.response.data
+    const { statusCode, message } = errorData
+
+    if (statusCode === 409) {
+      dispatch(displayNotification(NotificationType.INFO, 'Welcome back!'))
+    } else {
+      dispatch(displayNotification(NotificationType.ERROR, message))
+    }
     dispatch(tableActionFailure(error))
   } finally {
     history.push(gameTableUrl)

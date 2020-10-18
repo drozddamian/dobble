@@ -99,7 +99,8 @@ export const fetchRooms = (): AppThunk => async (dispatch, getState) => {
 
     dispatch(fetchRoomsSuccess(paginationRequestResult))
   } catch(error) {
-    dispatch(roomActionFailure(error))
+    const errorData: ResponseError = error.response.data
+    dispatch(roomActionFailure(errorData))
   }
 }
 
@@ -109,7 +110,8 @@ export const fetchRoomItem = (roomId: string): AppThunk => async dispatch => {
     const roomItem = await getRoomItem(roomId)
     dispatch(fetchRoomDetailsSuccess(roomItem))
   } catch(error) {
-    dispatch(roomActionFailure(error))
+    const errorData: ResponseError = error.response.data
+    dispatch(roomActionFailure(errorData))
   }
 }
 
@@ -119,7 +121,8 @@ export const fetchPopularRooms = (): AppThunk => async dispatch => {
     const popularRooms = await getMostPopularRooms()
     dispatch(fetchMostPopularRoomsSuccess(popularRooms))
   } catch(error) {
-    dispatch(roomActionFailure(error))
+    const errorData: ResponseError = error.response.data
+    dispatch(roomActionFailure(errorData))
   }
 }
 
@@ -130,9 +133,11 @@ export const deleteRoomItem = (roomId: string, playerId: string): AppThunk => as
     history.push(ROUTES.MAIN)
     dispatch(displayNotification(NotificationType.SUCCESS, 'Room deleted'))
   } catch(error) {
-    const { message } = error as ResponseError
+    const errorData: ResponseError = error.response.data
+    const { message } = errorData
+
     dispatch(displayNotification(NotificationType.ERROR, message))
-    dispatch(roomActionFailure(error))
+    dispatch(roomActionFailure(errorData))
   }
 }
 
@@ -143,9 +148,11 @@ export const addPlayerToRoom = (roomId: string, playerId: string): AppThunk => a
     history.push(`/room/${roomId}`)
     dispatch(displayNotification(NotificationType.SUCCESS, 'You have joined the room'))
   } catch(error) {
-    const { message } = error as ResponseError
+    const errorData: ResponseError = error.response.data
+    const { message } = errorData
+
     dispatch(displayNotification(NotificationType.ERROR, message))
-    dispatch(roomActionFailure(error))
+    dispatch(roomActionFailure(errorData))
   }
 }
 
@@ -156,9 +163,11 @@ export const removePlayerFromRoom = (roomId: string, playerId: string): AppThunk
     history.push(ROUTES.MAIN)
     dispatch(displayNotification(NotificationType.SUCCESS, 'You have left the room'))
   } catch(error) {
-    const { message } = error as ResponseError
+    const errorData: ResponseError = error.response.data
+    const { message } = errorData
+
     dispatch(displayNotification(NotificationType.ERROR, message))
-    dispatch(roomActionFailure(error))
+    dispatch(roomActionFailure(errorData))
   }
 }
 
@@ -175,10 +184,12 @@ export const newRoom =
           closeModalCallback()
           dispatch(displayNotification(NotificationType.SUCCESS, 'Room successfully created'))
         } catch(error) {
-          const { message } = error as ResponseError
+          const errorData: ResponseError = error.response.data
+          const { message } = errorData
+
           closeModalCallback()
           dispatch(displayNotification(NotificationType.ERROR, message))
-          dispatch(roomActionFailure(error))
+          dispatch(roomActionFailure(errorData))
         }
       }
 

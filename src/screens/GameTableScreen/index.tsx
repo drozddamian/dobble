@@ -1,9 +1,10 @@
-import React, { useEffect } from 'react'
+import React, { ReactElement, useEffect } from 'react'
 import socketIOClient from 'socket.io-client'
 import styled from 'styled-components'
+import { equals } from 'ramda'
 import { useSelector, useDispatch } from 'react-redux'
 import { useHistory, useParams } from 'react-router-dom'
-import { SymbolName } from '../../types'
+import { GameTableStatus, SymbolName } from '../../types'
 import Button from '../../components/Button'
 import GameDialog from '../../components/GameTable/GameDialog'
 import TablePlayers from '../../components/GameTable/TablePlayers'
@@ -25,13 +26,14 @@ const {
   SPOT_SHAPE,
 } = GAME_SOCKET_ACTIONS
 
-
+const { Joining, Waiting, Countdown, Processing } = GameTableStatus
 const SOCKET_URL = `http://localhost:80`
 let socket
 
-const GameTableScreen = () => {
-  const { isLoading } = useSelector(state => state.gameTable)
-  const { roundId, isGameRoundInProcess, centerCard } = useSelector(state => state.gameRound)
+const GameTableScreen = (): ReactElement => {
+  const { gameStatus, isLoading } = useSelector(state => state.gameTable)
+  const { roundId, centerCard } = useSelector(state => state.gameRound)
+  console.log(gameStatus)
 
   const dispatch = useDispatch()
   const history = useHistory()
@@ -44,6 +46,7 @@ const GameTableScreen = () => {
     })
 
     socket.on(TABLE_CHANGE, (tableData) => {
+      console.log(tableData)
       dispatch(updateTable(tableData))
     })
 
@@ -86,18 +89,17 @@ const GameTableScreen = () => {
 
   return (
     <Wrapper>
-      {!isGameRoundInProcess && (
-        <>
-          <Button
-            isSmallButton
-            text='Leave game session'
-            type='button'
-            handleClick={handleLeaveGameClick}
-          />
-          <StartRoundWrapper>
-            <GameDialog handleRoundStartClick={handleRoundStartClick} />
-          </StartRoundWrapper>
-        </>
+      <Button
+        isSmallButton
+        text='Leave game session'
+        type='button'
+        handleClick={handleLeaveGameClick}
+      />
+
+      {!equals(gameStatus, Processing) && (
+        <StartRoundWrapper>
+          <GameDialog handleRoundStartClick={handleRoundStartClick} />
+        </StartRoundWrapper>
       )}
 
       <GameTable handleSymbolClick={handleSymbolClick} />

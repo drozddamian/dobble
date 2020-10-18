@@ -7,6 +7,14 @@ export type SymbolName = 'ANCHOR' | 'APPLE' | 'BABY_BOTTLE' | 'BOMB' | 'CACTUS' 
                   'TREE' | 'WATER_DROP' | 'DOG' | 'YIN_AND_YANG' | 'ZEBRA' | 'QUESTION_MARK' | 'CHEESE'
 
 
+
+export enum GameTableStatus {
+  Joining = "JOINING",
+  Waiting = "WAITING",
+  Countdown = "COUNTDOWN",
+  Processing = "PROCESSING",
+}
+
 export type Card = SymbolName[]
 
 export type CardSymbolData = {

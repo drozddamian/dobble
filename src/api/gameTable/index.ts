@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios from '../../helpers/axios'
 import { API_METHODS } from '../../constants/api'
 import { Room } from '../rooms'
 import { Player } from '../players'
