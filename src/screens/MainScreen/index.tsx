@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react'
 import styled, { css } from 'styled-components'
 import { isNil, isEmpty } from 'ramda'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
+import { useTypedSelector } from "../../redux/rootReducer";
 import PageWrapper from '../../components/Page/Container'
 import RoomList from '../../components/RoomList'
 import { fetchPopularRooms } from '../../redux/rooms'
@@ -18,7 +19,7 @@ const MainScreen: React.FC = () => {
   const dispatch = useDispatch()
 
   const { currentUserId } = useCurrentAccount()
-  const { isLoading, rooms, mostPopularRooms } = useSelector(state => state.rooms)
+  const { isLoading, rooms, mostPopularRooms } = useTypedSelector(state => state.rooms)
 
   useEffect(() => {
     dispatch(fetchPopularRooms())

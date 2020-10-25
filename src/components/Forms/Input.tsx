@@ -1,12 +1,12 @@
-import React, { ReactElement } from 'react'
+import React, { ReactElement, ChangeEvent } from 'react'
 import styled, { css } from 'styled-components'
-import {isNil} from "ramda";
+import { isNil } from "ramda";
 
 
 export interface InputProps {
   type: 'date' | 'email' | 'number' | 'password' | 'text';
   value: string | number;
-  onChange;
+  onChange: (event: ReactElement | ChangeEvent<HTMLInputElement>) => void;
 }
 
 interface Props {

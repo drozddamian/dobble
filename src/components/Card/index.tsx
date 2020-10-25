@@ -1,12 +1,11 @@
 import React from 'react'
 import styled from 'styled-components'
-import { isNil } from 'ramda'
 import Symbol, { Wrapper as SymbolWrapper } from './Symbol'
-import { SymbolName } from '../../types'
+import { Card, SymbolName } from '../../types'
 import { getSymbolScales } from '../../utils/cards'
 
 interface Props {
-  cardSymbols: SymbolName[];
+  cardSymbols: Card | null;
   handleSymbolClick?: (name: SymbolName) => void;
 }
 
@@ -14,15 +13,14 @@ interface WrapperProps {
   cardRotation: number;
 }
 
-const Card: React.FC<Props> = (props: Props) => {
+const CardComponent: React.FC<Props> = (props: Props) => {
   const { cardSymbols, handleSymbolClick } = props
 
-  const isEmptyCard = isNil(cardSymbols)
   const symbolScaleArray = getSymbolScales()
-  const cardRotation = isEmptyCard ? 0 : Math.floor(Math.random() * 360)
+  const cardRotation = !cardSymbols ? 0 : Math.floor(Math.random() * 360)
 
   const getCardContent = () => {
-    if (isEmptyCard) {
+    if (!cardSymbols) {
       return <EmptyCardContent>Empty card</EmptyCardContent>
     }
 
@@ -134,4 +132,4 @@ const CardContainer = styled.div`
 
 
 
-export default Card
+export default CardComponent

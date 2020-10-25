@@ -1,11 +1,11 @@
 import React from 'react'
 import styled from 'styled-components'
 import { isEmpty } from 'ramda'
-import { useSelector } from 'react-redux'
+import { useTypedSelector } from "../../redux/rootReducer";
 
 
 const PlayersComponent = () => {
-  const { playerList } = useSelector(state => state.gameTable)
+  const { playerList } = useTypedSelector(state => state.gameTable)
 
   if (isEmpty(playerList)) {
     return null
@@ -13,7 +13,7 @@ const PlayersComponent = () => {
 
   const renderPlayersList = () => {
     return playerList.map((player) => (
-      <li key={player}>
+      <li key={player._id}>
         {player}
       </li>
     ))

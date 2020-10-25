@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { ChangeEvent, useRef, useState } from 'react'
 import { isEmpty, equals } from 'ramda'
 import styled from 'styled-components'
 import { SectionTitle } from '../index'
@@ -32,8 +32,8 @@ const RoomsSection: React.FC<Props> = (props: Props) => {
   const valuesToDisplayInRoomSelector = Object.values(selectRoomValues)
   const allRooms = filterArrayByKey([...joinedRooms, ...owningRooms], '_id')
 
-  const handleRoomsTypeChange = (event) => {
-    const { value } = event.target
+  const handleRoomsTypeChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    const value = event.target.value as RoomTypes
     setPlayerRoomsType(value)
   }
 
@@ -45,7 +45,6 @@ const RoomsSection: React.FC<Props> = (props: Props) => {
     [OWN]: owningRooms,
   }
 
-  const playerRooms = ROOMS_TO_DISPLAY[playerRoomsType]
   const hasOnlyOwnRooms = equals(owningRooms.length, allRooms.length)
 
   return (
@@ -83,7 +82,7 @@ const RoomsSection: React.FC<Props> = (props: Props) => {
         )}
 
         <RoomList
-          rooms={playerRooms}
+          rooms={ROOMS_TO_DISPLAY[playerRoomsType]}
           isLoading={isLoading}
         />
       </Wrapper>

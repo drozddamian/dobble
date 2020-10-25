@@ -1,7 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { useFormik } from 'formik'
+import { useTypedSelector } from "../../../redux/rootReducer";
 import Form from '../FormWrapper'
 import Input, { InputProps } from '../Input'
 import Button from '../../Button'
@@ -31,7 +32,7 @@ const CreateRoomForm: React.FC<Props> = (props: Props) => {
   const { currentUserId } = useCurrentAccount()
   const { value: availableSeats, increase, decrease } = useNumberChanger(MIN_PLAYERS_IN_ROOM, MAX_PLAYERS_IN_ROOM)
 
-  const { isLoading } = useSelector(state => state.rooms)
+  const { isLoading } = useTypedSelector(state => state.rooms)
 
   const formik = useFormik({
     initialValues: {

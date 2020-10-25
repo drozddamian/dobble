@@ -2,16 +2,19 @@ import React from 'react'
 import styled from 'styled-components'
 
 interface Props {
-  text: string;
+  text: string | null;
 }
 
 const FormError: React.FC<Props> = (props: Props) => {
   const { text } = props
 
+  if (!text) {
+    return null
+  }
   return (
     <Wrapper>
       <ErrorText>
-        {text && text}
+        {text}
       </ErrorText>
     </Wrapper>
   )

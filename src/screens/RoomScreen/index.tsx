@@ -2,7 +2,8 @@ import React, { useEffect, useRef } from 'react'
 import styled from 'styled-components'
 import { equals, isNil } from 'ramda'
 import { useParams } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
+import { useTypedSelector } from "../../redux/rootReducer";
 import PageWrapper from '../../components/Page/Container'
 import { fetchRoomItem } from '../../redux/rooms'
 import { displayNotification } from '../../redux/notification'
@@ -28,7 +29,7 @@ function getPlayersTitle(howManyPlayers: number) {
 }
 
 
-const isIdInPlayerList = (currentUserId) => (player) => {
+const isIdInPlayerList = (currentUserId: string) => (player: Player) => {
   return equals(player._id, currentUserId)
 }
 
@@ -56,8 +57,8 @@ const RoomScreen: React.FC = () => {
   const { isModalVisible, handleOpenModal, handleCloseModal } = useModal(modalRef)
   const { currentUserId } = useCurrentAccount()
 
-  const { isLoading, roomItem } = useSelector(state => state.rooms)
-  const { isLoading: isJoiningGameInProcess } = useSelector(state => state.gameTable)
+  const { isLoading, roomItem } = useTypedSelector(state => state.rooms)
+  const { isLoading: isJoiningGameInProcess } = useTypedSelector(state => state.gameTable)
   const userId = currentUserId || ''
 
 

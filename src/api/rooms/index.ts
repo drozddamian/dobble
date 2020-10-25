@@ -4,7 +4,7 @@ import { Player } from '../players'
 
 export interface Room {
   name: string;
-  players: string[] | Player[];
+  players: Player[];
   createdAt: string;
   _id: string;
   owner: Player;

@@ -1,8 +1,9 @@
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { useFormik } from 'formik'
+import { useTypedSelector } from "../../../redux/rootReducer";
 import Form from '../FormWrapper'
-import Input, {InputProps} from '../Input'
+import Input, { InputProps } from '../Input'
 import Button from '../../Button'
 import FormError from '../FormError'
 import VALIDATION from '../../../validation'
@@ -14,7 +15,7 @@ const { REGISTER_FORM } = VALIDATION
 const RegisterForm: React.FC = () => {
   const dispatch = useDispatch()
 
-  const { isLoading, error } = useSelector(state => state.authentication)
+  const { isLoading, error } = useTypedSelector(state => state.authentication)
 
   const formik = useFormik({
     initialValues: {

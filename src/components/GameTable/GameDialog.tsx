@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { useSelector } from 'react-redux'
+import { useTypedSelector } from "../../redux/rootReducer";
 import { GameTableStatus } from "../../types";
 import Button from '../Button'
 
@@ -12,8 +12,8 @@ interface Props {
 
 const GameDialog: React.FC<Props> = (props: Props) => {
   const { handleRoundStartClick } = props
-  const { gameStatus, roundStartCountdown } = useSelector(state => state.gameTable)
-  const { roundWinner } = useSelector(state => state.gameRound)
+  const { gameStatus, roundStartCountdown } = useTypedSelector(state => state.gameTable)
+  const { roundWinner } = useTypedSelector(state => state.gameRound)
 
   const DIALOG_CONTENT = {
     [Joining]: <InfoText> Waiting for more players to join </InfoText>,
@@ -34,6 +34,10 @@ const GameDialog: React.FC<Props> = (props: Props) => {
         {`${roundWinner} is the winner!`}
       </InfoText>
     )
+  }
+
+  if (gameStatus === Processing) {
+    return null
   }
 
   return (

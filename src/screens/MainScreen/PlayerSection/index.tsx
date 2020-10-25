@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import { isNil } from 'ramda'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
+import { useTypedSelector } from "../../../redux/rootReducer";
 import { fetchPlayer } from '../../../redux/players'
 import LoadingComponent from '../../../components/Loader/CircleLoader'
 import theme from '../../../utils/theme'
@@ -17,8 +18,8 @@ const PlayerSection: React.FC<Props> = (props: Props) => {
   const { userId } = props
   const dispatch = useDispatch()
 
-  const { player, isLoading } = useSelector(state => state.players)
-  const { rooms } = useSelector(state => state.rooms)
+  const { player, isLoading } = useTypedSelector(state => state.players)
+  const { rooms } = useTypedSelector(state => state.rooms)
 
   useEffect(() => {
     dispatch(fetchPlayer(userId))

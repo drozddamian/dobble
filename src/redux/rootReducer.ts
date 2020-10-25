@@ -1,4 +1,5 @@
 import { combineReducers } from '@reduxjs/toolkit'
+import { useSelector, TypedUseSelectorHook } from "react-redux";
 import authentication from './authentication'
 import players from './players'
 import rooms from './rooms'
@@ -14,6 +15,8 @@ const rootReducer = combineReducers({
   gameTable: gameTable.reducer,
   gameRound: gameRound.reducer,
 })
+
+export const useTypedSelector: TypedUseSelectorHook<RootState> = useSelector
 
 export type RootState = ReturnType<typeof rootReducer>
 

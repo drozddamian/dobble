@@ -6,7 +6,7 @@ import LoadingBar from '../Loader/LoadingBar'
 import RoomItems from './RoomItems'
 
 interface Props {
-  rooms: Room[];
+  rooms?: Room[];
   isLoading: boolean;
 }
 
@@ -24,7 +24,7 @@ const RoomList: React.FC<Props> = (props: Props) => {
       )
     }
 
-    return isEmpty(rooms)
+    return !rooms || isEmpty(rooms)
       ? <Text>There is no rooms yet!</Text>
       : <RoomItems rooms={rooms} />
   }

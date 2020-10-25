@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { useSelector } from 'react-redux'
+import { useTypedSelector } from "../../redux/rootReducer";
 import Card from '../Card'
 import { SymbolName } from '../../types'
 
@@ -14,7 +14,7 @@ const GameTable: React.FC<Props> = (props: Props) => {
   const {
     centerCard,
     playerCard,
-  } = useSelector(state => state.gameRound)
+  } = useTypedSelector(state => state.gameRound)
 
   return (
     <Wrapper>

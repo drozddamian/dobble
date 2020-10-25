@@ -2,18 +2,19 @@ import React, { ReactElement, useEffect } from 'react'
 import socketIOClient from 'socket.io-client'
 import styled from 'styled-components'
 import { equals } from 'ramda'
-import { useSelector, useDispatch } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { useHistory, useParams } from 'react-router-dom'
-import { GameTableStatus, SymbolName } from '../../types'
+import { useTypedSelector } from "../../redux/rootReducer";
+import { GameTableStatus, SymbolName, MappedGameRound} from '../../types'
 import Button from '../../components/Button'
 import GameDialog from '../../components/GameTable/GameDialog'
 import TablePlayers from '../../components/GameTable/TablePlayers'
 import GameTable from '../../components/GameTable'
 import GAME_SOCKET_ACTIONS from '../../constants/gameSocket'
 import ROUTES from '../../constants/routes'
-import { useCurrentAccount } from '../../hooks'
-import { updateTable } from '../../redux/gameTable'
-import { updateGameRound, finishGameAndShowResult } from '../../redux/gameRound'
+import {useCurrentAccount} from '../../hooks'
+import {updateTable} from '../../redux/gameTable'
+import {updateGameRound, finishGameAndShowResult} from '../../redux/gameRound'
 
 
 const {
@@ -26,39 +27,40 @@ const {
   SPOT_SHAPE,
 } = GAME_SOCKET_ACTIONS
 
-const { Joining, Waiting, Countdown, Processing } = GameTableStatus
+const {Joining, Waiting, Countdown, Processing} = GameTableStatus
 const SOCKET_URL = `http://localhost:80`
-let socket
+let socket: SocketIOClient.Socket
 
 const GameTableScreen = (): ReactElement => {
-  const { gameStatus, isLoading } = useSelector(state => state.gameTable)
-  const { roundId, centerCard } = useSelector(state => state.gameRound)
+  const {gameStatus, isLoading} = useTypedSelector(state => state.gameTable)
+  const {roundId, centerCard} = useTypedSelector(state => state.gameRound)
   console.log(gameStatus)
 
   const dispatch = useDispatch()
   const history = useHistory()
-  const { id: gameTableId } = useParams()
-  const { currentUserId } = useCurrentAccount()
+  const {id: gameTableId} = useParams()
+  const {currentUserId} = useCurrentAccount()
 
   useEffect(() => {
     socket = socketIOClient(SOCKET_URL, {
       query: `tableId=${gameTableId}&playerId=${currentUserId}`
     })
 
-    socket.on(TABLE_CHANGE, (tableData) => {
+    socket.on(TABLE_CHANGE, (tableData: any) => {
       console.log(tableData)
       dispatch(updateTable(tableData))
     })
 
-    socket.on(GAME_CHANGE, (gameRound) => {
+    socket.on(GAME_CHANGE, (gameRound: MappedGameRound) => {
       dispatch(updateGameRound(gameRound))
     })
 
+    // @ts-ignore
     socket.on(GAME_END, ({ winner }) => {
       dispatch(finishGameAndShowResult(winner))
     })
 
-    socket.on(GAME_ERROR, (error) => {
+    socket.on(GAME_ERROR, (error: any) => {
       console.error(error)
     })
 
@@ -77,6 +79,9 @@ const GameTableScreen = (): ReactElement => {
   }
 
   const handleSymbolClick = (spottedSymbol: SymbolName) => {
+    if (!centerCard) {
+      return
+    }
     if (!centerCard.includes(spottedSymbol)) {
       return
     }
