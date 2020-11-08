@@ -72,12 +72,12 @@ export const {
 } = slice.actions
 
 
-export const finishGameAndShowResult = (winner: string): AppThunk => (dispatch) => {
+export const finishGameAndShowResult = (gameTableId: string, winner: string): AppThunk => (dispatch) => {
   dispatch(finishGameRound(winner))
 
   setTimeout(() => {
     dispatch(eraseRoundWinner())
-    dispatch(resetTable())
+    dispatch(resetTable(gameTableId))
   }, 4000)
 }
 

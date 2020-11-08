@@ -44,16 +44,17 @@ const MainScreen: React.FC = () => {
     <MainPageWrapper>
       {getPlayerComponent()}
 
-      <RoomsSection>
-        <SectionTitle padding='0 0 40px 0'>
-          Most popular rooms
-        </SectionTitle>
-
-        <RoomList
-          rooms={mostPopularRooms}
-          isLoading={isLoading}
-        />
-      </RoomsSection>
+      {!isEmpty(mostPopularRooms) && (
+        <RoomsSection>
+          <SectionTitle padding='0 0 40px 0'>
+            Most popular rooms
+          </SectionTitle>
+            <RoomList
+              rooms={mostPopularRooms}
+              isLoading={isLoading}
+            />
+        </RoomsSection>
+      )}
     </MainPageWrapper>
   )
 }

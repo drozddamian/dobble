@@ -4,12 +4,13 @@ import {apiGame} from '../../api'
 import {displayNotification} from '../notification'
 import {Player} from '../../api/players'
 import history from '../../helpers/history'
-import {GameTableStatus, NotificationType, ResponseError,} from '../../types'
+import {GameTableStatus, NotificationType, ResponseError, TableChangeData,} from '../../types'
 
 const { joinGameTableApi } = apiGame
 const { Joining, Waiting, Countdown, Processing } = GameTableStatus
 
-type GameState = {
+
+type TableState = {
   isLoading: boolean;
   error: string | null;
   gameStatus: GameTableStatus;
@@ -17,40 +18,58 @@ type GameState = {
   playerList: Player[];
 }
 
-const initialState: GameState = {
-  isLoading: false,
-  error: null,
-  gameStatus: Joining,
-  roundStartCountdown: 3,
-  playerList: [],
+type TableFailureActionPayload = {
+  error: ResponseError;
+  tableId: string;
 }
+type UpdateTableActionPayload = {
+  gameTableId: string;
+  tableData: TableChangeData;
+}
+
+const initialState: { [id: string]: TableState } = {}
 
 const slice = createSlice({
   name: 'game',
   initialState,
   reducers: {
-    tableActionStart(state) {
-      state.isLoading = true
-      state.error = null
+    tableActionStart(state, action: PayloadAction<string>) {
+      const tableId = action.payload
+      state[tableId] = { ...state[tableId], isLoading: true, error: null }
     },
-    tableActionFailure(state, action: PayloadAction<ResponseError>) {
-      const { message } = action.payload
-      state.isLoading = false
-      state.error = message
+
+    tableActionFailure(state, action: PayloadAction<TableFailureActionPayload>) {
+      const { error, tableId } = action.payload
+      state[tableId] = { ...state[tableId], isLoading: false, error: error.message }
     },
-    tableActionSuccess(state) {
-      state.isLoading = false
-      state.error = null
+
+    tableActionSuccess(state, action: PayloadAction<string>) {
+      const tableId = action.payload
+      state[tableId] = { ...state[tableId], isLoading: false, error: null }
     },
-    updateTable(state, action) {
-      const { gameStatus, roundStartCountdown, players } = action.payload
-      state.gameStatus = gameStatus
-      state.roundStartCountdown = roundStartCountdown
-      state.playerList = players
+
+    updateTable(state, action: PayloadAction<UpdateTableActionPayload> ) {
+      const { gameTableId, tableData } = action.payload
+      const { gameStatus, roundStartCountdown, players } = tableData
+
+      state[gameTableId] = {
+        ...state[gameTableId],
+        playerList: players,
+        gameStatus,
+        roundStartCountdown,
+      }
     },
-    resetTable(state) {
-      state.gameStatus = Joining
-      state.roundStartCountdown = 3
+
+    resetTable(state, action: PayloadAction<string>) {
+      const tableId = action.payload
+
+      state[tableId] = {
+        ...state[tableId],
+        isLoading: false,
+        error: null,
+        gameStatus: Joining,
+        roundStartCountdown: 3,
+      }
     },
   },
 })
@@ -67,9 +86,17 @@ export const joinGameTable = (tableId: string, playerId: string): AppThunk => as
   const gameTableUrl = `/game/${tableId}`
 
   try {
-    dispatch(tableActionStart())
-    await joinGameTableApi(tableId, playerId)
-    dispatch(tableActionSuccess())
+    dispatch(tableActionStart(tableId))
+    const { _id, players, gameStatus, roundStartCountdown } = await joinGameTableApi(tableId, playerId)
+
+    const updateTableData = {
+      gameTableId: _id,
+      tableData: { players, gameStatus, roundStartCountdown }
+    }
+
+    dispatch(updateTable(updateTableData))
+    dispatch(tableActionSuccess(tableId))
+
   } catch(error) {
     const errorData: ResponseError = error.response.data
     const { statusCode, message } = errorData
@@ -79,7 +106,7 @@ export const joinGameTable = (tableId: string, playerId: string): AppThunk => as
     } else {
       dispatch(displayNotification(NotificationType.ERROR, message))
     }
-    dispatch(tableActionFailure(error))
+    dispatch(tableActionFailure({ tableId, error }))
   } finally {
     history.push(gameTableUrl)
   }

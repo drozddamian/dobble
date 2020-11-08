@@ -1,21 +1,16 @@
 import React, { ReactElement, useEffect } from 'react'
-import socketIOClient from 'socket.io-client'
-import styled from 'styled-components'
-import { equals } from 'ramda'
+import socket from '../../utils/socket'
+import { equals, isNil, isEmpty } from 'ramda'
 import { useDispatch } from 'react-redux'
 import { useHistory, useParams } from 'react-router-dom'
 import { useTypedSelector } from "../../redux/rootReducer";
-import { GameTableStatus, SymbolName, MappedGameRound} from '../../types'
-import Button from '../../components/Button'
-import GameDialog from '../../components/GameTable/GameDialog'
-import TablePlayers from '../../components/GameTable/TablePlayers'
-import GameTable from '../../components/GameTable'
+import {GameTableStatus, SymbolName, MappedGameRound, TableChangeData} from '../../types'
 import GAME_SOCKET_ACTIONS from '../../constants/gameSocket'
 import ROUTES from '../../constants/routes'
-import {useCurrentAccount} from '../../hooks'
-import {updateTable} from '../../redux/gameTable'
-import {updateGameRound, finishGameAndShowResult} from '../../redux/gameRound'
-
+import { useCurrentAccount } from '../../hooks'
+import { updateTable } from '../../redux/gameTable'
+import { updateGameRound, finishGameAndShowResult } from '../../redux/gameRound'
+import Template from './template'
 
 const {
   TABLE_CHANGE,
@@ -27,28 +22,35 @@ const {
   SPOT_SHAPE,
 } = GAME_SOCKET_ACTIONS
 
-const {Joining, Waiting, Countdown, Processing} = GameTableStatus
-const SOCKET_URL = `http://localhost:80`
-let socket: SocketIOClient.Socket
+const { Processing } = GameTableStatus
 
 const GameTableScreen = (): ReactElement => {
-  const {gameStatus, isLoading} = useTypedSelector(state => state.gameTable)
-  const {roundId, centerCard} = useTypedSelector(state => state.gameRound)
-  console.log(gameStatus)
-
   const dispatch = useDispatch()
   const history = useHistory()
-  const {id: gameTableId} = useParams()
-  const {currentUserId} = useCurrentAccount()
+
+  const { id: gameTableId } = useParams()
+  const { currentUserId: playerId } = useCurrentAccount()
+
+  const gameTable = useTypedSelector(state => state.gameTable[gameTableId])
+
+  if (!gameTable) {
+    history.push(ROUTES.MAIN)
+  }
+
+  const { gameStatus, playerList, isLoading } = gameTable
+  const { roundId, centerCard } = useTypedSelector(state => state.gameRound)
 
   useEffect(() => {
-    socket = socketIOClient(SOCKET_URL, {
-      query: `tableId=${gameTableId}&playerId=${currentUserId}`
-    })
+    if (socket && gameTableId) socket.emit('join', { gameTableId, playerId });
+    return () => {
+      if(socket) socket.disconnect();
+    }
+  }, [])
 
-    socket.on(TABLE_CHANGE, (tableData: any) => {
+  useEffect(() => {
+    socket.on(TABLE_CHANGE, (tableData: TableChangeData) => {
       console.log(tableData)
-      dispatch(updateTable(tableData))
+      dispatch(updateTable({ gameTableId, tableData }))
     })
 
     socket.on(GAME_CHANGE, (gameRound: MappedGameRound) => {
@@ -57,25 +59,22 @@ const GameTableScreen = (): ReactElement => {
 
     // @ts-ignore
     socket.on(GAME_END, ({ winner }) => {
-      dispatch(finishGameAndShowResult(winner))
+      console.log(winner)
+      dispatch(finishGameAndShowResult(gameTableId, winner))
     })
 
     socket.on(GAME_ERROR, (error: any) => {
       console.error(error)
     })
-
-    return () => {
-      socket.close()
-    }
   }, [])
 
   const handleLeaveGameClick = () => {
-    socket.emit(PLAYER_LEAVE, { gameId: gameTableId, playerId: currentUserId })
+    socket.emit(PLAYER_LEAVE, { tableId: gameTableId, playerId })
     history.push(ROUTES.MAIN)
   }
 
   const handleRoundStartClick = () => {
-    socket.emit(ROUND_START, { gameId: gameTableId })
+    socket.emit(ROUND_START, { tableId: gameTableId })
   }
 
   const handleSymbolClick = (spottedSymbol: SymbolName) => {
@@ -85,52 +84,19 @@ const GameTableScreen = (): ReactElement => {
     if (!centerCard.includes(spottedSymbol)) {
       return
     }
-    socket.emit(SPOT_SHAPE, { roundId, playerId: currentUserId })
+    socket.emit(SPOT_SHAPE, { gameTableId, roundId, playerId })
   }
 
-  if (isLoading) {
-    return <p>Loading...</p>
-  }
-
+  if (isLoading) { return <p>Loading...</p> }
   return (
-    <Wrapper>
-      <Button
-        isSmallButton
-        text='Leave game session'
-        type='button'
-        handleClick={handleLeaveGameClick}
-      />
-
-      {!equals(gameStatus, Processing) && (
-        <StartRoundWrapper>
-          <GameDialog handleRoundStartClick={handleRoundStartClick} />
-        </StartRoundWrapper>
-      )}
-
-      <GameTable handleSymbolClick={handleSymbolClick} />
-
-      <PlayersContainer>
-        <TablePlayers />
-      </PlayersContainer>
-    </Wrapper>
+    <Template
+      tableId={gameTableId}
+      playerList={playerList}
+      isGameInProcess={equals(gameStatus, Processing)}
+      onLeaveGame={handleLeaveGameClick}
+      onStartRound={handleRoundStartClick}
+      onSymbolClick={handleSymbolClick}
+    />
   )
 }
-
-const Wrapper = styled.div``
-
-const StartRoundWrapper = styled.div`
-  position: absolute;
-  z-index: 10;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: ${({ theme }) => theme.colors.white08};
-`
-
-const PlayersContainer = styled.div`
-
-`
-
 export default GameTableScreen

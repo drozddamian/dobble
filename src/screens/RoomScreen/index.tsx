@@ -58,7 +58,6 @@ const RoomScreen: React.FC = () => {
   const { currentUserId } = useCurrentAccount()
 
   const { isLoading, roomItem } = useTypedSelector(state => state.rooms)
-  const { isLoading: isJoiningGameInProcess } = useTypedSelector(state => state.gameTable)
   const userId = currentUserId || ''
 
 
@@ -111,22 +110,23 @@ const RoomScreen: React.FC = () => {
             handleClick={handleInitializeModal}
             isDisabled={noSeatAvailableToJoin}
           />
+          {noSeatAvailableToJoin && <p>Room's full</p>}
         </RoomButtonsContainer>
 
-        <GameSessionContainer>
-          <ContainerTitle>
-            Let's play the game!
-          </ContainerTitle>
+        {!noSeatAvailableToJoin && (
+          <GameSessionContainer>
+            <ContainerTitle>
+              Let's play the game!
+            </ContainerTitle>
 
-
-          <Button
-            text='Play'
-            type='button'
-            handleClick={handlePlayButtonClick}
-            isDisabled={isUserToJoin}
-            isLoading={isJoiningGameInProcess}
-          />
-        </GameSessionContainer>
+            <Button
+              text='Play'
+              type='button'
+              handleClick={handlePlayButtonClick}
+              isDisabled={isUserToJoin}
+            />
+          </GameSessionContainer>
+        )}
 
         <PlayerListContainer>
           <ContainerTitle>

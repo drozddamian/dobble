@@ -1,3 +1,5 @@
+import {Player} from "../api/players";
+
 export type SymbolName = 'ANCHOR' | 'APPLE' | 'BABY_BOTTLE' | 'BOMB' | 'CACTUS' | 'CANDLE' | 'TAXI_CAR' | 'CARROT' | 'CHESS_KNIGHT' |
                   'CLOCK' | 'CLOWN' | 'DIASY_FLOWER' | 'DINOSAUR' | 'DOLPHIN' | 'DRAGON' | 'EXCLAMATION_MARK' | 'EYE' | 'FIRE' |
                   'FOUR_LEAF_CLOVER' | 'GHOST' | 'GREEN_SPLATS' | 'HAMMER' | 'HEART' | 'ICE_CUBE' | 'IGLOO' | 'KEY' | 'LADYBIRD' |
@@ -42,6 +44,11 @@ export type RoomData = {
   isPrivateRoom: boolean;
 }
 
+export type TableChangeData = {
+  gameStatus: GameTableStatus;
+  roundStartCountdown: 0 | 1 | 2 | 3;
+  players: Player[];
+}
 
 export enum NotificationType { SUCCESS, ERROR, INFO }
 export type NotificationProps = {

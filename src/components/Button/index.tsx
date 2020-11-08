@@ -28,7 +28,7 @@ const Button: React.FC<Props> = (props: Props) => {
     <Wrapper
       type={type}
       uppercase={uppercase}
-      onClick={handleClick}
+      onClick={!isDisabled ? handleClick : () => {}}
       isSmallButton={isSmallButton}
       background={background}
       isDisabled={isDisabled}

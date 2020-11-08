@@ -7,12 +7,13 @@ import Button from '../Button'
 const { Joining, Waiting, Countdown, Processing } = GameTableStatus
 
 interface Props {
+  tableId: string;
   handleRoundStartClick: () => void;
 }
 
 const GameDialog: React.FC<Props> = (props: Props) => {
-  const { handleRoundStartClick } = props
-  const { gameStatus, roundStartCountdown } = useTypedSelector(state => state.gameTable)
+  const { tableId, handleRoundStartClick } = props
+  const { gameStatus, roundStartCountdown } = useTypedSelector(state => state.gameTable[tableId])
   const { roundWinner } = useTypedSelector(state => state.gameRound)
 
   const DIALOG_CONTENT = {

@@ -2,13 +2,15 @@ import axios from '../../helpers/axios'
 import { API_METHODS } from '../../constants/api'
 import { Room } from '../rooms'
 import { Player } from '../players'
+import {GameTableStatus} from "../../types";
 
 
 export interface GameTable {
   _id: string;
-  isGameInProcess: boolean;
+  gameStatus: GameTableStatus;
   room: Room;
   players: Player[];
+  roundStartCountdown: 0 | 1 | 2 | 3;
 }
 
 const getGameTable = async (gameTableId: string): Promise<GameTable> => {
