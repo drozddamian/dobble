@@ -1,11 +1,11 @@
-import React from 'react'
+import React, { ChangeEvent } from 'react'
 import styled from 'styled-components'
 
 
 interface Props {
   name: string;
   values: string[];
-  onChange: (event) => void;
+  onChange: (event: ChangeEvent<HTMLSelectElement>) => void;
 }
 
 const Select: React.FC<Props> = (props: Props) => {

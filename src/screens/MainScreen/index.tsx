@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react'
 import styled, { css } from 'styled-components'
-import { isNil } from 'ramda'
-import { useDispatch, useSelector } from 'react-redux'
+import { isNil, isEmpty } from 'ramda'
+import { useDispatch } from 'react-redux'
+import { useTypedSelector } from "../../redux/rootReducer";
 import PageWrapper from '../../components/Page/Container'
 import RoomList from '../../components/RoomList'
 import { fetchPopularRooms } from '../../redux/rooms'
@@ -17,15 +18,22 @@ interface SectionTitleProps {
 const MainScreen: React.FC = () => {
   const dispatch = useDispatch()
 
+  const { currentUserId } = useCurrentAccount()
+  const { isLoading, rooms, mostPopularRooms } = useTypedSelector(state => state.rooms)
+
   useEffect(() => {
     dispatch(fetchPopularRooms())
   }, [])
 
-  const { currentUserId } = useCurrentAccount()
-  const { isLoading, mostPopularRooms } = useSelector(state => state.rooms)
+  useEffect(() => {
+    if (rooms.length > 5) {
+      return
+    }
+    dispatch(fetchPopularRooms())
+  }, [rooms.length])
 
   const getPlayerComponent = () => {
-    if (isNil(currentUserId)) {
+    if (isNil(currentUserId) || isEmpty(currentUserId)) {
       return <AuthSection />
     }
     return <PlayerSection userId={currentUserId} />
@@ -36,16 +44,17 @@ const MainScreen: React.FC = () => {
     <MainPageWrapper>
       {getPlayerComponent()}
 
-      <RoomsSection>
-        <SectionTitle padding='0 0 40px 0'>
-          Most popular rooms
-        </SectionTitle>
-
-        <RoomList
-          rooms={mostPopularRooms}
-          isLoading={isLoading}
-        />
-      </RoomsSection>
+      {!isEmpty(mostPopularRooms) && (
+        <RoomsSection>
+          <SectionTitle padding='0 0 40px 0'>
+            Most popular rooms
+          </SectionTitle>
+            <RoomList
+              rooms={mostPopularRooms}
+              isLoading={isLoading}
+            />
+        </RoomsSection>
+      )}
     </MainPageWrapper>
   )
 }

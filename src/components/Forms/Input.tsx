@@ -1,37 +1,55 @@
-import React from 'react'
+import React, { ReactElement, ChangeEvent } from 'react'
 import styled, { css } from 'styled-components'
+import { isNil } from "ramda";
 
+
+export interface InputProps {
+  type: 'date' | 'email' | 'number' | 'password' | 'text';
+  value: string | number;
+  onChange: (event: ReactElement | ChangeEvent<HTMLInputElement>) => void;
+}
 
 interface Props {
   inputName: string;
-  inputType: 'date' | 'email' | 'number' | 'password' | 'text';
-  value: string | number;
-  onChange;
   label?: string;
   error?: string | boolean;
+  inputProps?: InputProps;
+  customInput?: ReactElement;
 }
 
 interface InputContainerProps {
   hasError: undefined | boolean | string;
+  isCustomInput?: boolean;
 }
 
 const Input: React.FC<Props> = (props: Props) => {
-  const { label, inputName, inputType, value, onChange, error } = props
+  const { customInput, label, inputName, inputProps, error } = props
+
+  const isCustomInput = !isNil(customInput)
+
+  function renderInputElement() {
+    if (isCustomInput) {
+      return customInput
+    }
+    return (
+      <InputElement
+        name={inputName}
+        type={inputProps?.type}
+        onChange={inputProps?.onChange}
+        value={inputProps?.value}
+      />
+    )
+  }
 
   return (
-    <InputContainer hasError={error}>
+    <InputContainer hasError={error} isCustomInput={isCustomInput}>
       {label && (
         <Label htmlFor={inputName}>
           {label}
         </Label>
       )}
 
-      <InputElement
-        name={inputName}
-        type={inputType}
-        onChange={onChange}
-        value={value}
-      />
+      {renderInputElement()}
 
       {error && (
         <Error>{error}</Error>
@@ -49,7 +67,7 @@ const InputElement = styled.input`
   z-index: 5;
 `
 
-const Label = styled.label`
+export const Label = styled.label`
   font-family: ${({ theme }) => theme.fonts.russo};
   color: ${({ theme }) => theme.colors.text};
   padding: 0 0 4px 4px;
@@ -62,7 +80,7 @@ export const InputContainer = styled.div`
   width: 100%;
   margin-bottom: 30px;
   position: relative;
-  
+
   :after {
     content: '';
     position: absolute;
@@ -75,13 +93,13 @@ export const InputContainer = styled.div`
     border-radius: 50%;
     transition: all .2s ease-out;
     z-index: 1;
-    
+
     ${(props: InputContainerProps) => props.hasError && css`
       background-color: ${({ theme }) => theme.colors.error};
       transform: translateY(5px);
     `};
   }
-  
+ 
   :focus-within {
     ${Label} {
       color: ${({ theme }) => theme.colors.darkBlue};
@@ -91,6 +109,10 @@ export const InputContainer = styled.div`
     }
   }
   
+  ${(props: InputContainerProps) => props.isCustomInput && css`
+    :after { display: none; }
+  `};
+
   @media (min-width: ${({ theme }) => theme.rwd.mobile.m}) {
     margin-bottom: 40px;
   }

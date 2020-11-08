@@ -1,11 +1,11 @@
 import React from 'react'
 import styled from 'styled-components'
 import Symbol, { Wrapper as SymbolWrapper } from './Symbol'
-import { SymbolName } from '../../types'
+import { Card, SymbolName } from '../../types'
 import { getSymbolScales } from '../../utils/cards'
 
 interface Props {
-  cardSymbols: any;
+  cardSymbols: Card | null;
   handleSymbolClick?: (name: SymbolName) => void;
 }
 
@@ -13,27 +13,33 @@ interface WrapperProps {
   cardRotation: number;
 }
 
-
-const Card: React.FC<Props> = (props: Props) => {
+const CardComponent: React.FC<Props> = (props: Props) => {
   const { cardSymbols, handleSymbolClick } = props
-  const symbolIds = Object.keys(cardSymbols) as SymbolName[]
 
-  const cardRotation = Math.floor(Math.random() * 360)
   const symbolScaleArray = getSymbolScales()
+  const cardRotation = !cardSymbols ? 0 : Math.floor(Math.random() * 360)
+
+  const getCardContent = () => {
+    if (!cardSymbols) {
+      return <EmptyCardContent>Empty card</EmptyCardContent>
+    }
+
+    return cardSymbols.map((symbolId, index) => (
+      <Symbol
+        key={`${symbolId}_${index}`}
+        symbolId={symbolId}
+        symbolScale={symbolScaleArray[index]}
+        handleSymbolClick={handleSymbolClick || undefined}
+      />
+    ))
+  }
+
+  const cardContent = getCardContent()
 
   return (
     <Wrapper>
       <CardContainer cardRotation={cardRotation}>
-        {symbolIds.map((symbolId, index) => {
-          return (
-            <Symbol
-              key={`${symbolId}_${index}`}
-              symbolId={symbolId}
-              symbolScale={symbolScaleArray[index]}
-              handleSymbolClick={handleSymbolClick || undefined}
-            />
-          )
-        })}
+        {cardContent}
       </CardContainer>
     </Wrapper>
   )
@@ -46,6 +52,14 @@ export const Wrapper = styled.div`
   box-shadow: 0 10px 19px 0 rgba(224,220,224,1);
   border-radius: 50%;
   background: white;
+`
+
+const EmptyCardContent = styled.span`
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%);
+  font-family: ${({ theme }) => theme.fonts.russo};
 `
 
 const CardContainer = styled.div`
@@ -118,4 +132,4 @@ const CardContainer = styled.div`
 
 
 
-export default Card
+export default CardComponent

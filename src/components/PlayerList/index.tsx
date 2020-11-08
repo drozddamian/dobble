@@ -5,7 +5,7 @@ import { Player } from '../../api/players'
 import PlayerListItem from './PlayerListItem'
 
 interface Props {
-  owner: string;
+  owner?: string;
   players: Player[];
 }
 

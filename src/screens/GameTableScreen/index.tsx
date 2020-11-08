@@ -1,74 +1,102 @@
-import React, { useState, useEffect } from 'react'
-import styled from 'styled-components'
-import { last, isEmpty, isNil } from 'ramda'
-import Card from '../../components/Card'
-import PlayerSeat from '../../components/PlayerSeat'
-import { getCards } from '../../utils/cards'
-import { SymbolName } from '../../types'
+import React, { ReactElement, useEffect } from 'react'
+import socket from '../../utils/socket'
+import { equals, isNil, isEmpty } from 'ramda'
+import { useDispatch } from 'react-redux'
+import { useHistory, useParams } from 'react-router-dom'
+import { useTypedSelector } from "../../redux/rootReducer";
+import {GameTableStatus, SymbolName, MappedGameRound, TableChangeData} from '../../types'
+import GAME_SOCKET_ACTIONS from '../../constants/gameSocket'
+import ROUTES from '../../constants/routes'
+import { useCurrentAccount } from '../../hooks'
+import { updateTable } from '../../redux/gameTable'
+import { updateGameRound, finishGameAndShowResult } from '../../redux/gameRound'
+import Template from './template'
 
+const {
+  TABLE_CHANGE,
+  PLAYER_LEAVE,
+  ROUND_START,
+  GAME_CHANGE,
+  GAME_ERROR,
+  GAME_END,
+  SPOT_SHAPE,
+} = GAME_SOCKET_ACTIONS
 
-const GameTableScreen = () => {
-  const [centerCard, setCenterCard] = useState(null)
-  const [playerCards, setPlayerCards] = useState<string[]>([])
+const { Processing } = GameTableStatus
 
-  useEffect(() => {
-    const { firstTableCard , cards } = getCards()
-    setCenterCard(firstTableCard)
-    setPlayerCards(cards)
-  }, [])
+const GameTableScreen = (): ReactElement => {
+  const dispatch = useDispatch()
+  const history = useHistory()
 
-  const handleSymbolClick = (cardName: SymbolName) => {
-    if (isEmpty(playerCards) || isNil(centerCard)) {
-      return
-    }
-    // @ts-ignore
-    if (!centerCard.hasOwnProperty(cardName)) {
-      return
-    }
+  const { id: gameTableId } = useParams()
+  const { currentUserId: playerId } = useCurrentAccount()
 
-    const currentPlayerCard = last(playerCards)
-    // @ts-ignore
-    setCenterCard(currentPlayerCard)
+  const gameTable = useTypedSelector(state => state.gameTable[gameTableId])
 
-    const currentCards = [...playerCards]
-    currentCards.pop()
-    setPlayerCards(currentCards)
+  if (!gameTable) {
+    history.push(ROUTES.MAIN)
   }
 
+  const { gameStatus, playerList, isLoading } = gameTable
+  const { roundId, centerCard } = useTypedSelector(state => state.gameRound)
 
-  if (isEmpty(playerCards))
-    return 'loading'
+  useEffect(() => {
+    if (socket && gameTableId) socket.emit('join', { gameTableId, playerId });
+    return () => {
+      if(socket) socket.disconnect();
+    }
+  }, [])
 
+  useEffect(() => {
+    socket.on(TABLE_CHANGE, (tableData: TableChangeData) => {
+      console.log(tableData)
+      dispatch(updateTable({ gameTableId, tableData }))
+    })
+
+    socket.on(GAME_CHANGE, (gameRound: MappedGameRound) => {
+      dispatch(updateGameRound(gameRound))
+    })
+
+    // @ts-ignore
+    socket.on(GAME_END, ({ winner }) => {
+      console.log(winner)
+      dispatch(finishGameAndShowResult(gameTableId, winner))
+    })
+
+    socket.on(GAME_ERROR, (error: any) => {
+      console.error(error)
+    })
+  }, [])
+
+  const handleLeaveGameClick = () => {
+    socket.emit(PLAYER_LEAVE, { tableId: gameTableId, playerId })
+    history.push(ROUTES.MAIN)
+  }
+
+  const handleRoundStartClick = () => {
+    socket.emit(ROUND_START, { tableId: gameTableId })
+  }
+
+  const handleSymbolClick = (spottedSymbol: SymbolName) => {
+    if (!centerCard) {
+      return
+    }
+    if (!centerCard.includes(spottedSymbol)) {
+      return
+    }
+    socket.emit(SPOT_SHAPE, { gameTableId, roundId, playerId })
+  }
+
+  if (isLoading) { return <p>Loading...</p> }
   return (
-    <Wrapper>
-      <TableCenterContainer>
-        <Card cardSymbols={centerCard} />
-      </TableCenterContainer>
-
-      <PlayerSeat
-        cards={playerCards}
-        handleSymbolClick={handleSymbolClick}
-      />
-    </Wrapper>
+    <Template
+      tableId={gameTableId}
+      playerList={playerList}
+      isGameInProcess={equals(gameStatus, Processing)}
+      onLeaveGame={handleLeaveGameClick}
+      onStartRound={handleRoundStartClick}
+      onSymbolClick={handleSymbolClick}
+    />
   )
 }
-
-
-const Wrapper = styled.div`
-  display: grid;
-  grid-template: repeat(2, 1fr) / repeat(3, 1fr);
-  grid-gap: 20px;
-  grid-template-areas: 
-     "fifthPlayer tableCenter sixthPlayer"
-     "seventhPlayer firstPlayer eighthPlayer";
-`
-
-const TableCenterContainer = styled.div`
-  grid-area: tableCenter;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`
-
-
 export default GameTableScreen

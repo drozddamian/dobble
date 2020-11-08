@@ -1,5 +1,6 @@
 import { isNil } from 'ramda'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
+import { useTypedSelector } from "../redux/rootReducer";
 import { NotificationType } from '../types'
 import { displayNotification } from '../redux/notification'
 
@@ -14,10 +15,10 @@ interface HookResult {
 export const useNotification = (): HookResult => {
   const dispatch = useDispatch()
 
-  const { notification } = useSelector(state => state.notification)
+  const { notification } = useTypedSelector(state => state.notification)
   const isNotificationVisible = !isNil(notification)
-  const notificationText = notification?.text
-  const notificationType = notification?.type
+  const notificationText = notification?.text || null
+  const notificationType = notification?.type || null
 
   const addNotification = (type: NotificationType, text: string) => {
     dispatch(displayNotification(type, text))

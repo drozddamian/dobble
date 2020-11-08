@@ -1,4 +1,5 @@
-import React, { useRef, useState } from 'react'
+import React, { ChangeEvent, useRef, useState } from 'react'
+import { isEmpty, equals } from 'ramda'
 import styled from 'styled-components'
 import { SectionTitle } from '../index'
 import ROUTES from '../../../constants/routes'
@@ -31,8 +32,8 @@ const RoomsSection: React.FC<Props> = (props: Props) => {
   const valuesToDisplayInRoomSelector = Object.values(selectRoomValues)
   const allRooms = filterArrayByKey([...joinedRooms, ...owningRooms], '_id')
 
-  const handleRoomsTypeChange = (event) => {
-    const { value } = event.target
+  const handleRoomsTypeChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    const value = event.target.value as RoomTypes
     setPlayerRoomsType(value)
   }
 
@@ -44,7 +45,7 @@ const RoomsSection: React.FC<Props> = (props: Props) => {
     [OWN]: owningRooms,
   }
 
-  const playerRooms = ROOMS_TO_DISPLAY[playerRoomsType]
+  const hasOnlyOwnRooms = equals(owningRooms.length, allRooms.length)
 
   return (
     <>
@@ -55,9 +56,11 @@ const RoomsSection: React.FC<Props> = (props: Props) => {
               Your rooms
             </SectionTitle>
 
-            <SeeAllRoomsButton href={ROUTES.ROOMS}>
-              Show all...
-            </SeeAllRoomsButton>
+            {!isEmpty(allRooms) && (
+              <SeeAllRoomsButton href={ROUTES.ROOMS}>
+              Show all
+              </SeeAllRoomsButton>
+            )}
           </TitleContainer>
 
           <Button
@@ -68,16 +71,18 @@ const RoomsSection: React.FC<Props> = (props: Props) => {
           />
         </RoomsSectionHeader>
 
-        <SelectContainer>
-          <Select
-            name='roomsType'
-            values={valuesToDisplayInRoomSelector}
-            onChange={handleRoomsTypeChange}
-          />
-        </SelectContainer>
+        {!hasOnlyOwnRooms && (
+          <SelectContainer>
+            <Select
+              name='roomsType'
+              values={valuesToDisplayInRoomSelector}
+              onChange={handleRoomsTypeChange}
+            />
+          </SelectContainer>
+        )}
 
         <RoomList
-          rooms={playerRooms}
+          rooms={ROOMS_TO_DISPLAY[playerRoomsType]}
           isLoading={isLoading}
         />
       </Wrapper>
@@ -99,6 +104,7 @@ const RoomsSectionHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding-bottom: 16px;
 `
 
 const TitleContainer = styled.div`
@@ -111,10 +117,11 @@ const SeeAllRoomsButton = styled.a`
   align-self: flex-end;
   margin-bottom: 3px;
   padding-left: 8px;
+  white-space: nowrap;
 `
 
 const SelectContainer = styled.div`
-  padding: 16px 0 8px;
+  padding-bottom: 8px;
 `
 
 const CreateRoomFormWrapper = styled.div`

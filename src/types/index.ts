@@ -1,3 +1,5 @@
+import {Player} from "../api/players";
+
 export type SymbolName = 'ANCHOR' | 'APPLE' | 'BABY_BOTTLE' | 'BOMB' | 'CACTUS' | 'CANDLE' | 'TAXI_CAR' | 'CARROT' | 'CHESS_KNIGHT' |
                   'CLOCK' | 'CLOWN' | 'DIASY_FLOWER' | 'DINOSAUR' | 'DOLPHIN' | 'DRAGON' | 'EXCLAMATION_MARK' | 'EYE' | 'FIRE' |
                   'FOUR_LEAF_CLOVER' | 'GHOST' | 'GREEN_SPLATS' | 'HAMMER' | 'HEART' | 'ICE_CUBE' | 'IGLOO' | 'KEY' | 'LADYBIRD' |
@@ -7,11 +9,33 @@ export type SymbolName = 'ANCHOR' | 'APPLE' | 'BABY_BOTTLE' | 'BOMB' | 'CACTUS' 
                   'TREE' | 'WATER_DROP' | 'DOG' | 'YIN_AND_YANG' | 'ZEBRA' | 'QUESTION_MARK' | 'CHEESE'
 
 
+
+export enum GameTableStatus {
+  Joining = "JOINING",
+  Waiting = "WAITING",
+  Countdown = "COUNTDOWN",
+  Processing = "PROCESSING",
+}
+
+export type Card = SymbolName[]
+
 export type CardSymbolData = {
   name: string;
   icon: string;
 }
 
+type CardsByPlayerId = {
+  [id: string]: Card;
+}
+
+export interface MappedGameRound {
+  id: string;
+  isGameRoundInProcess: boolean;
+  spotterId: string;
+  centerCard: Card;
+  experienceForSpotter: number;
+  cardsByPlayerId: CardsByPlayerId;
+}
 
 export type RoomData = {
   name: string;
@@ -20,9 +44,21 @@ export type RoomData = {
   isPrivateRoom: boolean;
 }
 
+export type TableChangeData = {
+  gameStatus: GameTableStatus;
+  roundStartCountdown: 0 | 1 | 2 | 3;
+  players: Player[];
+}
 
 export enum NotificationType { SUCCESS, ERROR, INFO }
 export type NotificationProps = {
   type: NotificationType;
   text: string;
+}
+
+
+export type ResponseError = {
+  message: string;
+  status: string;
+  statusCode: 400 | 401 | 404 | 409 | 500;
 }

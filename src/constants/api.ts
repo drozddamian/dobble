@@ -1,12 +1,18 @@
-const API_SERVER_URL = 'https://dev-dobble.herokuapp.com'
+const API_SERVER_URL = 'http://localhost:5000'
+/*
+const API_SERVER_URL = process.env.NODE_ENV === 'development'
+  ? 'https://dev-dobble.herokuapp.com/'
+  : 'https://prod-dobble.herokuapp.com/'
+*/
 
 const API = {
   AUTHENTICATION: `${API_SERVER_URL}/api/authentication`,
   PLAYERS: `${API_SERVER_URL}/api/players`,
   ROOMS: `${API_SERVER_URL}/api/rooms`,
+  GAME_TABLE: `${API_SERVER_URL}/api/game_table`
 }
 
-const { AUTHENTICATION, PLAYERS, ROOMS } = API
+const { AUTHENTICATION, PLAYERS, ROOMS, GAME_TABLE } = API
 
 
 export const API_METHODS = {
@@ -19,4 +25,5 @@ export const API_METHODS = {
   GET_MOST_POPULAR_ROOMS: `${ROOMS}/most_popular`,
   JOIN_ROOM: `${ROOMS}/join_room`,
   LEAVE_ROOM: `${ROOMS}/leave_room`,
+  GAME_TABLE_ROOT: `${GAME_TABLE}`,
 }
