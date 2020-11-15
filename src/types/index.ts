@@ -30,6 +30,7 @@ type CardsByPlayerId = {
 
 export interface MappedGameRound {
   id: string;
+  tableId: string;
   isGameRoundInProcess: boolean;
   spotterId: string;
   centerCard: Card;

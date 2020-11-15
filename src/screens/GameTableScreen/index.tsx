@@ -8,7 +8,7 @@ import {GameTableStatus, SymbolName, MappedGameRound, TableChangeData} from '../
 import GAME_SOCKET_ACTIONS from '../../constants/gameSocket'
 import ROUTES from '../../constants/routes'
 import { useCurrentAccount } from '../../hooks'
-import { updateTable } from '../../redux/gameTable'
+import {resetTable, updateTable} from '../../redux/gameTable'
 import { updateGameRound, finishGameAndShowResult } from '../../redux/gameRound'
 import Template from './template'
 
@@ -32,18 +32,15 @@ const GameTableScreen = (): ReactElement => {
   const { currentUserId: playerId } = useCurrentAccount()
 
   const gameTable = useTypedSelector(state => state.gameTable[gameTableId])
-
-  if (!gameTable) {
-    history.push(ROUTES.MAIN)
-  }
-
-  const { gameStatus, playerList, isLoading } = gameTable
-  const { roundId, centerCard } = useTypedSelector(state => state.gameRound)
+  const gameRound = useTypedSelector(state => state.gameRound[gameTableId])
 
   useEffect(() => {
     if (socket && gameTableId) socket.emit('join', { gameTableId, playerId });
     return () => {
-      if(socket) socket.disconnect();
+      if(socket) {
+        socket.emit(PLAYER_LEAVE, { tableId: gameTableId, playerId })
+        socket.disconnect();
+      }
     }
   }, [])
 
@@ -54,13 +51,17 @@ const GameTableScreen = (): ReactElement => {
     })
 
     socket.on(GAME_CHANGE, (gameRound: MappedGameRound) => {
+      console.log(gameRound)
       dispatch(updateGameRound(gameRound))
     })
 
     // @ts-ignore
-    socket.on(GAME_END, ({ winner }) => {
-      console.log(winner)
-      dispatch(finishGameAndShowResult(gameTableId, winner))
+    socket.on(GAME_END, (result) => {
+      if (isEmpty(result?.winner)) {
+        dispatch(resetTable(gameTableId))
+        return
+      }
+      result?.winner && dispatch(finishGameAndShowResult(gameTableId, result.winner))
     })
 
     socket.on(GAME_ERROR, (error: any) => {
@@ -68,26 +69,30 @@ const GameTableScreen = (): ReactElement => {
     })
   }, [])
 
+  const handleRoundStartClick = () => {
+    socket.emit(ROUND_START, { tableId: gameTableId })
+  }
+
   const handleLeaveGameClick = () => {
     socket.emit(PLAYER_LEAVE, { tableId: gameTableId, playerId })
     history.push(ROUTES.MAIN)
   }
 
-  const handleRoundStartClick = () => {
-    socket.emit(ROUND_START, { tableId: gameTableId })
-  }
-
   const handleSymbolClick = (spottedSymbol: SymbolName) => {
-    if (!centerCard) {
+    if (!gameRound) {
       return
     }
-    if (!centerCard.includes(spottedSymbol)) {
-      return
+    if (gameRound?.centerCard?.includes(spottedSymbol)) {
+      socket.emit(SPOT_SHAPE, { tableId: gameTableId, playerId })
     }
-    socket.emit(SPOT_SHAPE, { gameTableId, roundId, playerId })
   }
 
-  if (isLoading) { return <p>Loading...</p> }
+  if (!gameTable || gameTable?.isLoading) {
+    return <p>Loading...</p>
+  }
+
+  const { gameStatus, playerList } = gameTable
+
   return (
     <Template
       tableId={gameTableId}

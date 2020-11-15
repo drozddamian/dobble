@@ -8,7 +8,8 @@ import { resetTable } from '../gameTable'
 
 type GameRoundState = {
   roundId: string | null;
-  roundWinner: string | null;
+  tableId: string;
+  roundWinner?: string | null;
   isGameRoundInProcess: boolean;
   spotterId: string | null;
   centerCard: Card | null;
@@ -16,14 +17,11 @@ type GameRoundState = {
   experienceForSpotter: number;
 }
 
-const initialState: GameRoundState = {
-  roundId: null,
-  roundWinner: null,
-  isGameRoundInProcess: false,
-  spotterId: null,
-  centerCard: null,
-  experienceForSpotter: 0,
-  playerCard: null,
+const initialState: { [tableId: string]: GameRoundState } = {}
+
+type FinishGameRoundActionPayload = {
+  tableId: string;
+  winner: string;
 }
 
 const slice = createSlice({
@@ -33,6 +31,7 @@ const slice = createSlice({
     updateGameRound(state, action: PayloadAction<MappedGameRound>) {
       const {
         id,
+        tableId,
         isGameRoundInProcess,
         spotterId,
         centerCard,
@@ -43,24 +42,32 @@ const slice = createSlice({
       const playerId = sessionStorage.getItem(SESSION_USER_ID)
       const currentPlayerCards = !isNil(playerId) ? cardsByPlayerId[playerId] : null
 
-      state.roundId = id
-      state.isGameRoundInProcess = isGameRoundInProcess
-      state.spotterId = spotterId
-      state.centerCard = centerCard
-      state.experienceForSpotter = experienceForSpotter
-      state.playerCard = currentPlayerCards
+      state[tableId] = {
+        roundId: id,
+        tableId,
+        isGameRoundInProcess,
+        spotterId,
+        centerCard,
+        experienceForSpotter,
+        playerCard: currentPlayerCards,
+      }
     },
-    finishGameRound(state, action: PayloadAction<string>) {
-      state.roundWinner = action.payload
-      state.roundId = null
-      state.isGameRoundInProcess = false
-      state.spotterId = null
-      state.centerCard = null
-      state.experienceForSpotter = 0
-      state.playerCard = null
+    finishGameRound(state, action: PayloadAction<FinishGameRoundActionPayload>) {
+      const { winner, tableId } = action.payload
+
+      state[tableId] = {
+        ...state[tableId],
+        roundWinner: winner,
+        isGameRoundInProcess: false,
+        spotterId: null,
+        centerCard: null,
+        playerCard: null,
+        experienceForSpotter: 0,
+      }
     },
-    eraseRoundWinner(state) {
-      state.roundWinner = null
+    eraseRoundWinner(state, action: PayloadAction<{ tableId: string }>) {
+      const { tableId } = action.payload
+      state[tableId].roundWinner = null
     }
   },
 })
@@ -72,12 +79,12 @@ export const {
 } = slice.actions
 
 
-export const finishGameAndShowResult = (gameTableId: string, winner: string): AppThunk => (dispatch) => {
-  dispatch(finishGameRound(winner))
+export const finishGameAndShowResult = (tableId: string, winner: string): AppThunk => (dispatch) => {
+  dispatch(finishGameRound({ tableId, winner }))
 
   setTimeout(() => {
-    dispatch(eraseRoundWinner())
-    dispatch(resetTable(gameTableId))
+    dispatch(eraseRoundWinner({ tableId }))
+    dispatch(resetTable({ tableId }))
   }, 4000)
 }
 

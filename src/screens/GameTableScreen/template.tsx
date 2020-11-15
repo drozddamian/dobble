@@ -1,11 +1,11 @@
 import React, { ReactElement } from 'react'
 import styled from 'styled-components'
+import { isEmpty } from 'ramda'
 import Button from '../../components/Button'
 import GameDialog from '../../components/GameTable/GameDialog'
 import GameTable from '../../components/GameTable'
+import { Player } from '../../api/players'
 import { SymbolName } from '../../types'
-import {Player} from "../../api/players";
-import {isEmpty} from "ramda";
 
 
 interface Props {
@@ -36,7 +36,10 @@ const GameTableScreenTemplate: React.FC<Props> = (props: Props): ReactElement =>
         </>
       )}
 
-      <GameTable handleSymbolClick={onSymbolClick} />
+      <GameTable
+        tableId={tableId}
+        handleSymbolClick={onSymbolClick}
+      />
 
       <PlayersContainer>
         {!isEmpty(playerList) && playerList.map((player) => (
