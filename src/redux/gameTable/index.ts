@@ -33,19 +33,33 @@ const slice = createSlice({
   name: 'game',
   initialState,
   reducers: {
-    tableActionStart(state, action: PayloadAction<string>) {
-      const tableId = action.payload
-      state[tableId] = { ...state[tableId], isLoading: true, error: null }
+    tableActionStart(state, action: PayloadAction<{ tableId: string }>) {
+      const { tableId } = action.payload
+
+      state[tableId] = {
+        ...state[tableId],
+        isLoading: true,
+        error: null,
+      }
     },
 
     tableActionFailure(state, action: PayloadAction<TableFailureActionPayload>) {
       const { error, tableId } = action.payload
-      state[tableId] = { ...state[tableId], isLoading: false, error: error.message }
+      state[tableId] = {
+        ...state[tableId],
+        isLoading: false,
+        error: error.message,
+      }
     },
 
-    tableActionSuccess(state, action: PayloadAction<string>) {
-      const tableId = action.payload
-      state[tableId] = { ...state[tableId], isLoading: false, error: null }
+    tableActionSuccess(state, action: PayloadAction<{ tableId: string }>) {
+      const { tableId } = action.payload
+
+      state[tableId] = {
+        ...state[tableId],
+        isLoading: false,
+        error: null,
+      }
     },
 
     updateTable(state, action: PayloadAction<UpdateTableActionPayload> ) {
@@ -60,8 +74,8 @@ const slice = createSlice({
       }
     },
 
-    resetTable(state, action: PayloadAction<string>) {
-      const tableId = action.payload
+    resetTable(state, action: PayloadAction<{ tableId: string }>) {
+      const { tableId } = action.payload
 
       state[tableId] = {
         ...state[tableId],
@@ -86,7 +100,7 @@ export const joinGameTable = (tableId: string, playerId: string): AppThunk => as
   const gameTableUrl = `/game/${tableId}`
 
   try {
-    dispatch(tableActionStart(tableId))
+    dispatch(tableActionStart({ tableId }))
     const { _id, players, gameStatus, roundStartCountdown } = await joinGameTableApi(tableId, playerId)
 
     const updateTableData = {
@@ -95,7 +109,7 @@ export const joinGameTable = (tableId: string, playerId: string): AppThunk => as
     }
 
     dispatch(updateTable(updateTableData))
-    dispatch(tableActionSuccess(tableId))
+    dispatch(tableActionSuccess({ tableId }))
 
   } catch(error) {
     const errorData: ResponseError = error.response.data

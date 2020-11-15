@@ -5,16 +5,16 @@ import Card from '../Card'
 import { SymbolName } from '../../types'
 
 interface Props {
+  tableId: string;
   handleSymbolClick?: (name: SymbolName) => void;
 }
 
 const GameTable: React.FC<Props> = (props: Props) => {
-  const { handleSymbolClick } = props
+  const { tableId, handleSymbolClick } = props
 
-  const {
-    centerCard,
-    playerCard,
-  } = useTypedSelector(state => state.gameRound)
+  const gameRound = useTypedSelector(state => state.gameRound[tableId])
+  const centerCard = gameRound?.centerCard
+  const playerCard = gameRound?.playerCard
 
   return (
     <Wrapper>

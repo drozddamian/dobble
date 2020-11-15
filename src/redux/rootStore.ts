@@ -6,7 +6,7 @@ import rootReducer, { RootState } from './rootReducer'
 export const rootStore = configureStore({
   reducer: rootReducer,
   middleware: [...getDefaultMiddleware()],
-  devTools: false,
+  devTools: true,
 })
 
 export type AppThunk = ThunkAction<void, RootState, unknown, Action<string>>
