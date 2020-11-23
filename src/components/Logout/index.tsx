@@ -47,14 +47,14 @@ const Logout = (): ReactElement | null => {
 
 const Wrapper = styled.button`
   position: fixed;
-  top: 20px;
-  right: 40px;
+  top: 15px;
+  right: 15px;
   display: flex;
   justify-content: center;
   align-items: center;
   border: 1px solid ${({ theme }) => theme.colors.darkBlue};
   border-radius: 5px;
-  padding: 8px 12px;
+  padding: 6px 10px;
 `
 
 const Text = styled.p`

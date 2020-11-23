@@ -5,6 +5,7 @@ import {displayNotification} from '../notification'
 import {Player} from '../../api/players'
 import history from '../../helpers/history'
 import {GameTableStatus, NotificationType, ResponseError, TableChangeData,} from '../../types'
+import {equals} from "ramda";
 
 const { joinGameTableApi } = apiGame
 const { Joining, Waiting, Countdown, Processing } = GameTableStatus
@@ -66,11 +67,21 @@ const slice = createSlice({
       const { gameTableId, tableData } = action.payload
       const { gameStatus, roundStartCountdown, players } = tableData
 
-      state[gameTableId] = {
-        ...state[gameTableId],
-        playerList: players,
-        gameStatus,
-        roundStartCountdown,
+      if (!gameTableId) {
+        return
+      }
+
+      if (!state[gameTableId]) {
+        state[gameTableId] = { ...state[gameTableId] }
+      }
+      state[gameTableId].roundStartCountdown = roundStartCountdown
+
+      if (!equals(state[gameTableId].gameStatus, gameStatus)) {
+        state[gameTableId].gameStatus = gameStatus
+      }
+
+      if (!equals(state[gameTableId].playerList, players)) {
+        state[gameTableId].playerList = players
       }
     },
 
@@ -90,40 +101,8 @@ const slice = createSlice({
 
 export const {
   tableActionStart,
-  tableActionFailure,
-  tableActionSuccess,
   updateTable,
   resetTable,
 } = slice.actions
-
-export const joinGameTable = (tableId: string, playerId: string): AppThunk => async (dispatch) => {
-  const gameTableUrl = `/game/${tableId}`
-
-  try {
-    dispatch(tableActionStart({ tableId }))
-    const { _id, players, gameStatus, roundStartCountdown } = await joinGameTableApi(tableId, playerId)
-
-    const updateTableData = {
-      gameTableId: _id,
-      tableData: { players, gameStatus, roundStartCountdown }
-    }
-
-    dispatch(updateTable(updateTableData))
-    dispatch(tableActionSuccess({ tableId }))
-
-  } catch(error) {
-    const errorData: ResponseError = error.response.data
-    const { statusCode, message } = errorData
-
-    if (statusCode === 409) {
-      dispatch(displayNotification(NotificationType.INFO, 'Welcome back!'))
-    } else {
-      dispatch(displayNotification(NotificationType.ERROR, message))
-    }
-    dispatch(tableActionFailure({ tableId, error }))
-  } finally {
-    history.push(gameTableUrl)
-  }
-}
 
 export default slice

@@ -66,7 +66,7 @@ const MainPageWrapper = styled(PageWrapper)`
   
   @media (min-width: ${({ theme }) => theme.rwd.desktop.xs}) {
     flex-direction: row;
-    justify-content: center;
+    justify-content: space-around;
     align-items: baseline;
   }
 `
@@ -77,6 +77,13 @@ const RoomsSection = styled.section`
   margin-top: 80px;
   width: 100%;
   max-width: 500px;
+  
+  @media (min-width: ${({ theme }) => theme.rwd.desktop.xs}) {
+    padding-left: 40px;
+  }
+  @media (min-width: ${({ theme }) => theme.rwd.desktop.s}) {
+    padding-left: 0;
+  }
 `
 
 export const SectionTitle = styled.h2`

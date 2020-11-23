@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react'
 import styled from 'styled-components'
 import { equals, isNil } from 'ramda'
-import { useParams } from 'react-router-dom'
+import {useHistory, useParams} from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { useTypedSelector } from "../../redux/rootReducer";
 import PageWrapper from '../../components/Page/Container'
@@ -16,7 +16,6 @@ import { Player } from '../../api/players'
 import { NotificationType } from '../../types'
 import { BUTTON_ACTION_DATA, USER_STATUS } from './constant-data'
 import { useCurrentAccount, useModal } from '../../hooks'
-import { joinGameTable } from '../../redux/gameTable'
 
 const { OWNER, JOIN, LEAVE } = USER_STATUS
 
@@ -52,6 +51,7 @@ function getButtonData(currentUserId: string | null, ownerId: string, players: P
 
 const RoomScreen: React.FC = () => {
   const dispatch = useDispatch()
+  const history = useHistory()
   const { id: roomId } = useParams()
   const modalRef = useRef(null)
   const { isModalVisible, handleOpenModal, handleCloseModal } = useModal(modalRef)
@@ -82,7 +82,7 @@ const RoomScreen: React.FC = () => {
 
   const handlePlayButtonClick = () => {
     if (isNil(currentUserId)) { return }
-    dispatch(joinGameTable(gameTable, currentUserId))
+    history.push(`/game/${gameTable}`)
   }
 
   const handleInitializeModal = () => {

@@ -1,45 +1,36 @@
 import React from 'react'
+import { isNil } from 'ramda'
 import styled from 'styled-components'
 import Symbol, { Wrapper as SymbolWrapper } from './Symbol'
-import { Card, SymbolName } from '../../types'
-import { getSymbolScales } from '../../utils/cards'
+import { StyledCard, SymbolName } from '../../types'
 
 interface Props {
-  cardSymbols: Card | null;
-  handleSymbolClick?: (name: SymbolName) => void;
+  card: StyledCard | null;
+  handleSymbolClick?: (name: SymbolName) => (event: React.MouseEvent) => void;
 }
 
 interface WrapperProps {
-  cardRotation: number;
+  cardRotation?: number;
+  isClickable: boolean;
 }
 
 const CardComponent: React.FC<Props> = (props: Props) => {
-  const { cardSymbols, handleSymbolClick } = props
-
-  const symbolScaleArray = getSymbolScales()
-  const cardRotation = !cardSymbols ? 0 : Math.floor(Math.random() * 360)
-
-  const getCardContent = () => {
-    if (!cardSymbols) {
-      return <EmptyCardContent>Empty card</EmptyCardContent>
-    }
-
-    return cardSymbols.map((symbolId, index) => (
-      <Symbol
-        key={`${symbolId}_${index}`}
-        symbolId={symbolId}
-        symbolScale={symbolScaleArray[index]}
-        handleSymbolClick={handleSymbolClick || undefined}
-      />
-    ))
-  }
-
-  const cardContent = getCardContent()
+  const { card, handleSymbolClick } = props
 
   return (
     <Wrapper>
-      <CardContainer cardRotation={cardRotation}>
-        {cardContent}
+      <CardContainer cardRotation={card?.rotation} isClickable={!isNil(handleSymbolClick)}>
+        {!card?.symbols
+          ? <EmptyCardContent>Empty card</EmptyCardContent>
+          : card.symbols.map((symbolId, index) => (
+            <Symbol
+              key={`${symbolId}_${index}`}
+              symbolId={symbolId}
+              symbolScale={card.symbolScales[index]}
+              handleSymbolClick={handleSymbolClick}
+            />
+          ))
+        }
       </CardContainer>
     </Wrapper>
   )
@@ -75,6 +66,10 @@ const CardContainer = styled.div`
     position: absolute;
     width: 80px;
     height: 80px;
+    
+    ${(props: WrapperProps) => !props.isClickable && `
+      cursor: not-allowed;      
+    `};
 
     :first-of-type {
       left: 50%;

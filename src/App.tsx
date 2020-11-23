@@ -8,6 +8,7 @@ import ROUTES from './constants/routes'
 import history from './helpers/history'
 import Notification from './components/Notification'
 import Logout from './components/Logout'
+import HowToPlay from './components/HowToPlay'
 
 import GameTableScreen from './screens/GameTableScreen'
 import MainScreen from './screens/MainScreen'
@@ -22,6 +23,8 @@ const App = () => {
   return (
     <>
       <Notification />
+
+      <HowToPlay />
       <Logout />
 
       <Router history={history}>
@@ -30,15 +33,15 @@ const App = () => {
             <MainScreen />
           </Route>
 
-          <Route path={ROOM}>
+          <Route exact path={ROOM}>
             <RoomScreen />
           </Route>
 
-          <Route path={ROOMS}>
+          <Route exact path={ROOMS}>
             <AllRoomsScreen />
           </Route>
 
-          <Route path={GAME}>
+          <Route exact path={GAME}>
             <GameTableScreen />
           </Route>
         </Switch>

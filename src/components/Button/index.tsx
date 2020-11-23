@@ -41,7 +41,7 @@ const Button: React.FC<Props> = (props: Props) => {
   )
 }
 
-const Wrapper = styled.button`
+export const Wrapper = styled.button`
   font-family: ${({ theme }) => theme.fonts.russo};
   font-size: ${({ theme }) => theme.fontSize.normalText};
   background-color: ${(props: WrapperProps) => props.background || theme.colors.darkBlue};

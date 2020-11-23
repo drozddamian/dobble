@@ -145,7 +145,7 @@ export const addPlayerToRoom = (roomId: string, playerId: string): AppThunk => a
   try {
     dispatch(roomActionStart())
     await joinRoom(roomId, playerId)
-    history.push(`/room/${roomId}`)
+    history.go(0)
     dispatch(displayNotification(NotificationType.SUCCESS, 'You have joined the room'))
   } catch(error) {
     const errorData: ResponseError = error.response.data

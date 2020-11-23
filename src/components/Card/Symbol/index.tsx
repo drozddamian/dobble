@@ -6,7 +6,7 @@ import { SymbolName } from '../../../types'
 interface Props {
   symbolId: SymbolName;
   symbolScale: string;
-  handleSymbolClick?: ((name: SymbolName) => void) | undefined;
+  handleSymbolClick?: (name: SymbolName) => (event: React.MouseEvent) => void;
 }
 
 interface SymbolProps {
@@ -19,7 +19,7 @@ const Symbol: React.FC<Props> = (props: Props) => {
   const { name, icon } = CARD_SYMBOLS[symbolId]
 
   return (
-    <Wrapper onClick={() => handleSymbolClick && handleSymbolClick(symbolId)}>
+    <Wrapper onClick={handleSymbolClick ? handleSymbolClick(symbolId) : ()=>{}}>
       <SymbolIcon
         src={icon}
         symbolScale={symbolScale}

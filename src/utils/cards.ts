@@ -1,5 +1,6 @@
 import Big from 'big.js'
 import PACK_OF_CARDS from '../constants/packOfCards'
+import {Card, StyledCard, SymbolName} from '../types'
 
 
 const shuffleCards = (cards: any) => {
@@ -43,3 +44,13 @@ export const getSymbolScales = () => new Array(8)
     }
     return scaleDecimal.times(0.1).add(1).toFixed()
   })
+
+
+export const prepareStyledCard = (card: Card | null): StyledCard | null => {
+  if (!card) { return null }
+  return {
+    symbols: card,
+    rotation: Math.floor(Math.random() * 360),
+    symbolScales: getSymbolScales(),
+  }
+}

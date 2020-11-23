@@ -19,6 +19,12 @@ export enum GameTableStatus {
 
 export type Card = SymbolName[]
 
+export type StyledCard = {
+  symbols: SymbolName[];
+  rotation: number;
+  symbolScales: string[];
+}
+
 export type CardSymbolData = {
   name: string;
   icon: string;
@@ -36,6 +42,7 @@ export interface MappedGameRound {
   centerCard: Card;
   experienceForSpotter: number;
   cardsByPlayerId: CardsByPlayerId;
+  players: Player[];
 }
 
 export type RoomData = {
