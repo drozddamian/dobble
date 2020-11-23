@@ -114,7 +114,7 @@ export const finishGameAndShowResult = (tableId: string, winner: string): AppThu
   setTimeout(() => {
     dispatch(eraseRoundWinner({ tableId }))
     dispatch(resetTable({ tableId }))
-  }, 4000)
+  }, 5000)
 }
 
 export default slice

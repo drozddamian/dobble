@@ -40,4 +40,4 @@ const Title = styled.h3`
 const ListContainer = styled.ul`
 `
 
-export default GameTablePlayers
+export default React.memo(GameTablePlayers)

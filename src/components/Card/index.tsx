@@ -1,4 +1,5 @@
 import React from 'react'
+import { isNil } from 'ramda'
 import styled from 'styled-components'
 import Symbol, { Wrapper as SymbolWrapper } from './Symbol'
 import { Card, SymbolName } from '../../types'
@@ -6,11 +7,12 @@ import { getSymbolScales } from '../../utils/cards'
 
 interface Props {
   cardSymbols: Card | null;
-  handleSymbolClick?: (name: SymbolName) => void;
+  handleSymbolClick?: (name: SymbolName) => (event: React.MouseEvent) => void;
 }
 
 interface WrapperProps {
   cardRotation: number;
+  isClickable: boolean;
 }
 
 const CardComponent: React.FC<Props> = (props: Props) => {
@@ -21,7 +23,7 @@ const CardComponent: React.FC<Props> = (props: Props) => {
 
   return (
     <Wrapper>
-      <CardContainer cardRotation={cardRotation}>
+      <CardContainer cardRotation={cardRotation} isClickable={!isNil(handleSymbolClick)}>
         {!cardSymbols
           ? <EmptyCardContent>Empty card</EmptyCardContent>
           : cardSymbols.map((symbolId, index) => (
@@ -29,7 +31,7 @@ const CardComponent: React.FC<Props> = (props: Props) => {
               key={`${symbolId}_${index}`}
               symbolId={symbolId}
               symbolScale={symbolScaleArray[index]}
-              handleSymbolClick={handleSymbolClick || undefined}
+              handleSymbolClick={handleSymbolClick}
             />
           ))
         }
@@ -68,6 +70,10 @@ const CardContainer = styled.div`
     position: absolute;
     width: 80px;
     height: 80px;
+    
+    ${(props: WrapperProps) => !props.isClickable && `
+      cursor: not-allowed;      
+    `};
 
     :first-of-type {
       left: 50%;

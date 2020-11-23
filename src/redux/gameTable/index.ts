@@ -67,8 +67,12 @@ const slice = createSlice({
       const { gameTableId, tableData } = action.payload
       const { gameStatus, roundStartCountdown, players } = tableData
 
+      if (!gameTableId) {
+        return
+      }
+
       if (!state[gameTableId]) {
-        state[gameTableId] = {...state[gameTableId]}
+        state[gameTableId] = { ...state[gameTableId] }
       }
       state[gameTableId].roundStartCountdown = roundStartCountdown
 

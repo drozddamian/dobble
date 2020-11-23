@@ -14,7 +14,8 @@ interface Props {
 const GameDialog: React.FC<Props> = (props: Props) => {
   const { tableId, handleRoundStartClick } = props
   const { gameStatus, roundStartCountdown } = useTypedSelector(state => state.gameTable[tableId])
-  const { roundWinner } = useTypedSelector(state => state.gameRound)
+  const gameRound = useTypedSelector(state => state.gameRound[tableId])
+  const roundWinner = gameRound?.roundWinner
 
   const DIALOG_CONTENT = {
     [Joining]: <InfoText> Waiting for more players to join </InfoText>,
@@ -26,14 +27,19 @@ const GameDialog: React.FC<Props> = (props: Props) => {
       />
     ),
     [Countdown]: <InfoText> {`Round is starting in ${roundStartCountdown}`}  </InfoText>
-
   }
 
   if (roundWinner) {
     return (
-      <InfoText>
-        {`${roundWinner} is the winner!`}
-      </InfoText>
+      <WinnerContainer>
+        <InfoText>
+          <span>{`${roundWinner}`}</span>{' '}
+          is the winner!
+        </InfoText>
+        <InfoText>
+          Wait for the game to reset.
+        </InfoText>
+      </WinnerContainer>
     )
   }
 
@@ -53,6 +59,18 @@ export const InfoText = styled.h2`
   font-size: ${({ theme }) => theme.fontSize.s23};
   color: ${({ theme }) => theme.colors.pink};
   text-align: center;
+`
+
+const WinnerContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  ${InfoText} {
+    color: ${({ theme }) => theme.colors.darkBlue};
+    span {
+      color: ${({ theme }) => theme.colors.pink};
+    }
+  }
 `
 
 export default GameDialog
