@@ -33,7 +33,7 @@ const PlayerSection: React.FC<Props> = (props: Props) => {
 
   return (
     <Wrapper>
-      <PlayerBadge player={player} />
+      <PlayerBadge />
 
       <RoomsSection
         isLoading={isLoading}

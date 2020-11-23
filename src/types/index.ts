@@ -36,6 +36,7 @@ export interface MappedGameRound {
   centerCard: Card;
   experienceForSpotter: number;
   cardsByPlayerId: CardsByPlayerId;
+  players: Player[];
 }
 
 export type RoomData = {

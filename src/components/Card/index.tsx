@@ -19,27 +19,20 @@ const CardComponent: React.FC<Props> = (props: Props) => {
   const symbolScaleArray = getSymbolScales()
   const cardRotation = !cardSymbols ? 0 : Math.floor(Math.random() * 360)
 
-  const getCardContent = () => {
-    if (!cardSymbols) {
-      return <EmptyCardContent>Empty card</EmptyCardContent>
-    }
-
-    return cardSymbols.map((symbolId, index) => (
-      <Symbol
-        key={`${symbolId}_${index}`}
-        symbolId={symbolId}
-        symbolScale={symbolScaleArray[index]}
-        handleSymbolClick={handleSymbolClick || undefined}
-      />
-    ))
-  }
-
-  const cardContent = getCardContent()
-
   return (
     <Wrapper>
       <CardContainer cardRotation={cardRotation}>
-        {cardContent}
+        {!cardSymbols
+          ? <EmptyCardContent>Empty card</EmptyCardContent>
+          : cardSymbols.map((symbolId, index) => (
+            <Symbol
+              key={`${symbolId}_${index}`}
+              symbolId={symbolId}
+              symbolScale={symbolScaleArray[index]}
+              handleSymbolClick={handleSymbolClick || undefined}
+            />
+          ))
+        }
       </CardContainer>
     </Wrapper>
   )

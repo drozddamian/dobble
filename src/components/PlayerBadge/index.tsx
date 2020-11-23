@@ -1,14 +1,15 @@
 import React from 'react'
 import styled from 'styled-components'
 import LevelProgress from '../LevelProgress'
-import { Player } from '../../api/players'
+import { useTypedSelector } from '../../redux/rootReducer'
 
-interface Props {
-  player: Player;
-}
+const PlayerBadge: React.FC = () => {
+  const { player } = useTypedSelector(state => state.players)
 
-const PlayerBadge: React.FC<Props> = (props: Props) => {
-  const { player } = props
+  if (!player) {
+    return null
+  }
+
   const { nick, level, percentToNextLevel } = player
 
   return (

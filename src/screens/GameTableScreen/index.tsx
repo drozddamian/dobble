@@ -1,6 +1,6 @@
-import React, { ReactElement, useEffect } from 'react'
+import React, {ReactElement, useEffect} from 'react'
 import socket from '../../utils/socket'
-import { equals, isNil, isEmpty } from 'ramda'
+import { equals, isEmpty } from 'ramda'
 import { useDispatch } from 'react-redux'
 import { useHistory, useParams } from 'react-router-dom'
 import { useTypedSelector } from "../../redux/rootReducer";
@@ -33,9 +33,17 @@ const GameTableScreen = (): ReactElement => {
 
   const gameTable = useTypedSelector(state => state.gameTable[gameTableId])
   const gameRound = useTypedSelector(state => state.gameRound[gameTableId])
+  const centerCard = gameRound?.centerCard
+  const roundPlayers = gameRound?.players
 
   useEffect(() => {
-    if (socket && gameTableId) socket.emit('join', { gameTableId, playerId });
+    if (!gameTableId) {
+      return
+    }
+
+    socket.connect()
+    socket.emit('join', { gameTableId, playerId });
+
     return () => {
       if(socket) {
         socket.emit(PLAYER_LEAVE, { tableId: gameTableId, playerId })
@@ -46,12 +54,12 @@ const GameTableScreen = (): ReactElement => {
 
   useEffect(() => {
     socket.on(TABLE_CHANGE, (tableData: TableChangeData) => {
-      console.log(tableData)
+      console.log("tableData", tableData)
       dispatch(updateTable({ gameTableId, tableData }))
     })
 
     socket.on(GAME_CHANGE, (gameRound: MappedGameRound) => {
-      console.log(gameRound)
+      console.log("gameRound", gameRound)
       dispatch(updateGameRound(gameRound))
     })
 
@@ -79,10 +87,7 @@ const GameTableScreen = (): ReactElement => {
   }
 
   const handleSymbolClick = (spottedSymbol: SymbolName) => {
-    if (!gameRound) {
-      return
-    }
-    if (gameRound?.centerCard?.includes(spottedSymbol)) {
+    if (centerCard?.includes(spottedSymbol)) {
       socket.emit(SPOT_SHAPE, { tableId: gameTableId, playerId })
     }
   }
@@ -95,8 +100,10 @@ const GameTableScreen = (): ReactElement => {
 
   return (
     <Template
+      playerId={playerId}
       tableId={gameTableId}
-      playerList={playerList}
+      tablePlayers={playerList}
+      roundPlayers={roundPlayers}
       isGameInProcess={equals(gameStatus, Processing)}
       onLeaveGame={handleLeaveGameClick}
       onStartRound={handleRoundStartClick}

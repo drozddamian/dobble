@@ -48,7 +48,7 @@ const GameDialog: React.FC<Props> = (props: Props) => {
   )
 }
 
-const InfoText = styled.h2`
+export const InfoText = styled.h2`
   font-family: ${({ theme }) => theme.fonts.russo};
   font-size: ${({ theme }) => theme.fontSize.s23};
   color: ${({ theme }) => theme.colors.pink};

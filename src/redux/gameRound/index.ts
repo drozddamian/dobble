@@ -1,9 +1,10 @@
-import { isNil } from 'ramda'
+import { equals } from 'ramda'
 import { AppThunk } from '../rootStore'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { Card, MappedGameRound } from '../../types'
 import { SESSION_USER_ID } from '../../constants'
 import { resetTable } from '../gameTable'
+import {Player} from "../../api/players";
 
 
 type GameRoundState = {
@@ -14,6 +15,7 @@ type GameRoundState = {
   spotterId: string | null;
   centerCard: Card | null;
   playerCard: Card | null;
+  players: Player[];
   experienceForSpotter: number;
 }
 
@@ -37,20 +39,47 @@ const slice = createSlice({
         centerCard,
         experienceForSpotter,
         cardsByPlayerId,
+        players,
       } = action.payload
 
       const playerId = sessionStorage.getItem(SESSION_USER_ID)
-      const currentPlayerCards = !isNil(playerId) ? cardsByPlayerId[playerId] : null
+      const newPlayerCards = (playerId && Object.keys(cardsByPlayerId).includes(playerId))
+        ? cardsByPlayerId[playerId]
+        : null
 
-      state[tableId] = {
-        roundId: id,
-        tableId,
-        isGameRoundInProcess,
-        spotterId,
-        centerCard,
-        experienceForSpotter,
-        playerCard: currentPlayerCards,
+      if (!state[tableId]) {
+        state[tableId] = {
+          roundId: id,
+          tableId,
+          isGameRoundInProcess,
+          spotterId,
+          experienceForSpotter,
+          centerCard,
+          players,
+          playerCard: newPlayerCards,
+        }
+        return
       }
+
+      const currentCenterCard = state[tableId]?.centerCard
+
+      if (playerId) {
+        const currentPlayerCard = state[tableId].playerCard
+
+        if (!equals(newPlayerCards, currentPlayerCard)) {
+          state[tableId].playerCard = newPlayerCards
+        }
+      }
+
+      if (!equals(centerCard, currentCenterCard)) {
+        state[tableId].centerCard = centerCard
+      }
+
+      state[tableId].roundId = id
+      state[tableId].spotterId = spotterId
+      state[tableId].tableId = tableId
+      state[tableId].isGameRoundInProcess = isGameRoundInProcess
+      state[tableId].experienceForSpotter = experienceForSpotter
     },
     finishGameRound(state, action: PayloadAction<FinishGameRoundActionPayload>) {
       const { winner, tableId } = action.payload
