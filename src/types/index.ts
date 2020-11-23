@@ -30,8 +30,11 @@ export type CardSymbolData = {
   icon: string;
 }
 
-type CardsByPlayerId = {
-  [id: string]: Card;
+export type CardsByPlayerId = {
+  [id: string]: {
+    card: Card;
+    howManyCardsLeft: number;
+  };
 }
 
 export interface MappedGameRound {

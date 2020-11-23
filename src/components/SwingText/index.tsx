@@ -4,6 +4,8 @@ import { useTransition, animated } from 'react-spring'
 
 interface Props {
   text: string;
+  height?: string;
+  width?: string;
 }
 
 const SwingText: React.FC<Props> = (props: Props) => {
@@ -26,7 +28,7 @@ const SwingText: React.FC<Props> = (props: Props) => {
   )
 }
 
-const Wrapper = styled(animated.div)`
+export const Wrapper = styled(animated.div)`
   margin-left: 8px;
   padding: 0 4px;
   background-color: ${({ theme }) => theme.colors.darkBlue};

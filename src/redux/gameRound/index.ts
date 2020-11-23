@@ -1,7 +1,7 @@
 import { equals } from 'ramda'
 import { AppThunk } from '../rootStore'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import {Card, MappedGameRound, StyledCard} from '../../types'
+import {Card, CardsByPlayerId, MappedGameRound, StyledCard} from '../../types'
 import { SESSION_USER_ID } from '../../constants'
 import { resetTable } from '../gameTable'
 import {Player} from "../../api/players";
@@ -13,6 +13,7 @@ type GameRoundState = {
   tableId: string;
   roundWinner?: string | null;
   isGameRoundInProcess: boolean;
+  cardsByPlayerId: CardsByPlayerId | null;
   spotterId: string | null;
   centerCard: Card | null;
   playerCard: Card | null;
@@ -47,7 +48,7 @@ const slice = createSlice({
 
       const playerId = sessionStorage.getItem(SESSION_USER_ID)
       const newPlayerCards = (playerId && Object.keys(cardsByPlayerId).includes(playerId))
-        ? cardsByPlayerId[playerId]
+        ? cardsByPlayerId[playerId].card
         : null
 
       if (!state[tableId]) {
@@ -57,6 +58,7 @@ const slice = createSlice({
           isGameRoundInProcess,
           spotterId,
           experienceForSpotter,
+          cardsByPlayerId,
           players,
           centerCard,
           styledCenterCard: prepareStyledCard(centerCard),
@@ -87,6 +89,7 @@ const slice = createSlice({
       state[tableId].tableId = tableId
       state[tableId].isGameRoundInProcess = isGameRoundInProcess
       state[tableId].experienceForSpotter = experienceForSpotter
+      state[tableId].cardsByPlayerId = cardsByPlayerId
     },
     finishGameRound(state, action: PayloadAction<FinishGameRoundActionPayload>) {
       const { winner, tableId } = action.payload

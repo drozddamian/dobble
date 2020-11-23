@@ -60,7 +60,7 @@ const GameTableScreen = (): ReactElement => {
     })
 
     socket.on(GAME_CHANGE, (gameRound: MappedGameRound) => {
-      //console.log("gameRound", gameRound)
+      console.log("gameRound", gameRound)
       dispatch(updateGameRound(gameRound))
     })
 
@@ -141,8 +141,16 @@ const GameTableScreen = (): ReactElement => {
           )}
 
           <PlayersWrapper>
-            <GameTablePlayers title="Round players" players={roundPlayers} />
-            <GameTablePlayers title="Table players" players={gameTable?.playerList} />
+            <GameTablePlayers
+              title="Round players"
+              players={roundPlayers}
+              cardsByPlayerId={gameRound.cardsByPlayerId}
+            />
+
+            <GameTablePlayers
+              title="Table players"
+              players={gameTable?.playerList}
+            />
           </PlayersWrapper>
         </Wrapper>
       </>
