@@ -126,11 +126,11 @@ const GameTableScreen = (): ReactElement => {
           : (
             <>
               <CenterCardContainer>
-                <Card cardSymbols={gameRound?.centerCard} />
+                <Card card={gameRound?.styledCenterCard} />
               </CenterCardContainer>
               <PlayerCardContainer>
                 <Card
-                  cardSymbols={gameRound?.playerCard}
+                  card={gameRound?.styledPlayerCard}
                   handleSymbolClick={handleSymbolClick}
                 />
                 <CardDescriptionText>

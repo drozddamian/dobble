@@ -1,10 +1,11 @@
 import { equals } from 'ramda'
 import { AppThunk } from '../rootStore'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { Card, MappedGameRound } from '../../types'
+import {Card, MappedGameRound, StyledCard} from '../../types'
 import { SESSION_USER_ID } from '../../constants'
 import { resetTable } from '../gameTable'
 import {Player} from "../../api/players";
+import {prepareStyledCard} from "../../utils/cards";
 
 
 type GameRoundState = {
@@ -15,6 +16,8 @@ type GameRoundState = {
   spotterId: string | null;
   centerCard: Card | null;
   playerCard: Card | null;
+  styledCenterCard: StyledCard | null;
+  styledPlayerCard: StyledCard | null;
   players: Player[];
   experienceForSpotter: number;
 }
@@ -54,9 +57,11 @@ const slice = createSlice({
           isGameRoundInProcess,
           spotterId,
           experienceForSpotter,
-          centerCard,
           players,
+          centerCard,
+          styledCenterCard: prepareStyledCard(centerCard),
           playerCard: newPlayerCards,
+          styledPlayerCard: prepareStyledCard(newPlayerCards),
         }
         return
       }
@@ -68,11 +73,13 @@ const slice = createSlice({
 
         if (!equals(newPlayerCards, currentPlayerCard)) {
           state[tableId].playerCard = newPlayerCards
+          state[tableId].styledPlayerCard = prepareStyledCard(newPlayerCards)
         }
       }
 
       if (!equals(centerCard, currentCenterCard)) {
         state[tableId].centerCard = centerCard
+        state[tableId].styledCenterCard = prepareStyledCard(centerCard)
       }
 
       state[tableId].roundId = id

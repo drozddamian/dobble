@@ -2,35 +2,31 @@ import React from 'react'
 import { isNil } from 'ramda'
 import styled from 'styled-components'
 import Symbol, { Wrapper as SymbolWrapper } from './Symbol'
-import { Card, SymbolName } from '../../types'
-import { getSymbolScales } from '../../utils/cards'
+import { StyledCard, SymbolName } from '../../types'
 
 interface Props {
-  cardSymbols: Card | null;
+  card: StyledCard | null;
   handleSymbolClick?: (name: SymbolName) => (event: React.MouseEvent) => void;
 }
 
 interface WrapperProps {
-  cardRotation: number;
+  cardRotation?: number;
   isClickable: boolean;
 }
 
 const CardComponent: React.FC<Props> = (props: Props) => {
-  const { cardSymbols, handleSymbolClick } = props
-
-  const symbolScaleArray = getSymbolScales()
-  const cardRotation = !cardSymbols ? 0 : Math.floor(Math.random() * 360)
+  const { card, handleSymbolClick } = props
 
   return (
     <Wrapper>
-      <CardContainer cardRotation={cardRotation} isClickable={!isNil(handleSymbolClick)}>
-        {!cardSymbols
+      <CardContainer cardRotation={card?.rotation} isClickable={!isNil(handleSymbolClick)}>
+        {!card?.symbols
           ? <EmptyCardContent>Empty card</EmptyCardContent>
-          : cardSymbols.map((symbolId, index) => (
+          : card.symbols.map((symbolId, index) => (
             <Symbol
               key={`${symbolId}_${index}`}
               symbolId={symbolId}
-              symbolScale={symbolScaleArray[index]}
+              symbolScale={card.symbolScales[index]}
               handleSymbolClick={handleSymbolClick}
             />
           ))

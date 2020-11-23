@@ -19,6 +19,12 @@ export enum GameTableStatus {
 
 export type Card = SymbolName[]
 
+export type StyledCard = {
+  symbols: SymbolName[];
+  rotation: number;
+  symbolScales: string[];
+}
+
 export type CardSymbolData = {
   name: string;
   icon: string;
