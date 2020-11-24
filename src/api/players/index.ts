@@ -15,6 +15,7 @@ export interface Player {
   experienceToNextLevel: number;
   owningRooms: Room[];
   joinedRooms: Room[];
+  durationsOfWin: string[];
 }
 
 export interface GetPlayerSuccess {

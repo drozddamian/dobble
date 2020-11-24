@@ -66,9 +66,7 @@ const RoomScreen: React.FC = () => {
   }, [])
 
   if (isLoading || isNil(roomItem)) {
-    return (
-      <LoadingBar />
-    )
+    return <LoadingBar />
   }
 
   const { owner, players, howManyPlayers, availableSeats, gameTable } = roomItem

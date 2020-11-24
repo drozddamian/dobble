@@ -144,7 +144,7 @@ const GameTableScreen = (): ReactElement => {
             <GameTablePlayers
               title="Round players"
               players={roundPlayers}
-              cardsByPlayerId={gameRound.cardsByPlayerId}
+              cardsByPlayerId={gameRound?.cardsByPlayerId}
             />
 
             <GameTablePlayers
