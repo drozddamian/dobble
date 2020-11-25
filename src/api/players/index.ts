@@ -1,6 +1,7 @@
 import axios from '../../helpers/axios'
 import { API_METHODS } from '../../constants/api'
 import { Room } from '../rooms'
+import { WinGame } from '../../types'
 
 
 export interface Player {
@@ -15,7 +16,7 @@ export interface Player {
   experienceToNextLevel: number;
   owningRooms: Room[];
   joinedRooms: Room[];
-  durationsOfWin: string[];
+  winGames: WinGame[];
 }
 
 export interface GetPlayerSuccess {
