@@ -29,6 +29,13 @@ const getPlayer = async (id: string): Promise<GetPlayerSuccess> => {
   return data
 }
 
+const getTopPlayers = async (): Promise<Player[]> => {
+  const url = `${API_METHODS.GET_TOP_PLAYERS}`
+  const { data } = await axios.get<Player[]>(url)
+  return data
+}
+
 export default {
   getPlayer,
+  getTopPlayers,
 }

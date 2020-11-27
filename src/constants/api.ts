@@ -20,7 +20,7 @@ export const API_METHODS = {
   REGISTER: `${AUTHENTICATION}/register`,
   LOGOUT: `${AUTHENTICATION}/logout`,
   PLAYERS_ROOT: `${PLAYERS}`,
-  GET_PODIUM_PLAYERS: `${PLAYERS}/podium`,
+  GET_TOP_PLAYERS: `${PLAYERS}/top`,
   ROOMS_ROOT: `${ROOMS}`,
   GET_MOST_POPULAR_ROOMS: `${ROOMS}/most_popular`,
   JOIN_ROOM: `${ROOMS}/join_room`,

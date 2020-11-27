@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, {ReactElement, useEffect} from 'react'
 import styled, { css } from 'styled-components'
 import { isNil, isEmpty } from 'ramda'
 import { useDispatch } from 'react-redux'
@@ -9,6 +9,7 @@ import { fetchPopularRooms } from '../../redux/rooms'
 import { useCurrentAccount } from '../../hooks'
 import AuthSection from './AuthSection'
 import PlayerSection from './PlayerSection'
+import ComponentSwitcher from '../../components/ComponentSwitcher'
 
 interface SectionTitleProps {
   width?: string;
@@ -32,29 +33,35 @@ const MainScreen: React.FC = () => {
     dispatch(fetchPopularRooms())
   }, [rooms.length])
 
-  const getPlayerComponent = () => {
-    if (isNil(currentUserId) || isEmpty(currentUserId)) {
-      return <AuthSection />
-    }
-    return <PlayerSection userId={currentUserId} />
-  }
 
+  const componentSwitcherData = {
+    ROOMS: {
+      title: 'Top rooms',
+      component: (
+        <RoomList
+          rooms={mostPopularRooms}
+          isLoading={isLoading}
+        />
+      )
+    },
+    PLAYERS: {
+      title: 'Top players',
+      component: (
+        <p>top players</p>
+      )
+    },
+  }
 
   return (
     <MainPageWrapper>
-      {getPlayerComponent()}
+      {isNil(currentUserId) || isEmpty(currentUserId)
+        ? <AuthSection />
+        : <PlayerSection userId={currentUserId} />
+      }
 
-      {!isEmpty(mostPopularRooms) && (
-        <RoomsSection>
-          <SectionTitle padding='0 0 40px 0'>
-            Most popular rooms
-          </SectionTitle>
-            <RoomList
-              rooms={mostPopularRooms}
-              isLoading={isLoading}
-            />
-        </RoomsSection>
-      )}
+      <TopSection>
+        <ComponentSwitcher componentSwitcherData={componentSwitcherData} />
+      </TopSection>
     </MainPageWrapper>
   )
 }
@@ -71,7 +78,7 @@ const MainPageWrapper = styled(PageWrapper)`
   }
 `
 
-const RoomsSection = styled.section`
+const TopSection = styled.section`
   display: flex;
   flex-direction: column;
   margin-top: 80px;

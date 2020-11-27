@@ -1,6 +1,7 @@
 import React from 'react'
+import styled from 'styled-components'
 import { CartesianGrid, XAxis, YAxis, BarChart, Bar, Tooltip } from 'recharts'
-import styled from "styled-components";
+import theme from '../../utils/theme'
 
 interface Props {
   data: Array<any>;
@@ -33,30 +34,43 @@ const Chart: React.FC<Props> = ({
   tooltipLabel,
   xAxisDataKey
 }) => (
-    <Wrapper>
-  <BarChart width={700} height={250} data={data} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
-    <CartesianGrid strokeDasharray="3 3" />
-    <XAxis dataKey={xAxisDataKey} />
-    <YAxis />
-    <Bar dataKey={dataKey} barSize={20} fill="#82ca9d" />
-    {tooltipLabel && (
-      <Tooltip
-        cursor={false}
-        // @ts-ignore
-        content={(data) => (
-          <CustomTooltip
-            axisLabel={data.label}
-            payload={data.payload}
-            label={tooltipLabel}
-          />
-        )}/>
-    )}
-  </BarChart>
-    </Wrapper>
+  <Wrapper>
+    <BarChart
+      width={700}
+      height={250}
+      data={data}
+      margin={{ top: 5, right: 20, bottom: 5, left: 0 }}
+    >
+      <CartesianGrid strokeDasharray="3 3" />
+      <XAxis dataKey={xAxisDataKey} />
+      <YAxis />
+
+      <Bar
+        barSize={20}
+        dataKey={dataKey}
+        fill={theme.colors.darkBlue08}
+      />
+
+      {tooltipLabel && (
+        <Tooltip
+          cursor={false}
+          // @ts-ignore
+          content={(data) => (
+            <CustomTooltip
+              axisLabel={data.label}
+              payload={data.payload}
+              label={tooltipLabel}
+            />
+          )}/>
+      )}
+    </BarChart>
+  </Wrapper>
 )
 
 const Wrapper = styled.div`
+  overflow-x: scroll;
   font-family: ${({ theme }) => theme.fonts.robotoRegular};
+  font-size: ${({ theme }) => theme.fontSize.s13};
 `
 const TooltipContainer = styled.div`
   padding: 8px 12px;
@@ -67,7 +81,7 @@ const TooltipContainer = styled.div`
 
 const AxisLabel = styled.p`
   color: ${({ theme }) => theme.colors.text};
-  font-size: ${({ theme }) => theme.fontSize.s18};
+  font-size: ${({ theme }) => theme.fontSize.s13};
 `
 
 const TooltipLabel = styled(AxisLabel)`

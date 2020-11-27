@@ -106,7 +106,7 @@ const PlayerScreen: React.FC = () => {
 
         {winGames.length > 0 && (
           <Tile>
-            <TileTitle>Victories</TileTitle>
+            <TileTitle>Victories{` (${winGames.length})`}</TileTitle>
 
             <Chart
               data={mapWinGamesDataForChart(winGames)}
@@ -131,7 +131,7 @@ const Tile = styled.div<{ backgroundColor?: string }>`
 `
 
 const MainTileTitle = styled.h3`
-  color: ${({ theme }) => theme.colors.pink};
+  color: ${({ theme }) => theme.colors.darkBlue};
   font-size: ${({ theme }) => theme.fontSize.smallTitle};
   font-family: ${({ theme }) => theme.fonts.robotoRegular};
 `

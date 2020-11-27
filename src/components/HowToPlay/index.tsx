@@ -43,9 +43,10 @@ const Wrapper = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 1px solid ${({ theme }) => theme.colors.darkBlue};
   border-radius: 5px;
   padding: 6px 6px;
+  background-color: ${({ theme }) => theme.colors.white08};
+  border: 1px solid ${({ theme }) => theme.colors.darkBlue};
 `
 
 const Icon = styled.img`
