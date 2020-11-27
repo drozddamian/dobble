@@ -27,9 +27,9 @@ const RoomItems: React.FC<Props> = (props: Props) => {
         return (
           <ItemWrapper href={roomURL} key={_id}>
             <RoomInfoCell>
-              <RoomTitle>
+              <ItemTitle>
                 {name}
-              </RoomTitle>
+              </ItemTitle>
 
               {isOwner && (
                 <OwnerContainer>
@@ -70,7 +70,7 @@ const RoomItems: React.FC<Props> = (props: Props) => {
   )
 }
 
-const RoomTitle = styled.span`
+export const ItemTitle = styled.span`
   font-family: ${({ theme }) => theme.fonts.russo};
   font-size: ${({ theme }) => theme.fontSize.s13};
   max-width: 210px;
@@ -84,7 +84,7 @@ const RoomTitle = styled.span`
   }
 `
 
-const ItemWrapper = styled.a`
+export const ItemWrapper = styled.a`
   display: flex;
   position: relative;
   cursor: pointer;
@@ -92,7 +92,8 @@ const ItemWrapper = styled.a`
   justify-content: space-between;
   align-items: center;
   padding: 16px 24px;
-  background: linear-gradient(to right, white 35%, rgba(0,116,217,0.2) 100%);
+  background: linear-gradient(to right, white 90%, rgba(0,116,217,0.2) 100%);
+  box-shadow: 0 7px 30px -10px rgba(150,170,180,0.5);
 
   :first-of-type {
     border-top-right-radius: 5px;
@@ -110,16 +111,16 @@ const ItemWrapper = styled.a`
     background-color: rgba(0,116,217,0.05);
     width: 100%;
     transform: translateX(100%);
-    transition: transform .3s ease-in-out;
+    transition: transform .2s ease-in-out;
   }
 
   :hover{
-    ${RoomTitle} {
+    ${ItemTitle} {
       color: ${({ theme }) => theme.colors.pink};
     }
 
     :after {
-      transform: translateX(0);
+      transform: translateX(80%);
     }
   }
 `

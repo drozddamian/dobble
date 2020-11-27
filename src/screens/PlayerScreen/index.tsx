@@ -68,89 +68,113 @@ const PlayerScreen: React.FC = () => {
       <PageTitle title='Profile page' isSubPage />
 
       <PageWrapper>
-        <Tile backgroundColor={theme.colors.salmon}>
-          <MainTileTitle>
-            {isProfileOwner
-              ? `Welcome back ${nick}!`
-              : nick
-            }
-          </MainTileTitle>
+        <Wrapper>
+          <Tile backgroundColor={theme.colors.salmon}>
+            <MainTileTitle>
+              {isProfileOwner
+                ? `Welcome back ${nick}!`
+                : nick
+              }
+            </MainTileTitle>
 
-          <LevelStatistics>
-            <LevelTitle>
-              Level
-            </LevelTitle>
+            <LevelStatistics>
+              <LevelTitle>
+                Level
+              </LevelTitle>
 
-            <LevelBar levelPercentage={percentToNextLevel} />
+              <LevelBar levelPercentage={percentToNextLevel} />
 
-            <LevelBarLegend>
-              <LegendText>
-                {level}
-              </LegendText>
-              <LegendText>
-                {`${experience} / ${experienceToNextLevel} exp`}
-              </LegendText>
-              <LegendText>
-                {level + 1}
-              </LegendText>
-            </LevelBarLegend>
-          </LevelStatistics>
-        </Tile>
-
-        {!isEmpty(owningRooms) && (
-          <Tile>
-            <TileTitle>Rooms</TileTitle>
-            <RoomItems rooms={owningRooms} />
+              <LevelBarLegend>
+                <LegendText>
+                  {level}
+                </LegendText>
+                <LegendText>
+                  {`${experience} / ${experienceToNextLevel} exp`}
+                </LegendText>
+                <LegendText>
+                  {level + 1}
+                </LegendText>
+              </LevelBarLegend>
+            </LevelStatistics>
           </Tile>
-        )}
 
-        {winGames.length > 0 && (
-          <Tile>
-            <TileTitle>Victories{` (${winGames.length})`}</TileTitle>
+          {!isEmpty(owningRooms) && (
+            <Tile>
+              <TileTitle>Rooms</TileTitle>
+              <RoomItems rooms={owningRooms} />
+            </Tile>
+          )}
 
-            <Chart
-              data={mapWinGamesDataForChart(winGames)}
-              tooltipLabel='Duration of the round'
-              dataKey='durationOfGame'
-              xAxisDataKey='timestamp'
-            />
-          </Tile>
-        )}
+          {winGames.length > 0 && (
+            <Tile>
+              <TileTitle>Victories{` (${winGames.length})`}</TileTitle>
 
+              <Chart
+                data={mapWinGamesDataForChart(winGames)}
+                tooltipLabel='Duration of the round'
+                dataKey='durationOfGame'
+                xAxisDataKey='timestamp'
+              />
+            </Tile>
+          )}
+        </Wrapper>
       </PageWrapper>
     </>
   )
 }
 
-const Tile = styled.div<{ backgroundColor?: string }>`
-  margin: 15px;
-  padding: 30px;
+const Wrapper = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+`
+
+const Tile = styled.div<{ minWidth?: string, backgroundColor?: string }>`
+  margin: 15px 0;
+  padding: 8px;
   border-radius: 8px;
   box-shadow: 0 3px 10px 1px rgba(209,209,209,1);
   background-color: ${(props) => props.backgroundColor ||  props.theme.colors.white};
+  min-width: ${(props) => props.minWidth || '300px'};
+  
+  @media (min-width: ${({ theme }) => theme.rwd.mobile.s}) {
+    margin: 15px;
+    padding: 16px;
+  }
 `
 
 const MainTileTitle = styled.h3`
   color: ${({ theme }) => theme.colors.darkBlue};
-  font-size: ${({ theme }) => theme.fontSize.smallTitle};
+  font-size: ${({ theme }) => theme.fontSize.s23};
   font-family: ${({ theme }) => theme.fonts.robotoRegular};
+  
+  @media (min-width: ${({ theme }) => theme.rwd.mobile.s}) {
+    font-size: ${({ theme }) => theme.fontSize.smallTitle};
+  }
 `
 
 const TileTitle = styled.h4`
   padding-bottom: 30px;
   color: ${({ theme }) => theme.colors.text};
-  font-size: ${({ theme }) => theme.fontSize.s27};
+  font-size: ${({ theme }) => theme.fontSize.s18};
   font-family: ${({ theme }) => theme.fonts.robotoRegular};
+  
+  @media (min-width: ${({ theme }) => theme.rwd.mobile.s}) {
+    font-size: ${({ theme }) => theme.fontSize.s27};
+  }
 `
 
 const LevelTitle = styled.h2`
-  font-size: ${({ theme }) => theme.fontSize.s21};
+  font-size: ${({ theme }) => theme.fontSize.s18};
   font-family: ${({ theme }) => theme.fonts.robotoRegular};
   color: ${({ theme }) => theme.colors.text};
+  
+  @media (min-width: ${({ theme }) => theme.rwd.mobile.s}) {
+    font-size: ${({ theme }) => theme.fontSize.s21};  
+  }
 `
 
 const LevelStatistics = styled.div`
-  width: 300px;
+  width: 280px;
   display: flex;
   flex-direction: column;
   padding-top: 30px;
@@ -183,6 +207,7 @@ const LevelBarLegend = styled.div`
 const LegendText = styled.span`
   font-family: ${({ theme }) => theme.fonts.robotoRegular};
   color: ${({ theme }) => theme.colors.text};
+  font-size: ${({ theme }) => theme.fontSize.smallText};
 `
 
 export default PlayerScreen

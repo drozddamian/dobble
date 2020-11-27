@@ -38,8 +38,8 @@ const HowToPlay = (): ReactElement | null => {
 
 const Wrapper = styled.button`
   position: fixed;
-  top: 15px;
-  right: 120px;
+  top: 8px;
+  right: 45px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -47,6 +47,11 @@ const Wrapper = styled.button`
   padding: 6px 6px;
   background-color: ${({ theme }) => theme.colors.white08};
   border: 1px solid ${({ theme }) => theme.colors.darkBlue};
+  
+  @media (min-width: ${({ theme }) => theme.rwd.mobile.s}) {
+    top: 15px;
+    right: 120px;
+  }
 `
 
 const Icon = styled.img`

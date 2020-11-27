@@ -9,13 +9,11 @@ import theme from '../../../utils/theme'
 import RoomsSection from './RoomsSection'
 import PlayerBadge from "../../../components/PlayerBadge";
 
-
 interface Props {
   userId: string;
 }
 
-const PlayerSection: React.FC<Props> = (props: Props) => {
-  const { userId } = props
+const PlayerSection: React.FC<Props> = ({ userId } ) => {
   const dispatch = useDispatch()
 
   const { player, isLoading } = useTypedSelector(state => state.players)
@@ -29,16 +27,14 @@ const PlayerSection: React.FC<Props> = (props: Props) => {
     return <LoadingComponent color={theme.colors.white} />
   }
 
-  const { joinedRooms, owningRooms } = player
-
   return (
     <Wrapper>
       <PlayerBadge />
 
       <RoomsSection
         isLoading={isLoading}
-        joinedRooms={joinedRooms}
-        owningRooms={owningRooms}
+        joinedRooms={player.joinedRooms}
+        owningRooms={player.owningRooms}
       />
     </Wrapper>
   )

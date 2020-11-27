@@ -1,5 +1,6 @@
 import React, { ReactElement, useState } from 'react'
 import styled, { css } from 'styled-components'
+import SectionTitle from '../UI/SectionTitle'
 
 interface Props {
   componentSwitcherData: {
@@ -29,7 +30,7 @@ const ComponentSwitcher: React.FC<Props> = ({ componentSwitcherData }) => {
             <>
               <SwitchButton
                 id={tab}
-                isActive={activeTab === tab}
+                isActive={tab === activeTab}
                 onClick={handleSwitchClick}
               >
                 {componentSwitcherData[tab].title}
@@ -57,30 +58,32 @@ const Wrapper = styled.div`
 
 const SwitchContainer = styled.div`
   display: flex;
+  padding-bottom: 16px;
 `
 
 const SwitchButtonsSeparator = styled.div`
-  width: 2px;
+  width: 3px;
   height: auto;
+  margin: 0 10px;
   transform: rotate(16deg);
   background-color: ${({ theme }) => theme.colors.darkBlue};
 `
 
-const SwitchButton = styled.button<{ isActive?: boolean }>`
-  font-family: ${({ theme }) => theme.fonts.russo};
-  font-size: ${({ theme }) => theme.fonts.smallTitle};
+const SwitchButton = styled(SectionTitle)<{ isActive: boolean }>`
   color: ${({ theme }) => theme.colors.inputBorder};
-  transition: color .2s ease-out;
+  transition: color .2s ease-in-out;
+  cursor: pointer;
+  width: auto;
   
   ${(props) => props.isActive && css`
     color: ${({ theme }) => theme.colors.darkBlue};
   `};
   
-${(props) => !props.isActive && css`
-  :hover {
-    color: ${({ theme }) => theme.colors.darkBlue08}; 
-  }
-`};
+  ${(props) => !props.isActive && css`
+    :hover {
+      color: ${({ theme }) => theme.colors.darkBlue08}; 
+    }
+  `};
 `
 
 const SwitchContent = styled.div``

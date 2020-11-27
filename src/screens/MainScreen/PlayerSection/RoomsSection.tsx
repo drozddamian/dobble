@@ -1,17 +1,17 @@
 import React, { ChangeEvent, useRef, useState } from 'react'
-import { isEmpty, equals } from 'ramda'
+import { equals } from 'ramda'
 import styled from 'styled-components'
-import { SectionTitle } from '../index'
 import ROUTES from '../../../constants/routes'
+import { RoomTypes, selectRoomValues } from './constant-data'
+import { Room } from '../../../api/rooms'
+import { useModal } from '../../../hooks'
+import { filterArrayByKey } from '../../../utils'
 import CreateRoomForm from '../../../components/Forms/CreateRoom'
 import Button from '../../../components/Button'
 import Select from '../../../components/Select'
 import RoomList from '../../../components/RoomList'
 import Modal from '../../../components/Modal'
-import { RoomTypes, selectRoomValues } from './constant-data'
-import { Room } from '../../../api/rooms'
-import { useModal } from '../../../hooks'
-import { filterArrayByKey } from '../../../utils'
+import SectionTitle from '../../../components/UI/SectionTitle'
 
 interface Props {
   joinedRooms: Room[];
@@ -23,7 +23,6 @@ const { ALL, JOINED, OWN } = selectRoomValues
 
 const RoomsSection: React.FC<Props> = (props: Props) => {
   const { isLoading, joinedRooms, owningRooms } = props
-
   const modalRef = useRef(null)
   const { isModalVisible, handleOpenModal, handleCloseModal } = useModal(modalRef)
 
@@ -56,11 +55,9 @@ const RoomsSection: React.FC<Props> = (props: Props) => {
               Your rooms
             </SectionTitle>
 
-            {!isEmpty(allRooms) && (
-              <SeeAllRoomsButton href={ROUTES.ROOMS}>
+            <SeeAllRoomsButton href={ROUTES.ROOMS}>
               Show all
-              </SeeAllRoomsButton>
-            )}
+            </SeeAllRoomsButton>
           </TitleContainer>
 
           <Button
@@ -102,6 +99,7 @@ const Wrapper = styled.div`
 
 const RoomsSectionHeader = styled.div`
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
   padding-bottom: 16px;

@@ -1,19 +1,23 @@
 import React from 'react'
-import { isNil, equals } from 'ramda'
+import {isNil, equals, isEmpty} from 'ramda'
 import styled from 'styled-components'
 import { Player } from '../../api/players'
 import PlayerListItem from './PlayerListItem'
+import LoadingBar from "../Loader/LoadingBar";
+import NoItemsFound from "../UI/NoItemsFound";
 
 interface Props {
   owner?: string;
   players: Player[];
+  isLoading: boolean;
 }
 
-const PlayerList: React.FC<Props> = (props: Props) => {
-  const { owner, players } = props
-
-  if (isNil(players)) {
-    return null
+const PlayerList: React.FC<Props> = ({ owner, players, isLoading }) => {
+  if (isLoading) {
+    return <LoadingBar />
+  }
+  if (isEmpty(players)) {
+    return <NoItemsFound text='Player list is empty' />
   }
   return (
     <Wrapper>

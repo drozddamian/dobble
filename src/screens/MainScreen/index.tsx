@@ -1,29 +1,28 @@
-import React, {ReactElement, useEffect} from 'react'
-import styled, { css } from 'styled-components'
+import React, { useEffect } from 'react'
+import styled from 'styled-components'
 import { isNil, isEmpty } from 'ramda'
 import { useDispatch } from 'react-redux'
-import { useTypedSelector } from "../../redux/rootReducer";
+import { useTypedSelector } from '../../redux/rootReducer'
+import { fetchPopularRooms } from '../../redux/rooms'
+import { fetchTopPlayers } from '../../redux/players'
+import { useCurrentAccount } from '../../hooks'
+
 import PageWrapper from '../../components/Page/Container'
 import RoomList from '../../components/RoomList'
-import { fetchPopularRooms } from '../../redux/rooms'
-import { useCurrentAccount } from '../../hooks'
+import TopPlayersList from '../../components/PlayerList/TopPlayers'
 import AuthSection from './AuthSection'
 import PlayerSection from './PlayerSection'
 import ComponentSwitcher from '../../components/ComponentSwitcher'
 
-interface SectionTitleProps {
-  width?: string;
-  padding?: string;
-}
-
 const MainScreen: React.FC = () => {
   const dispatch = useDispatch()
-
   const { currentUserId } = useCurrentAccount()
-  const { isLoading, rooms, mostPopularRooms } = useTypedSelector(state => state.rooms)
+  const { isLoading: isLoadingRooms, rooms, mostPopularRooms } = useTypedSelector(state => state.rooms)
+  const { isLoading: isLoadingPlayers, topPlayers } = useTypedSelector(state => state.players)
 
   useEffect(() => {
     dispatch(fetchPopularRooms())
+    dispatch(fetchTopPlayers())
   }, [])
 
   useEffect(() => {
@@ -35,19 +34,22 @@ const MainScreen: React.FC = () => {
 
 
   const componentSwitcherData = {
+    PLAYERS: {
+      title: 'Top players',
+      component: (
+        <TopPlayersList
+          players={topPlayers}
+          isLoading={isLoadingPlayers}
+        />
+      )
+    },
     ROOMS: {
       title: 'Top rooms',
       component: (
         <RoomList
           rooms={mostPopularRooms}
-          isLoading={isLoading}
+          isLoading={isLoadingRooms}
         />
-      )
-    },
-    PLAYERS: {
-      title: 'Top players',
-      component: (
-        <p>top players</p>
       )
     },
   }
@@ -92,25 +94,5 @@ const TopSection = styled.section`
     padding-left: 0;
   }
 `
-
-export const SectionTitle = styled.h2`
-  display: flex;
-  font-family: ${({ theme }) => theme.fonts.russo};
-  font-size: ${({ theme }) => theme.fonts.smallTitle};
-  color: ${({ theme }) => theme.colors.darkBlue};
-  width: 100%;
-  ${(props: SectionTitleProps) => props.width && css`
-    width: ${props.width};
-  `};
-  ${(props: SectionTitleProps) => props.padding && css`
-    padding: ${props.padding};
-  `};
-  
-  @media (min-width: ${({ theme }) => theme.rwd.desktop.xs}) {
-    align-self: flex-start;
-  }
-`
-
-
 
 export default MainScreen

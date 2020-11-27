@@ -15,6 +15,7 @@ const theme = {
     gold: '#FFD92E',
     success: '#02b875',
     info: '#5bc0de',
+    bronze: '#cd7f32',
   },
   shadows: {
     inputShadow: '0px 5px 8px -4px rgba(19,30,119,1)',

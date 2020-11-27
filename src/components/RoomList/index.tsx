@@ -4,49 +4,34 @@ import { isEmpty } from 'ramda'
 import { Room } from '../../api/rooms'
 import LoadingBar from '../Loader/LoadingBar'
 import RoomItems from './RoomItems'
+import NoItemsFound from '../UI/NoItemsFound'
 
 interface Props {
   rooms?: Room[];
   isLoading: boolean;
 }
 
-interface ContainerProps {
-  isLoading: boolean;
-}
-
-const RoomList: React.FC<Props> = (props: Props) => {
-  const { rooms, isLoading } = props
-
-  const renderRoomList = () => {
-    if (isLoading) {
-      return (
-        <LoadingBar />
-      )
-    }
-
-    return !rooms || isEmpty(rooms)
-      ? <Text>There is no rooms yet!</Text>
-      : <RoomItems rooms={rooms} />
+const RoomList: React.FC<Props> = ({ rooms, isLoading }) => {
+  if (isLoading) {
+    return <LoadingBar />
   }
-
-
+  if (!rooms || isEmpty(rooms)) {
+    return <NoItemsFound text='Room list is empty' />
+  }
   return (
     <Wrapper isLoading={isLoading}>
-      {renderRoomList()}
+      <RoomItems rooms={rooms} />
     </Wrapper>
   )
 }
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{ isLoading: boolean }>`
   display: flex;
   flex-direction: column;
-  box-shadow: 0 7px 30px -10px rgba(150,170,180,0.5);
   
-  ${(props: ContainerProps) => props.isLoading && css`
+  ${(props) => props.isLoading && css`
     align-items: center;
   `};
 `
-
-const Text = styled.p``
 
 export default RoomList
