@@ -3,27 +3,24 @@ import styled from 'styled-components'
 
 interface Props {
   nick: string;
-  isRoomOwner: boolean;
+  isRoomOwner?: boolean;
 }
 
-const PlayerListItem: React.FC<Props> = (props: Props) => {
-  const { nick, isRoomOwner } = props
+const PlayerListItem: React.FC<Props> = ({ nick, isRoomOwner }) => (
+  <Wrapper>
+    <PlayerNameContainer>
+      <Nick>
+        {nick}
+      </Nick>
 
-  return (
-    <Wrapper>
-      <PlayerNameContainer>
-        <Nick>
-          {nick}
-        </Nick>
-        {isRoomOwner && (
-          <RoomOwnerText>
-            room owner
-          </RoomOwnerText>
-        )}
-      </PlayerNameContainer>
-    </Wrapper>
-  )
-}
+      {isRoomOwner && (
+        <RoomOwnerText>
+          room owner
+        </RoomOwnerText>
+      )}
+    </PlayerNameContainer>
+  </Wrapper>
+)
 
 const Wrapper = styled.div`
   display: flex;

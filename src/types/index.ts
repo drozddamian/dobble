@@ -37,6 +37,11 @@ export type CardsByPlayerId = {
   };
 }
 
+export type WinGame = {
+  timestamp: string;
+  durationOfGame: string;
+}
+
 export interface MappedGameRound {
   id: string;
   tableId: string;

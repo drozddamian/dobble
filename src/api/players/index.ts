@@ -1,6 +1,7 @@
 import axios from '../../helpers/axios'
 import { API_METHODS } from '../../constants/api'
 import { Room } from '../rooms'
+import { WinGame } from '../../types'
 
 
 export interface Player {
@@ -15,6 +16,7 @@ export interface Player {
   experienceToNextLevel: number;
   owningRooms: Room[];
   joinedRooms: Room[];
+  winGames: WinGame[];
 }
 
 export interface GetPlayerSuccess {
@@ -27,6 +29,13 @@ const getPlayer = async (id: string): Promise<GetPlayerSuccess> => {
   return data
 }
 
+const getTopPlayers = async (): Promise<Player[]> => {
+  const url = `${API_METHODS.GET_TOP_PLAYERS}`
+  const { data } = await axios.get<Player[]>(url)
+  return data
+}
+
 export default {
   getPlayer,
+  getTopPlayers,
 }

@@ -7,7 +7,7 @@ import { logoutAccount } from '../../redux/authentication'
 import { useCurrentAccount, useModal } from '../../hooks'
 
 
-const LOGOUT_TEXT = 'You will be logged out'
+const LOGOUT_TEXT = 'Are you sure you want to log out?'
 
 const Logout = (): ReactElement | null => {
   const dispatch = useDispatch()
@@ -47,19 +47,31 @@ const Logout = (): ReactElement | null => {
 
 const Wrapper = styled.button`
   position: fixed;
-  top: 15px;
-  right: 15px;
+  top: 8px;
+  right: 8px;
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 1px solid ${({ theme }) => theme.colors.darkBlue};
   border-radius: 5px;
-  padding: 6px 10px;
+  background-color: ${({ theme }) => theme.colors.white08};
+  border: 1px solid ${({ theme }) => theme.colors.darkBlue};
+  padding: 6px 3px;
+  
+  @media (min-width: ${({ theme }) => theme.rwd.mobile.s}) {
+    top: 15px;
+    right: 15px;
+    padding: 6px 10px;
+  }
 `
 
 const Text = styled.p`
   font-family: ${({ theme }) => theme.fonts.russo};
   color: ${({ theme }) => theme.colors.darkBlue};
+  display: none;
+  
+  @media (min-width: ${({ theme }) => theme.rwd.mobile.s}) {
+    display: inline;
+  }
 `
 
 const Icon = styled.img`

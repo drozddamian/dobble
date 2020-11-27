@@ -57,7 +57,8 @@ const RoomScreen: React.FC = () => {
   const { isModalVisible, handleOpenModal, handleCloseModal } = useModal(modalRef)
   const { currentUserId } = useCurrentAccount()
 
-  const { isLoading, roomItem } = useTypedSelector(state => state.rooms)
+  const { isLoading: isRoomLoading, roomItem } = useTypedSelector(state => state.rooms)
+  const { isLoading: isLoadingPlayer } = useTypedSelector(state => state.players)
   const userId = currentUserId || ''
 
 
@@ -65,10 +66,8 @@ const RoomScreen: React.FC = () => {
     dispatch(fetchRoomItem(roomId))
   }, [])
 
-  if (isLoading || isNil(roomItem)) {
-    return (
-      <LoadingBar />
-    )
+  if (isRoomLoading || isNil(roomItem)) {
+    return <LoadingBar />
   }
 
   const { owner, players, howManyPlayers, availableSeats, gameTable } = roomItem
@@ -136,6 +135,7 @@ const RoomScreen: React.FC = () => {
           <PlayerList
             owner={roomItem?.owner.nick}
             players={roomItem?.players}
+            isLoading={isLoadingPlayer}
           />
         </PlayerListContainer>
       </PageWrapper>

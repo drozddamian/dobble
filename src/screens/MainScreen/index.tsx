@@ -1,28 +1,28 @@
 import React, { useEffect } from 'react'
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 import { isNil, isEmpty } from 'ramda'
 import { useDispatch } from 'react-redux'
-import { useTypedSelector } from "../../redux/rootReducer";
+import { useTypedSelector } from '../../redux/rootReducer'
+import { fetchPopularRooms } from '../../redux/rooms'
+import { fetchTopPlayers } from '../../redux/players'
+import { useCurrentAccount } from '../../hooks'
+
 import PageWrapper from '../../components/Page/Container'
 import RoomList from '../../components/RoomList'
-import { fetchPopularRooms } from '../../redux/rooms'
-import { useCurrentAccount } from '../../hooks'
+import TopPlayersList from '../../components/PlayerList/TopPlayers'
 import AuthSection from './AuthSection'
 import PlayerSection from './PlayerSection'
-
-interface SectionTitleProps {
-  width?: string;
-  padding?: string;
-}
+import ComponentSwitcher from '../../components/ComponentSwitcher'
 
 const MainScreen: React.FC = () => {
   const dispatch = useDispatch()
-
   const { currentUserId } = useCurrentAccount()
-  const { isLoading, rooms, mostPopularRooms } = useTypedSelector(state => state.rooms)
+  const { isLoading: isLoadingRooms, rooms, mostPopularRooms } = useTypedSelector(state => state.rooms)
+  const { isLoading: isLoadingPlayers, topPlayers } = useTypedSelector(state => state.players)
 
   useEffect(() => {
     dispatch(fetchPopularRooms())
+    dispatch(fetchTopPlayers())
   }, [])
 
   useEffect(() => {
@@ -32,29 +32,38 @@ const MainScreen: React.FC = () => {
     dispatch(fetchPopularRooms())
   }, [rooms.length])
 
-  const getPlayerComponent = () => {
-    if (isNil(currentUserId) || isEmpty(currentUserId)) {
-      return <AuthSection />
-    }
-    return <PlayerSection userId={currentUserId} />
-  }
 
+  const componentSwitcherData = {
+    PLAYERS: {
+      title: 'Top players',
+      component: (
+        <TopPlayersList
+          players={topPlayers}
+          isLoading={isLoadingPlayers}
+        />
+      )
+    },
+    ROOMS: {
+      title: 'Top rooms',
+      component: (
+        <RoomList
+          rooms={mostPopularRooms}
+          isLoading={isLoadingRooms}
+        />
+      )
+    },
+  }
 
   return (
     <MainPageWrapper>
-      {getPlayerComponent()}
+      {isNil(currentUserId) || isEmpty(currentUserId)
+        ? <AuthSection />
+        : <PlayerSection userId={currentUserId} />
+      }
 
-      {!isEmpty(mostPopularRooms) && (
-        <RoomsSection>
-          <SectionTitle padding='0 0 40px 0'>
-            Most popular rooms
-          </SectionTitle>
-            <RoomList
-              rooms={mostPopularRooms}
-              isLoading={isLoading}
-            />
-        </RoomsSection>
-      )}
+      <TopSection>
+        <ComponentSwitcher componentSwitcherData={componentSwitcherData} />
+      </TopSection>
     </MainPageWrapper>
   )
 }
@@ -71,7 +80,7 @@ const MainPageWrapper = styled(PageWrapper)`
   }
 `
 
-const RoomsSection = styled.section`
+const TopSection = styled.section`
   display: flex;
   flex-direction: column;
   margin-top: 80px;
@@ -85,25 +94,5 @@ const RoomsSection = styled.section`
     padding-left: 0;
   }
 `
-
-export const SectionTitle = styled.h2`
-  display: flex;
-  font-family: ${({ theme }) => theme.fonts.russo};
-  font-size: ${({ theme }) => theme.fonts.smallTitle};
-  color: ${({ theme }) => theme.colors.darkBlue};
-  width: 100%;
-  ${(props: SectionTitleProps) => props.width && css`
-    width: ${props.width};
-  `};
-  ${(props: SectionTitleProps) => props.padding && css`
-    padding: ${props.padding};
-  `};
-  
-  @media (min-width: ${({ theme }) => theme.rwd.desktop.xs}) {
-    align-self: flex-start;
-  }
-`
-
-
 
 export default MainScreen

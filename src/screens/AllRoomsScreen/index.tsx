@@ -80,6 +80,7 @@ const PaginatedRoomsTable = styled.div`
   min-height: 350px;
   max-height: 500px;
   overflow-y: scroll;
+  box-shadow: 0 7px 30px -10px rgba(150,170,180,0.3);
   
   ::-webkit-scrollbar {
     width: 8px;

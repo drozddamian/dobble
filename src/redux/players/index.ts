@@ -6,18 +6,20 @@ import { Player, GetPlayerSuccess } from '../../api/players'
 import { Room } from '../../api/rooms'
 import { ResponseError } from '../../types'
 
-const { getPlayer } = apiPlayers
+const { getPlayer, getTopPlayers } = apiPlayers
 
 type AccountState = {
   isLoading: boolean;
   error: string | null;
   player: Player | null;
+  topPlayers: Player[];
 }
 
 const initialState: AccountState = {
   isLoading: false,
   error: null,
   player: null,
+  topPlayers: [],
 }
 
 const slice = createSlice({
@@ -39,6 +41,11 @@ const slice = createSlice({
       state.isLoading = false
       state.error = null
     },
+    getTopPlayersSuccess(state, action: PayloadAction<Player[]>) {
+      state.topPlayers = action.payload
+      state.isLoading = false
+      state.error = null
+    },
     setCurrentPlayer(state, action: PayloadAction<Player>) {
       state.player = action.payload
     },
@@ -56,6 +63,7 @@ export const {
   playerActionStart,
   playerActionFailure,
   getAccountSuccess,
+  getTopPlayersSuccess,
   setCurrentPlayer,
   updatePlayerRoomList,
 } = slice.actions
@@ -65,6 +73,17 @@ export const fetchPlayer = (id: string): AppThunk => async dispatch => {
     dispatch(playerActionStart())
     const playerData = await getPlayer(id)
     dispatch(getAccountSuccess(playerData))
+  } catch (error) {
+    const errorData: ResponseError = error.response.data
+    dispatch(playerActionFailure(errorData))
+  }
+}
+
+export const fetchTopPlayers = (): AppThunk => async dispatch => {
+  try {
+    dispatch(playerActionStart())
+    const topPlayers = await getTopPlayers()
+    dispatch(getTopPlayersSuccess(topPlayers))
   } catch (error) {
     const errorData: ResponseError = error.response.data
     dispatch(playerActionFailure(errorData))

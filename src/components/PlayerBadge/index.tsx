@@ -10,7 +10,7 @@ const PlayerBadge: React.FC = () => {
     return null
   }
 
-  const { nick, level, percentToNextLevel } = player
+  const { _id, nick, level, percentToNextLevel } = player
 
   return (
     <Wrapper>
@@ -19,14 +19,14 @@ const PlayerBadge: React.FC = () => {
         percentToNextLevel={percentToNextLevel}
         progressLoaderSize={56}
       />
-      <PlayerNick>
+      <PlayerNick href={`/player/${_id}`}>
         {nick}
       </PlayerNick>
     </Wrapper>
   )
 }
 
-const PlayerNick = styled.h3`
+const PlayerNick = styled.a`
   font-family: ${({ theme }) => theme.fonts.russo};
   color: ${({ theme }) => theme.colors.darkBlue};
   font-size: ${({ theme }) => theme.fontSize.smallTitle};
@@ -36,6 +36,11 @@ const PlayerNick = styled.h3`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  transition: color .2s ease-out;
+  
+  :hover {
+    color: ${({ theme }) => theme.colors.darkBlue08};
+  }
 `
 
 const Wrapper = styled.div`
