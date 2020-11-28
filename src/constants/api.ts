@@ -9,10 +9,11 @@ const API = {
   AUTHENTICATION: `${API_SERVER_URL}/api/authentication`,
   PLAYERS: `${API_SERVER_URL}/api/players`,
   ROOMS: `${API_SERVER_URL}/api/rooms`,
-  GAME_TABLE: `${API_SERVER_URL}/api/game_table`
+  GAME_TABLE: `${API_SERVER_URL}/api/game_table`,
+  CHAT: `${API_SERVER_URL}/api/chat`,
 }
 
-const { AUTHENTICATION, PLAYERS, ROOMS, GAME_TABLE } = API
+const { AUTHENTICATION, PLAYERS, ROOMS, GAME_TABLE, CHAT } = API
 
 
 export const API_METHODS = {
@@ -26,4 +27,5 @@ export const API_METHODS = {
   JOIN_ROOM: `${ROOMS}/join_room`,
   LEAVE_ROOM: `${ROOMS}/leave_room`,
   GAME_TABLE_ROOT: `${GAME_TABLE}`,
+  CHAT_ROOT: `${CHAT}`,
 }
