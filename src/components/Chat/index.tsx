@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react'
+import React, { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { isEmpty } from 'ramda'
 import { useDispatch } from 'react-redux'
@@ -19,6 +19,7 @@ const { NEW_MESSAGE } = CHAT_SOCKET_ACTIONS
 
 const Chat = () => {
   const dispatch = useDispatch()
+  const sectionList = useRef(null)
   const { currentUserId } = useCurrentAccount()
   const { isLoading, error, messages } = useTypedSelector(state => state.chat)
 
@@ -45,6 +46,13 @@ const Chat = () => {
       dispatch(addNewMessage(newMessage))
     })
   }, [])
+
+  useEffect(() => {
+    if (!isEmpty(messages) && sectionList?.current) {
+      // @ts-ignore
+      sectionList.current.scrollTop = sectionList.current.scrollHeight
+    }
+  }, [messages])
 
 
   const handleSendMessage = (event: FormEvent<HTMLFormElement>) => {
@@ -77,7 +85,7 @@ const Chat = () => {
       </SectionTitle>
 
       <ChatContainer>
-        <MessagesContainer>
+        <MessagesContainer ref={sectionList}>
           {isEmpty(messages)
             ? <NoItemsFound text='Room list is empty' />
             : <MessageList messages={messages} currentUserId={currentUserId} />
