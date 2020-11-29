@@ -51,7 +51,11 @@ export const Wrapper = styled.button`
   min-width: 220px;
   border-radius: 8px;
   padding: 12px 24px;
+  transition: background-color .2s ease-in-out;
   
+  :hover {
+    background-color: ${(props: WrapperProps) => !props.background && theme.colors.darkBlue08};
+  }
   
   ${(props: WrapperProps) => props.isDisabled && css`
     opacity: 0.8;

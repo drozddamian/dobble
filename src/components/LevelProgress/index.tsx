@@ -48,6 +48,7 @@ const PlayerLevel = styled.span`
 `
 
 const LevelText = styled.span`
+  cursor: default;
   position: absolute;
   right: 0;
   bottom: 0;

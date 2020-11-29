@@ -42,7 +42,7 @@ const MessageList: React.FC<Props> = ({ messages, currentUserId }) => {
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  padding-right: 10px;
+  padding: 0 10px;
 `
 
 const PlayerNick = styled.p`
@@ -58,14 +58,14 @@ const MessageContainer = styled.p<{ isOwner: boolean }>`
   padding: 5px 10px;
   margin-bottom: 1px;
   border-radius: 5px;
-  background-color: aliceblue;
   font-family: ${({ theme }) => theme.fonts.robotoRegular};
   font-size: ${({ theme }) => theme.fontSize.smallText};
-  color: ${({ theme }) => theme.colors.text};
+  color: ${({ theme }) => theme.colors.lightGray};
+  background-color: ${({ theme }) => theme.colors.darkBlue};
   
   ${(props) => props.isOwner && css`
     align-self: flex-end;
-    background-color: salmon;
+    background-color: ${({ theme }) => theme.colors.info};
   `};
 `
 

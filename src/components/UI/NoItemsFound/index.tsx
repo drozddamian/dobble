@@ -15,7 +15,7 @@ const NoItemsFound: React.FC<Props> = ({
   </Wrapper>
 )
 
-const Wrapper = styled.div`
+export const Wrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;

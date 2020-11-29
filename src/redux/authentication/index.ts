@@ -5,6 +5,8 @@ import { Player } from "../../api/players";
 import { useCurrentAccount } from '../../hooks'
 import { displayNotification } from '../notification'
 import { setCurrentPlayer } from '../players'
+import history from '../../helpers/history'
+import ROUTES from '../../constants/routes'
 import {
   NotificationType,
   ResponseError,
@@ -100,6 +102,7 @@ export const logoutAccount = (): AppThunk => async dispatch => {
     dispatch(authenticationActionStart())
     await logout()
     destroyUserSession()
+    history.push(ROUTES.MAIN)
     window.location.reload()
     dispatch(displayNotification(NotificationType.SUCCESS, "You've been logged out"))
   } catch(error) {

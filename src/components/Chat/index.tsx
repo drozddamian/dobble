@@ -8,12 +8,13 @@ import { useCurrentAccount } from '../../hooks'
 
 import chatSocket from '../../utils/chatSocket'
 import CHAT_SOCKET_ACTIONS from '../../constants/chatSocket'
+import { Message } from '../../types'
 
 import SectionTitle from '../UI/SectionTitle'
 import Input, { InputProps } from '../Forms/Input'
-import NoItemsFound from '../UI/NoItemsFound'
-import { Message } from '../../types'
-import MessageList from "./MessageList";
+import NoItemsFound, { Wrapper as NoItemsFoundContainer } from '../UI/NoItemsFound'
+import LoadingBar, { Wrapper as LoadingContainer } from '../Loader/LoadingBar'
+import MessageList from './MessageList'
 
 const { NEW_MESSAGE } = CHAT_SOCKET_ACTIONS
 
@@ -21,7 +22,7 @@ const Chat = () => {
   const dispatch = useDispatch()
   const sectionList = useRef(null)
   const { currentUserId } = useCurrentAccount()
-  const { isLoading, error, messages } = useTypedSelector(state => state.chat)
+  const { isLoading, messages } = useTypedSelector(state => state.chat)
 
   const [messageText, setMessageText] = useState('')
 
@@ -78,6 +79,19 @@ const Chat = () => {
     onChange: handleMessageInputChange,
   }
 
+
+  const renderMessageList = () => {
+    if (!currentUserId) {
+      return <NoItemsFound text='Chat is available only for logged in users' />
+    }
+    if (isLoading) {
+      return <LoadingBar />
+    }
+    return isEmpty(messages)
+      ? <NoItemsFound text='Room list is empty' />
+      : <MessageList messages={messages} currentUserId={currentUserId} />
+  }
+
   return (
     <Wrapper>
       <SectionTitle>
@@ -86,19 +100,18 @@ const Chat = () => {
 
       <ChatContainer>
         <MessagesContainer ref={sectionList}>
-          {isEmpty(messages)
-            ? <NoItemsFound text='Room list is empty' />
-            : <MessageList messages={messages} currentUserId={currentUserId} />
-          }
+          {renderMessageList()}
         </MessagesContainer>
 
-        <MessageForm onSubmit={handleSendMessage}>
-          <Input inputName='message' inputProps={inputProps} />
+        {currentUserId && (
+          <MessageForm onSubmit={handleSendMessage}>
+            <Input inputName='message' inputProps={inputProps} />
 
-          <SendButton type='submit'>
-            send
-          </SendButton>
-        </MessageForm>
+            <SendButton type='submit'>
+              send
+            </SendButton>
+          </MessageForm>
+        )}
       </ChatContainer>
     </Wrapper>
   )
@@ -109,16 +122,36 @@ const Wrapper = styled.div`
 `
 
 const ChatContainer = styled.div`
-  padding-top: 16px;
+  margin-top: 16px;
+  box-shadow: 0 7px 30px -10px rgba(150,170,180,0.5);
 `
 
 const MessagesContainer = styled.div`
-  margin-bottom: 8px;
+  margin-bottom: 4px;
+  padding-top: 4px;
   width: 100%;
   min-height: 250px;
   max-height: 250px;
   overflow: hidden;
   overflow-y: scroll;
+  position: relative;
+  
+  ${NoItemsFoundContainer} {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+  }
+  
+  ${LoadingContainer} {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+  }
 `
 
 const MessageForm = styled.form`
