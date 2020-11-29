@@ -13,6 +13,7 @@ import TopPlayersList from '../../components/PlayerList/TopPlayers'
 import AuthSection from './AuthSection'
 import PlayerSection from './PlayerSection'
 import ComponentSwitcher from '../../components/ComponentSwitcher'
+import Chat from '../../components/Chat'
 
 const MainScreen: React.FC = () => {
   const dispatch = useDispatch()
@@ -61,10 +62,14 @@ const MainScreen: React.FC = () => {
         : <PlayerSection userId={currentUserId} />
       }
 
-      <TopSection>
-        <ComponentSwitcher componentSwitcherData={componentSwitcherData} />
-      </TopSection>
-    </MainPageWrapper>
+      <RightColumn>
+        <TopSection>
+          <ComponentSwitcher componentSwitcherData={componentSwitcherData} />
+        </TopSection>
+
+        <Chat />
+      </RightColumn>
+      </MainPageWrapper>
   )
 }
 
@@ -83,6 +88,9 @@ const MainPageWrapper = styled(PageWrapper)`
 const TopSection = styled.section`
   display: flex;
   flex-direction: column;
+`
+
+const RightColumn = styled.div`
   margin-top: 80px;
   width: 100%;
   max-width: 500px;

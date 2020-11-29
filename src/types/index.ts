@@ -1,4 +1,4 @@
-import {Player} from "../api/players";
+import { Player } from '../api/players'
 
 export type SymbolName = 'ANCHOR' | 'APPLE' | 'BABY_BOTTLE' | 'BOMB' | 'CACTUS' | 'CANDLE' | 'TAXI_CAR' | 'CARROT' | 'CHESS_KNIGHT' |
                   'CLOCK' | 'CLOWN' | 'DIASY_FLOWER' | 'DINOSAUR' | 'DOLPHIN' | 'DRAGON' | 'EXCLAMATION_MARK' | 'EYE' | 'FIRE' |
@@ -40,6 +40,11 @@ export type CardsByPlayerId = {
 export type WinGame = {
   timestamp: string;
   durationOfGame: string;
+}
+
+export type Message = {
+  sender: Player;
+  content: string;
 }
 
 export interface MappedGameRound {

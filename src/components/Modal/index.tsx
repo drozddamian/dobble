@@ -13,13 +13,19 @@ interface Props {
   children?: ReactElement;
 }
 
-// eslint-disable-next-line react/display-name
 const Modal = React.forwardRef<
   HTMLDivElement,
   Props
 >((props, forwardedRef) => {
-  // eslint-disable-next-line react/prop-types
-  const { isModalVisible, text, acceptButtonText, acceptButtonFunction, declineButtonText, declineButtonFunction, children } = props
+  const {
+    isModalVisible,
+    text,
+    acceptButtonText,
+    acceptButtonFunction,
+    declineButtonText,
+    declineButtonFunction,
+    children,
+  } = props
 
   if (!isModalVisible) {
     return null
