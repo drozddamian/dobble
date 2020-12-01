@@ -1,6 +1,7 @@
 import axios from '../../helpers/axios'
 import { API_METHODS } from '../../constants/api'
 import { Player } from '../players'
+import { PaginatedData } from '../../types'
 
 export interface Room {
   name: string;
@@ -13,15 +14,9 @@ export interface Room {
   howManyPlayers: 0 | 1 | 2 | 3 | 4 | 5 | 6;
 }
 
-export interface FetchRoomsSuccess {
-  rooms: Room[];
-  chunkNumber: number;
-  howManyChunks: number;
-}
-
-const getRooms = async (chunkNumber: number): Promise<FetchRoomsSuccess> => {
+const getRooms = async (chunkNumber: number): Promise<PaginatedData<Room>> => {
   const url = `${API_METHODS.ROOMS_ROOT}?chunkNumber=${chunkNumber}`
-  const { data } = await axios.get<FetchRoomsSuccess>(url)
+  const { data } = await axios.get<PaginatedData<Room>>(url)
   return data
 }
 

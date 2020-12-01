@@ -16,12 +16,12 @@ const MessageList: React.FC<Props> = ({ messages, currentUserId }) => {
 
   return (
     <Wrapper>
-      {messages.map(({ sender, content }, index) => {
+      {messages.map(({ _id, sender, content }, index) => {
         const isOwner = sender._id === currentUserId
         const isPlayerNickVisible = !isOwner && shouldDisplayPlayerNick(index, sender._id)
 
         return (
-          <Fragment key={`${index}_${sender._id}`}>
+          <Fragment key={_id}>
 
             {isPlayerNickVisible && (
               <PlayerNick>

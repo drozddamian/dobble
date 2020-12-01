@@ -1,14 +1,11 @@
 import axios from '../../helpers/axios'
 import { API_METHODS } from '../../constants/api'
 import { Message } from '../../types'
+import { PaginatedData } from '../../types'
 
-export type GetMessagesSuccess = {
-  messages: Message[]
-}
-
-const getMessages = async (): Promise<GetMessagesSuccess> => {
-  const url = `${API_METHODS.CHAT_ROOT}`
-  const { data } = await axios.get<GetMessagesSuccess>(url)
+const getMessages = async (chunkNumber: number): Promise<PaginatedData<Message>> => {
+  const url = `${API_METHODS.CHAT_ROOT}?chunkNumber=${chunkNumber}`
+  const { data } = await axios.get<PaginatedData<Message>>(url)
   return data
 }
 

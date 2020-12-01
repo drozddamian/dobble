@@ -1,20 +1,24 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { Message, NotificationType, ResponseError } from '../../types'
+import { Message, NotificationType, PaginatedData, ResponseError } from '../../types'
 import { AppThunk } from '../rootStore'
 import { apiChat } from '../../api'
-import { GetMessagesSuccess } from '../../api/chat'
 import { displayNotification } from '../notification'
+import {equals} from "ramda";
 
 const { getMessages } = apiChat
 
 type ChatState = {
   messages: Message[];
+  currentPaginationChunk: number;
+  paginationHasMore: boolean;
   isLoading: boolean;
   error: string | null;
 }
 
 const initialState: ChatState = {
   messages: [],
+  currentPaginationChunk: 1,
+  paginationHasMore: true,
   isLoading: false,
   error: null,
 }
@@ -32,8 +36,16 @@ const slice = createSlice({
       state.isLoading = false
       state.error = message
     },
-    chatLoadAllSuccess(state, action: PayloadAction<GetMessagesSuccess>) {
-      state.messages = action.payload.messages
+    chatLoadSuccess(state, action: PayloadAction<PaginatedData<Message>>) {
+      const { data, chunkNumber, howManyChunks } = action.payload
+      const currentChunk = chunkNumber + 1
+      const paginationHasMore = !equals(chunkNumber, howManyChunks)
+
+      state.messages = chunkNumber === 1
+        ? [...state.messages, ...data].reverse()
+        : [...data.reverse(), ...state.messages]
+      state.currentPaginationChunk = currentChunk
+      state.paginationHasMore = paginationHasMore
       state.isLoading = false
       state.error = null
     },
@@ -46,15 +58,15 @@ const slice = createSlice({
 export const {
   chatActionStart,
   catActionFailure,
-  chatLoadAllSuccess,
+  chatLoadSuccess,
   addNewMessage,
 } = slice.actions
 
-export const fetchMessages = (): AppThunk => async (dispatch) => {
+export const fetchMessages = (chunkNumber: number): AppThunk => async (dispatch) => {
   try {
     dispatch(chatActionStart())
-    const messages = await getMessages()
-    dispatch(chatLoadAllSuccess(messages))
+    const messages = await getMessages(chunkNumber)
+    dispatch(chatLoadSuccess(messages))
   } catch(error) {
     const errorData: ResponseError = error.response?.data
     dispatch(catActionFailure(errorData))
