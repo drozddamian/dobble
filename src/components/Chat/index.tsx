@@ -1,6 +1,6 @@
 import React, { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
-import { isEmpty } from 'ramda'
+import { isEmpty, isNil } from 'ramda'
 import { useDispatch } from 'react-redux'
 import { useTypedSelector } from '../../redux/rootReducer'
 import { fetchMessages, addNewMessage } from '../../redux/chat'
@@ -15,6 +15,7 @@ import Input, { InputProps } from '../Forms/Input'
 import NoItemsFound, { Wrapper as NoItemsFoundContainer } from '../UI/NoItemsFound'
 import LoadingBar, { Wrapper as LoadingContainer } from '../Loader/LoadingBar'
 import MessageList from './MessageList'
+import usePrevious from "../../hooks/usePrevious";
 
 const { NEW_MESSAGE } = CHAT_SOCKET_ACTIONS
 
@@ -22,23 +23,23 @@ const Chat = () => {
   const dispatch = useDispatch()
   const sectionList = useRef(null)
   const { currentUserId } = useCurrentAccount()
-  const { isLoading, messages } = useTypedSelector(state => state.chat)
+  const { messages, paginationHasMore, currentPaginationChunk, isLoading } = useTypedSelector(state => state.chat)
 
   const [messageText, setMessageText] = useState('')
 
   useEffect(() => {
-    dispatch(fetchMessages())
+    dispatch(fetchMessages(currentPaginationChunk))
+
+    return () => {
+      if (chatSocket) {
+        chatSocket.disconnect();
+      }
+    }
   }, [])
 
   useEffect(() => {
-    if (!isLoading) {
+    if (!isLoading && !chatSocket.connected) {
       chatSocket.connect()
-    }
-
-    return () => {
-      if (!isLoading && chatSocket) {
-        chatSocket.disconnect();
-      }
     }
   }, [isLoading])
 
@@ -48,24 +49,46 @@ const Chat = () => {
     })
   }, [])
 
+  const previousPaginationChunk = usePrevious(currentPaginationChunk)
+  const previousMessagesLength = usePrevious(messages.length)
   useEffect(() => {
+    if (!sectionList?.current) { return }
+
+    if (
+      previousPaginationChunk !== 1 &&
+      previousPaginationChunk !== currentPaginationChunk
+    ) {
+      const howManyNewMessagesFetched = messages.length - previousMessagesLength
+      // @ts-ignore
+      sectionList.current.scrollTop = howManyNewMessagesFetched * 29
+      return
+    }
+
     if (!isEmpty(messages) && sectionList?.current) {
       // @ts-ignore
       sectionList.current.scrollTop = sectionList.current.scrollHeight
     }
-  }, [messages])
+  }, [messages.length])
 
+  const handleScroll = () => {
+    if (!paginationHasMore || isNil(sectionList.current)) { return }
+    // @ts-ignore
+    if (sectionList.current.scrollTop === 0) {
+      dispatch(fetchMessages(currentPaginationChunk))
+    }
+  };
 
   const handleSendMessage = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
-    if (isEmpty(messageText)) { return }
-    chatSocket.emit(NEW_MESSAGE, {
-      sender: currentUserId,
-      content: messageText,
-    })
+    if (!isEmpty(messageText)) {
+      chatSocket.emit(NEW_MESSAGE, {
+        sender: currentUserId,
+        content: messageText,
+      })
 
-    setMessageText('')
+      setMessageText('')
+    }
   }
 
   const handleMessageInputChange = (event: ChangeEvent<HTMLInputElement>): void => {
@@ -84,12 +107,12 @@ const Chat = () => {
     if (!currentUserId) {
       return <NoItemsFound text='Chat is available only for logged in users' />
     }
-    if (isLoading) {
-      return <LoadingBar />
+    if (!isEmpty(messages)) {
+      return <MessageList messages={messages} currentUserId={currentUserId} />
     }
-    return isEmpty(messages)
-      ? <NoItemsFound text='Room list is empty' />
-      : <MessageList messages={messages} currentUserId={currentUserId} />
+    return isLoading
+      ? <LoadingBar />
+      : <NoItemsFound text='Room list is empty' />
   }
 
   return (
@@ -99,7 +122,7 @@ const Chat = () => {
       </SectionTitle>
 
       <ChatContainer>
-        <MessagesContainer ref={sectionList}>
+        <MessagesContainer ref={sectionList} onScroll={handleScroll}>
           {renderMessageList()}
         </MessagesContainer>
 

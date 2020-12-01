@@ -1,14 +1,9 @@
-import {createSlice, PayloadAction} from '@reduxjs/toolkit'
-import {AppThunk} from '../rootStore'
-import {apiGame} from '../../api'
-import {displayNotification} from '../notification'
-import {Player} from '../../api/players'
-import history from '../../helpers/history'
-import {GameTableStatus, NotificationType, ResponseError, TableChangeData,} from '../../types'
-import {equals} from "ramda";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { equals } from 'ramda'
+import { Player } from '../../api/players'
+import { GameTableStatus, ResponseError, TableChangeData } from '../../types'
 
-const { joinGameTableApi } = apiGame
-const { Joining, Waiting, Countdown, Processing } = GameTableStatus
+const { Joining } = GameTableStatus
 
 
 type TableState = {
