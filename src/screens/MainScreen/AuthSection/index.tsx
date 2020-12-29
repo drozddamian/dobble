@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import SwingText from '../../../components/SwingText'
-import { SectionTitle } from '../index'
 import RegisterForm from '../../../components/Forms/Register'
 import LoginForm from '../../../components/Forms/Login'
+import SectionTitle from '../../../components/UI/SectionTitle'
 
 enum AuthType {
   REGISTER = 'register',

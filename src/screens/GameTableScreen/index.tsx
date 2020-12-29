@@ -1,20 +1,22 @@
-import React, {ReactElement, useEffect} from 'react'
-import socket from '../../utils/socket'
+import React, { ReactElement, useEffect } from 'react'
+import styled from 'styled-components'
+import gameSocket from '../../utils/gameSocket'
 import { isEmpty, isNil } from 'ramda'
 import { useDispatch } from 'react-redux'
 import { useHistory, useParams } from 'react-router-dom'
 import { useTypedSelector } from '../../redux/rootReducer'
+import { useCurrentAccount } from '../../hooks'
+import { resetTable, updateTable } from '../../redux/gameTable'
+import { updateGameRound, finishGameAndShowResult } from '../../redux/gameRound'
 import { SymbolName, MappedGameRound, TableChangeData } from '../../types'
+
 import GAME_SOCKET_ACTIONS from '../../constants/gameSocket'
 import ROUTES from '../../constants/routes'
-import { useCurrentAccount } from '../../hooks'
-import {resetTable, updateTable} from '../../redux/gameTable'
-import { updateGameRound, finishGameAndShowResult } from '../../redux/gameRound'
-import styled from "styled-components";
-import Button, {Wrapper as StyledButton} from "../../components/Button";
-import GameDialog, {InfoText} from "../../components/GameDialog";
-import GameTablePlayers from "../../components/GameTablePlayers";
-import Card from "../../components/Card";
+
+import Button, { Wrapper as StyledButton } from '../../components/Button'
+import GameDialog, { InfoText } from '../../components/GameDialog'
+import GameTablePlayers from '../../components/GameTablePlayers'
+import Card from '../../components/Card'
 
 const {
   TABLE_CHANGE,
@@ -42,30 +44,30 @@ const GameTableScreen = (): ReactElement => {
       return
     }
 
-    socket.connect()
-    socket.emit('join', { gameTableId, playerId });
+    gameSocket.connect()
+    gameSocket.emit('join', { gameTableId, playerId });
 
     return () => {
-      if(socket) {
-        socket.emit(PLAYER_LEAVE, { tableId: gameTableId, playerId })
-        socket.disconnect();
+      if(gameSocket) {
+        gameSocket.emit(PLAYER_LEAVE, { tableId: gameTableId, playerId })
+        gameSocket.disconnect();
       }
     }
   }, [])
 
   useEffect(() => {
-    socket.on(TABLE_CHANGE, (tableData: TableChangeData) => {
+    gameSocket.on(TABLE_CHANGE, (tableData: TableChangeData) => {
       //console.log("tableData", tableData)
       dispatch(updateTable({ gameTableId, tableData }))
     })
 
-    socket.on(GAME_CHANGE, (gameRound: MappedGameRound) => {
-      //console.log("gameRound", gameRound)
+    gameSocket.on(GAME_CHANGE, (gameRound: MappedGameRound) => {
+      console.log("gameRound", gameRound)
       dispatch(updateGameRound(gameRound))
     })
 
     // @ts-ignore
-    socket.on(GAME_END, (result) => {
+    gameSocket.on(GAME_END, (result) => {
       if (isEmpty(result?.winner)) {
         dispatch(resetTable(gameTableId))
         return
@@ -73,24 +75,24 @@ const GameTableScreen = (): ReactElement => {
       result?.winner && dispatch(finishGameAndShowResult(gameTableId, result.winner))
     })
 
-    socket.on(GAME_ERROR, (error: any) => {
+    gameSocket.on(GAME_ERROR, (error: any) => {
       console.error(error)
     })
   }, [])
 
   const handleRoundStartClick = () => {
-    socket.emit(ROUND_START, { tableId: gameTableId })
+    gameSocket.emit(ROUND_START, { tableId: gameTableId })
   }
 
   const handleLeaveGameClick = () => {
-    socket.emit(PLAYER_LEAVE, { tableId: gameTableId, playerId })
+    gameSocket.emit(PLAYER_LEAVE, { tableId: gameTableId, playerId })
     history.push(ROUTES.MAIN)
   }
 
   const handleSymbolClick = (spottedSymbol: SymbolName) => (event: React.MouseEvent) => {
     event.preventDefault()
     if (centerCard?.includes(spottedSymbol)) {
-      socket.emit(SPOT_SHAPE, { tableId: gameTableId, playerId })
+      gameSocket.emit(SPOT_SHAPE, { tableId: gameTableId, playerId })
     }
   }
 
@@ -141,8 +143,16 @@ const GameTableScreen = (): ReactElement => {
           )}
 
           <PlayersWrapper>
-            <GameTablePlayers title="Round players" players={roundPlayers} />
-            <GameTablePlayers title="Table players" players={gameTable?.playerList} />
+            <GameTablePlayers
+              title="Round players"
+              players={roundPlayers}
+              cardsByPlayerId={gameRound?.cardsByPlayerId}
+            />
+
+            <GameTablePlayers
+              title="Table players"
+              players={gameTable?.playerList}
+            />
           </PlayersWrapper>
         </Wrapper>
       </>

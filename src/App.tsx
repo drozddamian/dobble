@@ -14,9 +14,10 @@ import GameTableScreen from './screens/GameTableScreen'
 import MainScreen from './screens/MainScreen'
 import RoomScreen from './screens/RoomScreen'
 import AllRoomsScreen from './screens/AllRoomsScreen'
+import PlayerScreen from './screens/PlayerScreen'
 
 const {
-  MAIN, GAME, ROOM, ROOMS,
+  MAIN, GAME, ROOM, ROOMS, PLAYER,
 } = ROUTES
 
 const App = () => {
@@ -43,6 +44,10 @@ const App = () => {
 
           <Route exact path={GAME}>
             <GameTableScreen />
+          </Route>
+
+          <Route exact path={PLAYER}>
+            <PlayerScreen />
           </Route>
         </Switch>
       </Router>

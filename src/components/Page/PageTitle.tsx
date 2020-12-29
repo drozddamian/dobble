@@ -25,23 +25,22 @@ const PageTitle: React.FC<Props> = (props: Props) => {
 
 const Wrapper = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
-  margin-top: 16px;
-  
-  ${Button} {
-    margin-right: 8px;
-  }
+  margin: 16px 0 0 6px;
   
   @media (min-width: ${({ theme })=> theme.rwd.mobile.m}) {
-    justify-content: flex-start;
     padding-left: 40px;
+    
+    ${Button} {
+      margin-right: 8px;
+    }
   }
 `
 
 const Title = styled.h1`
   font-family: ${({ theme }) => theme.fonts.russo};
-  font-size: ${({ theme }) => theme.fontSize.s27};
+  font-size: ${({ theme }) => theme.fontSize.normalText};
   color: ${({ theme }) => theme.colors.darkBlue};
   max-width: 290px;
   overflow: hidden;
@@ -49,6 +48,7 @@ const Title = styled.h1`
   text-overflow: ellipsis;
   
   @media (min-width: ${({ theme })=> theme.rwd.mobile.s}) {
+    font-size: ${({ theme }) => theme.fontSize.s27};
     min-width: 350px;
   }
   

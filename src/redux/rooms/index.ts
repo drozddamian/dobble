@@ -1,20 +1,16 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { equals } from 'ramda'
-import { RouteComponentProps } from 'react-router-dom'
 import { AppThunk } from '../rootStore'
 import { apiRooms } from '../../api'
 import { updatePlayerRoomList } from '../players'
 import { displayNotification } from '../notification'
 import ROUTES from '../../constants/routes'
 import history from '../../helpers/history'
+import { Room } from '../../api/rooms'
 import {
-  NotificationType,
+  NotificationType, PaginatedData,
   ResponseError,
 } from '../../types'
-import {
-  FetchRoomsSuccess,
-  Room,
-} from '../../api/rooms'
 
 
 const { getRooms, getRoomItem, createRoom, deleteRoom, getMostPopularRooms, joinRoom, leaveRoom } = apiRooms
@@ -52,12 +48,12 @@ const slice = createSlice({
       state.isLoading = false
       state.error = message
     },
-    fetchRoomsSuccess(state, action: PayloadAction<FetchRoomsSuccess>) {
-      const { rooms, chunkNumber, howManyChunks } = action.payload
+    fetchRoomsSuccess(state, action: PayloadAction<PaginatedData<Room>>) {
+      const { data, chunkNumber, howManyChunks } = action.payload
       const currentChunk = chunkNumber + 1
       const paginationHasMore = !equals(chunkNumber, howManyChunks)
 
-      state.rooms = [...state.rooms, ...rooms]
+      state.rooms = [...state.rooms, ...data]
       state.currentPaginationChunk = currentChunk
       state.paginationHasMore = paginationHasMore
       state.isLoading = false
@@ -126,7 +122,7 @@ export const fetchPopularRooms = (): AppThunk => async dispatch => {
   }
 }
 
-export const deleteRoomItem = (roomId: string, playerId: string): AppThunk => async dispatch => {
+export const deleteRoomItem = (roomId: string): AppThunk => async dispatch => {
   try {
     dispatch(roomActionStart())
     await deleteRoom(roomId)

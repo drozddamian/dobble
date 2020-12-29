@@ -6,7 +6,7 @@ import { isNil } from "ramda";
 export interface InputProps {
   type: 'date' | 'email' | 'number' | 'password' | 'text';
   value: string | number;
-  onChange: (event: ReactElement | ChangeEvent<HTMLInputElement>) => void;
+  onChange: (event: ChangeEvent<HTMLInputElement>) => void;
 }
 
 interface Props {

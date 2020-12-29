@@ -1,4 +1,5 @@
-import {Player} from "../api/players";
+import { Player } from '../api/players'
+import {Room} from "../api/rooms";
 
 export type SymbolName = 'ANCHOR' | 'APPLE' | 'BABY_BOTTLE' | 'BOMB' | 'CACTUS' | 'CANDLE' | 'TAXI_CAR' | 'CARROT' | 'CHESS_KNIGHT' |
                   'CLOCK' | 'CLOWN' | 'DIASY_FLOWER' | 'DINOSAUR' | 'DOLPHIN' | 'DRAGON' | 'EXCLAMATION_MARK' | 'EYE' | 'FIRE' |
@@ -30,8 +31,22 @@ export type CardSymbolData = {
   icon: string;
 }
 
-type CardsByPlayerId = {
-  [id: string]: Card;
+export type CardsByPlayerId = {
+  [id: string]: {
+    card: Card;
+    howManyCardsLeft: number;
+  };
+}
+
+export type WinGame = {
+  timestamp: string;
+  durationOfGame: string;
+}
+
+export type Message = {
+  _id: string;
+  sender: Player;
+  content: string;
 }
 
 export interface MappedGameRound {
@@ -64,6 +79,11 @@ export type NotificationProps = {
   text: string;
 }
 
+export interface PaginatedData<T> {
+  data: T[];
+  chunkNumber: number;
+  howManyChunks: number;
+}
 
 export type ResponseError = {
   message: string;

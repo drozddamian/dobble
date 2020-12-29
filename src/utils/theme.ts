@@ -3,8 +3,10 @@ const theme = {
   colors: {
     white: '#FFFFFF',
     white08: 'rgba(255, 255, 255, 0.8)',
+    lightGray: '#F5F5FA',
     darkBlue: '#131E77',
     darkBlue08: 'rgba(19, 30, 119, 0.8)',
+    salmon: '#F7E5E9',
     pink: '#F752A7',
     softPink: '#F8DDEC',
     error: '#ff0033',
@@ -13,6 +15,7 @@ const theme = {
     gold: '#FFD92E',
     success: '#02b875',
     info: '#5bc0de',
+    bronze: '#cd7f32',
   },
   shadows: {
     inputShadow: '0px 5px 8px -4px rgba(19,30,119,1)',

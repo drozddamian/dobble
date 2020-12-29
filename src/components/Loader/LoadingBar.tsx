@@ -47,7 +47,7 @@ const dotAnimation = keyframes`
   }
 `
 
-const Wrapper = styled.div`
+export const Wrapper = styled.div`
   width: 260px;
   padding: 8px;
   display: flex;
