@@ -1,6 +1,6 @@
 import socketIOClient from 'socket.io-client'
+import { API_SERVER_URL } from '../constants/api'
 
-const SOCKET_URL = `http://localhost:80`
-const gameSocket: SocketIOClient.Socket = socketIOClient(SOCKET_URL)
+const gameSocket: SocketIOClient.Socket = socketIOClient(API_SERVER_URL, { transports: ['websocket'] })
 
 export default gameSocket
