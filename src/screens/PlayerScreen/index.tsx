@@ -3,7 +3,7 @@ import dayjs from 'dayjs'
 import styled from 'styled-components'
 import { isEmpty } from 'ramda'
 import { useDispatch } from 'react-redux'
-import { useHistory, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { useCurrentAccount } from '../../hooks'
 import { useTypedSelector } from '../../redux/rootReducer'
 import { fetchPlayer } from '../../redux/players'
@@ -11,17 +11,15 @@ import { fetchPlayer } from '../../redux/players'
 import PageTitle from '../../components/Page/PageTitle'
 import PageWrapper from '../../components/Page/Container'
 import LoadingBar from '../../components/Loader/LoadingBar'
-import theme from '../../utils/theme'
 import RoomItems from '../../components/RoomList/RoomItems'
 import Chart from '../../components/Chart'
-import {WinGame} from "../../types";
+import { WinGame } from '../../types'
 
 const customParseFormat = require('dayjs/plugin/customParseFormat')
 dayjs.extend(customParseFormat)
 
 const PlayerScreen: React.FC = () => {
   const dispatch = useDispatch()
-  const history = useHistory()
   const { id: playerId } = useParams()
   const { currentUserId } = useCurrentAccount()
 
@@ -69,7 +67,7 @@ const PlayerScreen: React.FC = () => {
 
       <PageWrapper>
         <Wrapper>
-          <Tile backgroundColor={theme.colors.salmon}>
+          <Tile>
             <MainTileTitle>
               {isProfileOwner
                 ? `Welcome back ${nick}!`
@@ -140,6 +138,10 @@ const Tile = styled.div<{ minWidth?: string, backgroundColor?: string }>`
     margin: 15px;
     padding: 16px;
   }
+  
+  @media (min-width: ${({ theme }) => theme.rwd.mobile.m}) {
+    min-width: 500px;
+  }
 `
 
 const MainTileTitle = styled.h3`
@@ -182,10 +184,11 @@ const LevelStatistics = styled.div`
 
 const LevelBar = styled.div<{ levelPercentage: number }>`
   height: 10px;
-  margin: 10px 0 5px;
+  margin: 15px 0 8px;
   position: relative;
   border-radius: 5px;
   background-color: ${({ theme }) => theme.colors.white08};
+  box-shadow: 0 3px 10px 1px rgba(209,209,209,1);
   
   :after {
     content: "";
