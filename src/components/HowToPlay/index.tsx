@@ -48,7 +48,7 @@ const Wrapper = styled.button`
   background-color: ${({ theme }) => theme.colors.white08};
   border: 1px solid ${({ theme }) => theme.colors.darkBlue};
   
-  @media (min-width: ${({ theme }) => theme.rwd.mobile.s}) {
+  @media (min-width: ${({ theme }) => theme.rwd.mobile.m}) {
     top: 15px;
     right: 120px;
   }

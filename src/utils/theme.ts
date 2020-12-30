@@ -42,7 +42,7 @@ const theme = {
   },
   rwd: {
     mobile: {
-      xs: '320px',
+      xs: '360px',
       s: '480px',
       m: '600px',
       maxWidth: '767px'

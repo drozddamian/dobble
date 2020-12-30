@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { equals, isNil } from 'ramda'
 import {useHistory, useParams} from 'react-router-dom'
 import { useDispatch } from 'react-redux'
-import { useTypedSelector } from "../../redux/rootReducer";
+import { useTypedSelector } from '../../redux/rootReducer'
 import PageWrapper from '../../components/Page/Container'
 import { fetchRoomItem } from '../../redux/rooms'
 import { displayNotification } from '../../redux/notification'
@@ -64,7 +64,7 @@ const RoomScreen: React.FC = () => {
 
   useEffect(() => {
     dispatch(fetchRoomItem(roomId))
-  }, [])
+  }, [dispatch, roomId])
 
   if (isRoomLoading || isNil(roomItem)) {
     return <LoadingBar />

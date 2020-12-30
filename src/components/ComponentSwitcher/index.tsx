@@ -1,4 +1,4 @@
-import React, { ReactElement, useState } from 'react'
+import React, { Fragment, ReactElement, useState } from 'react'
 import styled, { css } from 'styled-components'
 import SectionTitle from '../UI/SectionTitle'
 
@@ -27,7 +27,7 @@ const ComponentSwitcher: React.FC<Props> = ({ componentSwitcherData }) => {
         {switcherTabs.map((tab, index) => {
           const isLastTab = index === switcherTabs.length - 1
           return (
-            <>
+            <Fragment key={index}>
               <SwitchButton
                 id={tab}
                 isActive={tab === activeTab}
@@ -39,7 +39,7 @@ const ComponentSwitcher: React.FC<Props> = ({ componentSwitcherData }) => {
               {!isLastTab && (
                 <SwitchButtonsSeparator />
               )}
-            </>
+            </Fragment>
           )
         })}
       </SwitchContainer>

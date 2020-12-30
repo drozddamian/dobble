@@ -1,7 +1,7 @@
-import React, { ReactElement, useEffect } from 'react'
-import styled from 'styled-components'
+import React, { ReactElement, useEffect, useState } from 'react'
+import styled, { css } from 'styled-components'
 import gameSocket from '../../utils/gameSocket'
-import { isEmpty, isNil } from 'ramda'
+import { equals, isEmpty, isNil } from 'ramda'
 import { useDispatch } from 'react-redux'
 import { useHistory, useParams } from 'react-router-dom'
 import { useTypedSelector } from '../../redux/rootReducer'
@@ -9,6 +9,8 @@ import { useCurrentAccount } from '../../hooks'
 import { resetTable, updateTable } from '../../redux/gameTable'
 import { updateGameRound, finishGameAndShowResult } from '../../redux/gameRound'
 import { SymbolName, MappedGameRound, TableChangeData } from '../../types'
+import successSound from '../../assets/sounds/success.mp3'
+import errorSound from '../../assets/sounds/error.mp3'
 
 import GAME_SOCKET_ACTIONS from '../../constants/gameSocket'
 import ROUTES from '../../constants/routes'
@@ -16,7 +18,7 @@ import ROUTES from '../../constants/routes'
 import Button, { Wrapper as StyledButton } from '../../components/Button'
 import GameDialog, { InfoText } from '../../components/GameDialog'
 import GameTablePlayers from '../../components/GameTablePlayers'
-import Card from '../../components/Card'
+import Card, { Wrapper as CardWrapper } from '../../components/Card'
 
 const {
   TABLE_CHANGE,
@@ -28,6 +30,8 @@ const {
   SPOT_SHAPE,
 } = GAME_SOCKET_ACTIONS
 
+type ClickResult = 'success' | 'error'
+
 const GameTableScreen = (): ReactElement => {
   const dispatch = useDispatch()
   const history = useHistory()
@@ -35,9 +39,27 @@ const GameTableScreen = (): ReactElement => {
   const { id: gameTableId } = useParams()
   const { currentUserId: playerId } = useCurrentAccount()
 
+  const [clickResult, setClickResult] = useState<ClickResult | null>(null)
   const gameTable = useTypedSelector(state => state.gameTable[gameTableId])
   const gameRound = useTypedSelector(state => state.gameRound[gameTableId])
   const centerCard = gameRound?.centerCard
+
+  const successTune = new Audio(successSound)
+  const errorTune = new Audio(errorSound)
+
+
+  useEffect(() => {
+    successTune.load()
+    errorTune.load()
+  }, [successTune, errorTune])
+
+  useEffect(() => {
+    let timer = 0
+    if (clickResult) {
+      timer = setTimeout(() => setClickResult(null), 200);
+    }
+    return () => clearTimeout(timer);
+  }, [clickResult])
 
   useEffect(() => {
     if (!gameTableId) {
@@ -53,16 +75,14 @@ const GameTableScreen = (): ReactElement => {
         gameSocket.disconnect();
       }
     }
-  }, [])
+  }, [gameTableId, playerId])
 
   useEffect(() => {
     gameSocket.on(TABLE_CHANGE, (tableData: TableChangeData) => {
-      //console.log("tableData", tableData)
       dispatch(updateTable({ gameTableId, tableData }))
     })
 
     gameSocket.on(GAME_CHANGE, (gameRound: MappedGameRound) => {
-      console.log("gameRound", gameRound)
       dispatch(updateGameRound(gameRound))
     })
 
@@ -78,7 +98,7 @@ const GameTableScreen = (): ReactElement => {
     gameSocket.on(GAME_ERROR, (error: any) => {
       console.error(error)
     })
-  }, [])
+  }, [dispatch, gameTableId])
 
   const handleRoundStartClick = () => {
     gameSocket.emit(ROUND_START, { tableId: gameTableId })
@@ -89,10 +109,15 @@ const GameTableScreen = (): ReactElement => {
     history.push(ROUTES.MAIN)
   }
 
-  const handleSymbolClick = (spottedSymbol: SymbolName) => (event: React.MouseEvent) => {
+  const handleSymbolClick = (spottedSymbol: SymbolName) => async (event: React.MouseEvent) => {
     event.preventDefault()
     if (centerCard?.includes(spottedSymbol)) {
+      await successTune.play()
+      setClickResult('success')
       gameSocket.emit(SPOT_SHAPE, { tableId: gameTableId, playerId })
+    } else {
+      await errorTune.play()
+      setClickResult('error')
     }
   }
 
@@ -102,7 +127,7 @@ const GameTableScreen = (): ReactElement => {
 
   const isGameInProcess = gameRound?.isGameRoundInProcess
   const roundPlayers = gameRound?.players
-  const isWaitingForFinishTheGame = isGameInProcess && isNil(roundPlayers?.find(({ _id }) => _id == playerId))
+  const isWaitingForFinishTheGame = isGameInProcess && isNil(roundPlayers?.find(({ _id }) => equals(_id, playerId)))
 
   return (
     <>
@@ -130,7 +155,8 @@ const GameTableScreen = (): ReactElement => {
               <CenterCardContainer>
                 <Card card={gameRound?.styledCenterCard} />
               </CenterCardContainer>
-              <PlayerCardContainer>
+
+              <PlayerCardContainer clickResult={clickResult}>
                 <Card
                   card={gameRound?.styledPlayerCard}
                   handleSymbolClick={handleSymbolClick}
@@ -178,17 +204,29 @@ const ButtonContainer = styled.div`
 `
 
 const Wrapper = styled.div`
+  padding-top: 30px;
   margin: 0 auto;
   max-width: 1280px;
   min-height: 100vh;
-  padding-right: 140px;
   position: relative;
   display: grid;
-  grid-template: 1fr 2fr / 1fr 2fr;
   grid-gap: 20px;
   grid-template-areas: 
-     "players centerCard"
-     "chat playerCards";
+     "centerCard"
+     "playerCards"
+     "players";
+     
+  @media (min-width: ${({ theme }) => theme.rwd.mobile.xs}) {
+    padding-top: 15px;
+  }     
+     
+  @media (min-width: 700px) {
+    padding-right: 140px;
+    grid-template: 
+      "players centerCard"
+      ". playerCards";
+    grid-template-columns: 1fr 3fr;
+  }
 `
 
 const CenterCardContainer = styled.div`
@@ -198,8 +236,22 @@ const CenterCardContainer = styled.div`
   align-items: center;
 `
 
-const PlayerCardContainer = styled(CenterCardContainer)`
+const PlayerCardContainer = styled(CenterCardContainer)<{ clickResult: ClickResult | null }>`
   grid-area: playerCards;
+  
+  ${CardWrapper} {
+    ${({clickResult}) =>
+      clickResult === 'success' && css`
+        box-shadow: 0 0 19px 0 #02b875;
+      `
+    };
+    
+    ${({clickResult}) =>
+      clickResult === 'error' && css`
+        box-shadow: 0 0 19px 0 #ff0033;
+      `
+    };
+  }
 `
 
 const StartRoundWrapper = styled.div`

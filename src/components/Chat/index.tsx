@@ -1,6 +1,6 @@
 import React, { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
-import { isEmpty, isNil } from 'ramda'
+import { equals, isEmpty, isNil } from 'ramda'
 import { useDispatch } from 'react-redux'
 import { useTypedSelector } from '../../redux/rootReducer'
 import { fetchMessages, addNewMessage } from '../../redux/chat'
@@ -15,11 +15,13 @@ import Input, { InputProps } from '../Forms/Input'
 import NoItemsFound, { Wrapper as NoItemsFoundContainer } from '../UI/NoItemsFound'
 import LoadingBar, { Wrapper as LoadingContainer } from '../Loader/LoadingBar'
 import MessageList from './MessageList'
-import usePrevious from "../../hooks/usePrevious";
+import usePrevious from '../../hooks/usePrevious'
+import messageSound from '../../assets/sounds/message.mp3'
 
 const { NEW_MESSAGE } = CHAT_SOCKET_ACTIONS
 
 const Chat = () => {
+  const notificationTune = new Audio(messageSound)
   const dispatch = useDispatch()
   const sectionList = useRef(null)
   const { currentUserId } = useCurrentAccount()
@@ -28,6 +30,7 @@ const Chat = () => {
   const [messageText, setMessageText] = useState('')
 
   useEffect(() => {
+    notificationTune.load()
     dispatch(fetchMessages(currentPaginationChunk))
 
     return () => {
@@ -35,7 +38,7 @@ const Chat = () => {
         chatSocket.disconnect();
       }
     }
-  }, [])
+  }, [dispatch, currentPaginationChunk, notificationTune])
 
   useEffect(() => {
     if (!isLoading && !chatSocket.connected) {
@@ -44,10 +47,15 @@ const Chat = () => {
   }, [isLoading])
 
   useEffect(() => {
-    chatSocket.on(NEW_MESSAGE, (newMessage: Message) => {
+    chatSocket.on(NEW_MESSAGE, async (newMessage: Message) => {
       dispatch(addNewMessage(newMessage))
+
+      const { sender } = newMessage
+      if (!equals(sender._id, currentUserId)) {
+        await notificationTune.play()
+      }
     })
-  }, [])
+  }, [dispatch, currentUserId, notificationTune])
 
   const previousPaginationChunk = usePrevious(currentPaginationChunk)
   const previousMessagesLength = usePrevious(messages.length)
@@ -68,7 +76,7 @@ const Chat = () => {
       // @ts-ignore
       sectionList.current.scrollTop = sectionList.current.scrollHeight
     }
-  }, [messages.length])
+  }, [messages, currentPaginationChunk, previousMessagesLength, previousPaginationChunk])
 
   const handleScroll = () => {
     if (!paginationHasMore || isNil(sectionList.current)) { return }

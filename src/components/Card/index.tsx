@@ -38,11 +38,16 @@ const CardComponent: React.FC<Props> = (props: Props) => {
 
 
 export const Wrapper = styled.div`
-  width: 340px;
-  height: 340px;
+  width: 310px;
+  height: 310px;
   box-shadow: 0 10px 19px 0 rgba(224,220,224,1);
   border-radius: 50%;
   background: white;
+  
+  @media (min-width: ${({ theme }) => theme.rwd.mobile.xs}) {
+    width: 340px;
+    height: 340px;
+  }
 `
 
 const EmptyCardContent = styled.span`

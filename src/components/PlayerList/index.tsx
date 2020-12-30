@@ -1,10 +1,10 @@
 import React from 'react'
-import {isNil, equals, isEmpty} from 'ramda'
+import { equals, isEmpty } from 'ramda'
 import styled from 'styled-components'
 import { Player } from '../../api/players'
 import PlayerListItem from './PlayerListItem'
-import LoadingBar from "../Loader/LoadingBar";
-import NoItemsFound from "../UI/NoItemsFound";
+import LoadingBar from '../Loader/LoadingBar'
+import NoItemsFound from '../UI/NoItemsFound'
 
 interface Props {
   owner?: string;

@@ -1,6 +1,6 @@
 import Big from 'big.js'
 import PACK_OF_CARDS from '../constants/packOfCards'
-import {Card, StyledCard, SymbolName} from '../types'
+import { Card, StyledCard } from '../types'
 
 
 const shuffleCards = (cards: any) => {

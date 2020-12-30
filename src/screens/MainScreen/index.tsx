@@ -24,14 +24,14 @@ const MainScreen: React.FC = () => {
   useEffect(() => {
     dispatch(fetchPopularRooms())
     dispatch(fetchTopPlayers())
-  }, [])
+  }, [dispatch])
 
   useEffect(() => {
     if (rooms.length > 5) {
       return
     }
     dispatch(fetchPopularRooms())
-  }, [rooms.length])
+  }, [dispatch, rooms.length])
 
 
   const componentSwitcherData = {

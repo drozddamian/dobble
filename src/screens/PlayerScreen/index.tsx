@@ -30,7 +30,7 @@ const PlayerScreen: React.FC = () => {
       return
     }
     dispatch(fetchPlayer(playerId))
-  }, [playerId])
+  }, [dispatch, playerId])
 
   if (isLoading) {
     return <LoadingBar />

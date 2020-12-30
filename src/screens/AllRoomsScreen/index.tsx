@@ -14,9 +14,12 @@ import theme from '../../utils/theme'
 
 const AllRoomsScreen: React.FC = () => {
   const dispatch = useDispatch()
-  const getMoreRooms = () => dispatch(fetchRooms())
   const paginatedTableRef = useRef<HTMLDivElement>(null)
   const { rooms, paginationHasMore, isLoading } = useTypedSelector(state => state.rooms)
+
+  useEffect(() => {
+    dispatch(fetchRooms())
+  }, [dispatch])
 
   const loadMoreRooms = debounce(() => {
     const tableContainer = paginatedTableRef.current
@@ -26,14 +29,10 @@ const AllRoomsScreen: React.FC = () => {
     if (tableContainer.scrollTop + tableContainer.clientHeight < tableContainer.scrollHeight) {
       return
     }
-    getMoreRooms()
+    dispatch(fetchRooms())
   }, 300)
 
   const paginateOnScroll = useCallback(loadMoreRooms, [paginationHasMore])
-
-  useEffect(() => {
-    getMoreRooms()
-  }, [])
 
   useEffect(() => {
     const { current } = paginatedTableRef

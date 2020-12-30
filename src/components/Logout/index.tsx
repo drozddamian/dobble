@@ -57,7 +57,7 @@ const Wrapper = styled.button`
   border: 1px solid ${({ theme }) => theme.colors.darkBlue};
   padding: 6px 3px;
   
-  @media (min-width: ${({ theme }) => theme.rwd.mobile.s}) {
+  @media (min-width: ${({ theme }) => theme.rwd.mobile.m}) {
     top: 15px;
     right: 15px;
     padding: 6px 10px;
@@ -69,7 +69,7 @@ const Text = styled.p`
   color: ${({ theme }) => theme.colors.darkBlue};
   display: none;
   
-  @media (min-width: ${({ theme }) => theme.rwd.mobile.s}) {
+  @media (min-width: ${({ theme }) => theme.rwd.mobile.m}) {
     display: inline;
   }
 `

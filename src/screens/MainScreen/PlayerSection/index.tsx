@@ -21,7 +21,7 @@ const PlayerSection: React.FC<Props> = ({ userId } ) => {
 
   useEffect(() => {
     dispatch(fetchPlayer(userId))
-  }, [rooms])
+  }, [dispatch, userId, rooms])
 
   if (isLoading || isNil(player)) {
     return <LoadingComponent color={theme.colors.white} />
