@@ -38,6 +38,7 @@ const CardComponent: React.FC<Props> = (props: Props) => {
 
 
 export const Wrapper = styled.div`
+  z-index: 5;
   width: 310px;
   height: 310px;
   box-shadow: 0 10px 19px 0 rgba(224,220,224,1);

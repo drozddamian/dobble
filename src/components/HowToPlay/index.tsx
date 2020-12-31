@@ -37,6 +37,7 @@ const HowToPlay = (): ReactElement | null => {
 }
 
 const Wrapper = styled.button`
+  z-index: 3;
   position: fixed;
   top: 8px;
   right: 45px;

@@ -46,6 +46,7 @@ const Logout = (): ReactElement | null => {
 }
 
 const Wrapper = styled.button`
+  z-index: 3;
   position: fixed;
   top: 8px;
   right: 8px;

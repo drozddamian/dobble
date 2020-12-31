@@ -205,19 +205,19 @@ const ButtonContainer = styled.div`
 `
 
 const Wrapper = styled.div`
-  padding-top: 30px;
+  padding-top: 5px;
   margin: 0 auto;
   max-width: 1280px;
   min-height: 100vh;
   position: relative;
   display: grid;
-  grid-gap: 20px;
+  grid-gap: 5px;
   grid-template-areas: 
      "centerCard"
      "playerCards"
      "players";
      
-  @media (min-width: ${({ theme }) => theme.rwd.mobile.xs}) {
+  @media (min-width: ${({ theme }) => theme.rwd.tablet.s}) {
     padding-top: 15px;
   }     
      

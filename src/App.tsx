@@ -6,10 +6,6 @@ import {
 } from 'react-router-dom'
 import ROUTES from './constants/routes'
 import history from './helpers/history'
-import Notification from './components/Notification'
-import Logout from './components/Logout'
-import HowToPlay from './components/HowToPlay'
-import Footer from './components/Footer'
 
 import GameTableScreen from './screens/GameTableScreen'
 import MainScreen from './screens/MainScreen'
@@ -24,8 +20,8 @@ const {
 
 const App = () => {
   return (
-    <Layout>
-      <Router history={history}>
+    <Router history={history}>
+      <Layout>
         <Switch>
           <Route exact path={MAIN}>
             <MainScreen />
@@ -47,8 +43,8 @@ const App = () => {
             <PlayerScreen />
           </Route>
         </Switch>
-      </Router>
-    </Layout>
+      </Layout>
+    </Router>
   )
 }
 
