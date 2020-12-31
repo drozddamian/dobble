@@ -19,6 +19,7 @@ import Button, { Wrapper as StyledButton } from '../../components/Button'
 import GameDialog, { InfoText } from '../../components/GameDialog'
 import GameTablePlayers from '../../components/GameTablePlayers'
 import Card, { Wrapper as CardWrapper } from '../../components/Card'
+import LoadingBar from '../../components/Loader/LoadingBar'
 
 const {
   TABLE_CHANGE,
@@ -122,7 +123,7 @@ const GameTableScreen = (): ReactElement => {
   }
 
   if (!gameTable || gameTable?.isLoading) {
-    return <p>Loading...</p>
+    return <LoadingBar />
   }
 
   const isGameInProcess = gameRound?.isGameRoundInProcess
