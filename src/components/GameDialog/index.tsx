@@ -1,4 +1,5 @@
-import React, {useEffect} from 'react'
+import React, { useEffect } from 'react'
+import useSound from 'use-sound'
 import styled from 'styled-components'
 import { useTypedSelector } from '../../redux/rootReducer'
 import { GameTableStatus } from '../../types'
@@ -18,17 +19,13 @@ const GameDialog: React.FC<Props> = (props: Props) => {
   const gameRound = useTypedSelector(state => state.gameRound[tableId])
   const roundWinner = gameRound?.roundWinner
 
-  const winnerTune = new Audio(winnerSound)
-
-  useEffect(() => {
-    winnerTune.load()
-  }, [winnerTune])
+  const [playWinningTune] = useSound(winnerSound)
 
   useEffect(() => {
     if (roundWinner) {
-      winnerTune.play()
+      playWinningTune()
     }
-  }, [roundWinner, winnerTune])
+  }, [roundWinner])
 
   const DIALOG_CONTENT = {
     [Joining]: <InfoText> Waiting for more players to join </InfoText>,

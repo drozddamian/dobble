@@ -1,5 +1,6 @@
 import React, { ReactElement, useEffect, useState } from 'react'
 import styled, { css } from 'styled-components'
+import useSound from 'use-sound'
 import gameSocket from '../../utils/gameSocket'
 import { equals, isEmpty, isNil } from 'ramda'
 import { useDispatch } from 'react-redux'
@@ -41,18 +42,13 @@ const GameTableScreen = (): ReactElement => {
   const { currentUserId: playerId } = useCurrentAccount()
 
   const [clickResult, setClickResult] = useState<ClickResult | null>(null)
+
+  const [playSuccessTune] = useSound(successSound)
+  const [playErrorTune] = useSound(errorSound)
+
   const gameTable = useTypedSelector(state => state.gameTable[gameTableId])
   const gameRound = useTypedSelector(state => state.gameRound[gameTableId])
   const centerCard = gameRound?.centerCard
-
-  const successTune = new Audio(successSound)
-  const errorTune = new Audio(errorSound)
-
-
-  useEffect(() => {
-    successTune.load()
-    errorTune.load()
-  }, [successTune, errorTune])
 
   useEffect(() => {
     let timer = 0
@@ -113,11 +109,11 @@ const GameTableScreen = (): ReactElement => {
   const handleSymbolClick = (spottedSymbol: SymbolName) => async (event: React.MouseEvent) => {
     event.preventDefault()
     if (centerCard?.includes(spottedSymbol)) {
-      await successTune.play()
+      playSuccessTune()
       setClickResult('success')
       gameSocket.emit(SPOT_SHAPE, { tableId: gameTableId, playerId })
     } else {
-      await errorTune.play()
+      playErrorTune()
       setClickResult('error')
     }
   }
