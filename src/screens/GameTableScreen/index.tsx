@@ -222,6 +222,7 @@ const Wrapper = styled.div`
      
   @media (min-width: 700px) {
     padding-right: 140px;
+    grid-gap: 0;
     grid-template: 
       "players centerCard"
       ". playerCards";

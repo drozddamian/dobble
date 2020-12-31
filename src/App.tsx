@@ -9,12 +9,14 @@ import history from './helpers/history'
 import Notification from './components/Notification'
 import Logout from './components/Logout'
 import HowToPlay from './components/HowToPlay'
+import Footer from './components/Footer'
 
 import GameTableScreen from './screens/GameTableScreen'
 import MainScreen from './screens/MainScreen'
 import RoomScreen from './screens/RoomScreen'
 import AllRoomsScreen from './screens/AllRoomsScreen'
 import PlayerScreen from './screens/PlayerScreen'
+import Layout from "./components/Layout";
 
 const {
   MAIN, GAME, ROOM, ROOMS, PLAYER,
@@ -22,12 +24,7 @@ const {
 
 const App = () => {
   return (
-    <>
-      <Notification />
-
-      <HowToPlay />
-      <Logout />
-
+    <Layout>
       <Router history={history}>
         <Switch>
           <Route exact path={MAIN}>
@@ -51,7 +48,7 @@ const App = () => {
           </Route>
         </Switch>
       </Router>
-    </>
+    </Layout>
   )
 }
 

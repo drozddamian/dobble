@@ -35,10 +35,10 @@ const Chat = () => {
 
     return () => {
       if (chatSocket) {
-        chatSocket.disconnect();
+        chatSocket.disconnect()
       }
     }
-  }, [dispatch, currentPaginationChunk, notificationTune])
+  }, [])
 
   useEffect(() => {
     if (!isLoading && !chatSocket.connected) {
@@ -55,7 +55,7 @@ const Chat = () => {
         await notificationTune.play()
       }
     })
-  }, [dispatch, currentUserId, notificationTune])
+  }, [])
 
   const previousPaginationChunk = usePrevious(currentPaginationChunk)
   const previousMessagesLength = usePrevious(messages.length)
@@ -76,7 +76,8 @@ const Chat = () => {
       // @ts-ignore
       sectionList.current.scrollTop = sectionList.current.scrollHeight
     }
-  }, [messages, currentPaginationChunk, previousMessagesLength, previousPaginationChunk])
+  }, [messages.length])
+
 
   const handleScroll = () => {
     if (!paginationHasMore || isNil(sectionList.current)) { return }

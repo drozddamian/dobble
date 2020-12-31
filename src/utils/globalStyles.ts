@@ -26,6 +26,10 @@ const GlobalStyle = createGlobalStyle`
     width: 100%;
   }
   
+  html, body, #root, #root>div {
+    height: 100%
+  }
+  
   div {
     box-sizing: border-box;
   }
