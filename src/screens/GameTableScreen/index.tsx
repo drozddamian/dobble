@@ -12,6 +12,7 @@ import { updateGameRound, finishGameAndShowResult } from '../../redux/gameRound'
 import { SymbolName, MappedGameRound, TableChangeData } from '../../types'
 import successSound from '../../assets/sounds/success.mp3'
 import errorSound from '../../assets/sounds/error.mp3'
+import winnerSound from '../../assets/sounds/winner.mp3'
 
 import GAME_SOCKET_ACTIONS from '../../constants/gameSocket'
 import ROUTES from '../../constants/routes'
@@ -45,6 +46,7 @@ const GameTableScreen = (): ReactElement => {
 
   const [playSuccessTune] = useSound(successSound)
   const [playErrorTune] = useSound(errorSound)
+  const [playWinnerTune] = useSound(winnerSound)
 
   const gameTable = useTypedSelector(state => state.gameTable[gameTableId])
   const gameRound = useTypedSelector(state => state.gameRound[gameTableId])
@@ -139,7 +141,11 @@ const GameTableScreen = (): ReactElement => {
             />
           </ButtonContainer>
           <StartRoundWrapper>
-            <GameDialog tableId={gameTableId} handleRoundStartClick={handleRoundStartClick} />
+            <GameDialog
+              tableId={gameTableId}
+              handleRoundStartClick={handleRoundStartClick}
+              playWinnerTune={playWinnerTune}
+            />
           </StartRoundWrapper>
         </>
       )}

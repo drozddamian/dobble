@@ -1,9 +1,7 @@
 import React, { useEffect } from 'react'
-import useSound from 'use-sound'
 import styled from 'styled-components'
 import { useTypedSelector } from '../../redux/rootReducer'
 import { GameTableStatus } from '../../types'
-import winnerSound from '../../assets/sounds/winner.mp3'
 import Button from '../Button'
 
 const { Joining, Waiting, Countdown, Processing } = GameTableStatus
@@ -11,19 +9,19 @@ const { Joining, Waiting, Countdown, Processing } = GameTableStatus
 interface Props {
   tableId: string;
   handleRoundStartClick: () => void;
+  playWinnerTune: () => void;
 }
 
 const GameDialog: React.FC<Props> = (props: Props) => {
-  const { tableId, handleRoundStartClick } = props
+  const { tableId, handleRoundStartClick, playWinnerTune } = props
+
   const { gameStatus, roundStartCountdown } = useTypedSelector(state => state.gameTable[tableId])
   const gameRound = useTypedSelector(state => state.gameRound[tableId])
   const roundWinner = gameRound?.roundWinner
 
-  const [playWinningTune] = useSound(winnerSound)
-
   useEffect(() => {
     if (roundWinner) {
-      playWinningTune()
+      playWinnerTune()
     }
   }, [roundWinner])
 

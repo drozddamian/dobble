@@ -1,8 +1,9 @@
 import React from 'react'
 import { isNil } from 'ramda'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import Symbol, { Wrapper as SymbolWrapper } from './Symbol'
 import { StyledCard, SymbolName } from '../../types'
+import emptyCard from '../../assets/icons/emptyCard.jpg'
 
 interface Props {
   card: StyledCard | null;
@@ -18,10 +19,10 @@ const CardComponent: React.FC<Props> = (props: Props) => {
   const { card, handleSymbolClick } = props
 
   return (
-    <Wrapper>
+    <Wrapper isEmpty={!card?.symbols}>
       <CardContainer cardRotation={card?.rotation} isClickable={!isNil(handleSymbolClick)}>
         {!card?.symbols
-          ? <EmptyCardContent>Empty card</EmptyCardContent>
+          ? <EmptyCardContent />
           : card.symbols.map((symbolId, index) => (
             <Symbol
               key={`${symbolId}_${index}`}
@@ -37,13 +38,19 @@ const CardComponent: React.FC<Props> = (props: Props) => {
 }
 
 
-export const Wrapper = styled.div`
+export const Wrapper = styled.div<{ isEmpty?: boolean }>`
   z-index: 5;
   width: 310px;
   height: 310px;
   box-shadow: 0 10px 19px 0 rgba(224,220,224,1);
   border-radius: 50%;
   background: white;
+  
+  ${({ isEmpty }) => isEmpty && css`
+    background-image: url("${emptyCard}");
+    background-position: center;
+    background-size: 150%;
+  `};
   
   @media (min-width: ${({ theme }) => theme.rwd.mobile.xs}) {
     width: 340px;
