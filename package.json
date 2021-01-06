@@ -20,7 +20,7 @@
     "@types/yup": "^0.29.8",
     "@typescript-eslint/eslint-plugin": "^3.9.0",
     "@typescript-eslint/parser": "^3.9.0",
-    "axios": "^0.20.0",
+    "axios": "^0.21.1",
     "big.js": "^5.2.2",
     "dayjs": "^1.9.6",
     "express": "^4.17.1",
