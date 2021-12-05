@@ -6,7 +6,7 @@ import { ThemeProvider } from 'styled-components'
 import theme from './utils/theme'
 import GlobalStyle from './utils/globalStyles'
 import { rootStore } from './redux/rootStore'
-
+import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -19,3 +19,5 @@ ReactDOM.render(
   </React.StrictMode>,
   document.getElementById('root')
 );
+
+serviceWorkerRegistration.register();
